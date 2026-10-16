@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>မေတ္တာနှင့်ကံကြမ္မာ - Aura Fortune</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+
+    font-family:
+        'Pyidaungsu',
+        'Myanmar Text',
+        'Noto Sans Myanmar',
+        'Segoe UI',
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #30204a 0%,
+            #1b1230 45%,
+            #0b0716 100%
+        );
+
+    color:#fff;
+}
+
+.header{
+    width:100%;
+    padding:18px 25px 25px;
+
+    border-bottom:
+        1px solid rgba(255,215,0,.25);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    min-height:105px;
+}
+
+.logo-area{
+    display:flex;
+    flex-direction:column;
+}
+
+.logo{
+    color:#ffd700;
+    font-size:30px;
+    font-weight:bold;
+    line-height:1.2;
+}
+
+.nav{
+    display:flex;
+    gap:32px;
+    align-items:center;
+}
+
+.nav a{
+    color:#fff;
+    text-decoration:none;
+    font-size:17px;
+    transition:.3s;
+}
+
+.nav a:hover{
+    color:#ffd700;
+}
+
+.hero{
+    text-align:center;
+    padding:55px 20px 35px;
+}
+
+.hero-title-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    position:relative;
+}
+
+.hero-title{
+    color:#ffd700;
+    font-size:44px;
+    font-weight:bold;
+    margin:0;
+}
+
+.hero-sub{
+    color:#e2e2e2;
+    font-size:21px;
+    margin-top:8px;
+}
+
+/* ================= CALENDAR ================= */
+
+.calendar-wrapper{
+    position:relative;
+    display:flex;
+    align-items:center;
+    z-index:100;
+}
+
+.calendar-icon-btn{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+
+    border:1px solid #ffd700;
+
+    background:
+        radial-gradient(
+            circle,
+            #1a2b3b,
+            #081522
+        );
+
+    box-shadow:
+        0 0 12px rgba(255,215,0,.35),
+        inset 0 0 15px rgba(255,215,0,.08);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+    font-size:28px;
+    transition:.25s;
+}
+
+.calendar-icon-btn:hover{
+    transform:scale(1.07);
+
+    box-shadow:
+        0 0 25px rgba(255,215,0,.7),
+        inset 0 0 20px rgba(255,215,0,.15);
+}
+
+.calendar-panel{
+    position:absolute;
+
+    left:70px;
+    top:50%;
+
+    transform:
+        translateY(-50%)
+        translateX(-8px)
+        scale(.96);
+
+    width:335px;
+    padding:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #34234d,
+            #170e2b
+        );
+
+    border:
+        1px solid rgba(255,215,0,.55);
+
+    border-radius:14px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.65),
+        0 0 20px rgba(255,215,0,.12);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease,
+        visibility .25s ease;
+}
+
+.calendar-panel.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+
+    transform:
+        translateY(-50%)
+        translateX(0)
+        scale(1);
+}
+
+.calendar-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.calendar-title h2{
+    margin:0;
+    color:#ffd700;
+    font-size:16px;
+}
+
+.calendar-close{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+
+    border:
+        1px solid rgba(255,215,0,.5);
+
+    background:#211437;
+    color:#ffd700;
+
+    cursor:pointer;
+    font-size:16px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.converter-box{
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid rgba(255,215,0,.16);
+
+    border-radius:10px;
+    padding:11px;
+}
+
+.converter-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin-bottom:9px;
+}
+
+.converter-header h3{
+    margin:0;
+    color:#fff;
+    font-size:14px;
+}
+
+.switch-btn{
+    width:27px;
+    height:27px;
+
+    border-radius:50%;
+    border:1px solid #ffd700;
+
+    background:
+        rgba(255,215,0,.08);
+
+    color:#ffd700;
+
+    cursor:pointer;
+    font-size:15px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.form-group{
+    margin-bottom:8px;
+}
+
+.form-group label{
+    display:block;
+    color:#cbd4dc;
+    font-size:11px;
+    margin-bottom:4px;
+}
+
+input,
+select{
+    width:100%;
+    padding:8px 9px;
+
+    background:#181027;
+    color:#fff;
+
+    border:
+        1px solid #455666;
+
+    border-radius:6px;
+
+    font-family:inherit;
+    font-size:12px;
+}
+
+.date-input{
+    height:36px;
+    color-scheme:dark;
+}
+
+.mm-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+}
+
+.convert-btn{
+    width:100%;
+    padding:9px;
+    margin-top:3px;
+
+    border:none;
+    border-radius:7px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e8b900,
+            #ffd700
+        );
+
+    color:#07111b;
+
+    font-family:inherit;
+    font-size:12px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.result-box{
+    margin-top:8px;
+    padding:8px;
+
+    background:
+        rgba(255,215,0,.07);
+
+    border-left:
+        3px solid #ffd700;
+
+    border-radius:5px;
+
+    color:#f1f4f7;
+    line-height:1.6;
+    font-size:11px;
+
+    display:none;
+}
+
+.result-box b{
+    color:#ffd700;
+}
+
+/* ================= CARDS - PAGE 2 ================= */
+
+.cards{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:30px;
+
+    padding:15px 20px 70px;
+
+    max-width:1400px;
+    margin:auto;
+}
+
+.card{
+    min-height:400px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(49,34,72,.98),
+            rgba(24,15,43,.98)
+        );
+
+    border:
+        1px solid rgba(255,215,0,.45);
+
+    border-radius:18px;
+    padding:40px 25px;
+
+    text-align:center;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-7px);
+    border-color:#ffd700;
+
+    box-shadow:
+        0 0 25px rgba(255,215,0,.2);
+}
+
+.card.active{
+    box-shadow:
+        0 0 30px rgba(255,215,0,.22);
+}
+
+.card-icon{
+    font-size:58px;
+    margin-bottom:18px;
+}
+
+.card h3{
+    color:#fff;
+    font-size:25px;
+    margin:10px 0 15px;
+}
+
+.card p{
+    color:#b9c2cc;
+    font-size:17px;
+    line-height:1.8;
+    margin:0 auto;
+    max-width:340px;
+}
+
+.action-btn{
+    display:inline-flex;
+
+    justify-content:center;
+    align-items:center;
+
+    min-width:190px;
+    padding:13px 25px;
+    margin-top:25px;
+
+    color:#ffd700;
+    background:transparent;
+
+    border:
+        1px solid #ffd700;
+
+    border-radius:30px;
+
+    font-family:inherit;
+    font-size:16px;
+    font-weight:bold;
+
+    cursor:pointer;
+    text-decoration:none;
+    transition:.25s;
+}
+
+.action-btn:hover{
+    background:#ffd700;
+    color:#07111c;
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.4);
+}
+
+@media(max-width:1100px){
+
+    .cards{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+}
+
+@media(max-width:800px){
+
+    .calendar-panel{
+        position:fixed;
+
+        left:50%;
+        top:50%;
+
+        width:min(90vw,335px);
+
+        transform:
+            translate(-50%,-50%)
+            scale(.96);
+    }
+
+    .calendar-panel.show{
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+
+}
+
+@media(max-width:700px){
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+    }
+
+    .nav{
+        width:100%;
+        gap:18px;
+        flex-wrap:wrap;
+    }
+
+    .hero{
+        padding-top:40px;
+    }
+
+    .hero-title{
+        font-size:30px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+        padding:10px 15px 50px;
+    }
+
+    .card{
+        min-height:360px;
+    }
+
+}
+
+@media(max-width:500px){
+
+    .hero-title{
+        font-size:23px;
+    }
+
+    .hero-title-row{
+        gap:8px;
+    }
+
+    .calendar-icon-btn{
+        width:48px;
+        height:48px;
+        font-size:22px;
+    }
+
+    .mm-row{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo-area">
+
+        <div class="logo">
+            မေတ္တာနှင့်ကံကြမ္မာ
+        </div>
+
+    </div>
+
+    <nav class="nav">
+        <a href="MapFood_with_chatbot.html">Home</a>
+        <a href="maharbote4.html">မဟာဘုတ်</a>
+        <a href="Nakat4.html">နက္ခတ်</a>
+        <a href="ZodiacMyanmar4.html">ရာသီခွင်</a>
+        
+    </nav>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="hero-title-row">
+
+        <h1 class="hero-title">
+            သင့်ရဲ့ကံကြမ္မာကိုရှာဖွေပါ
+        </h1>
+
+        <div class="calendar-wrapper">
+
+            <button
+                class="calendar-icon-btn"
+                onclick="toggleCalendar(event)"
+            >
+                📅
+            </button>
+
+            <div
+                id="calendarPanel"
+                class="calendar-panel"
+            >
+
+                <div class="calendar-title">
+
+                    <h2>
+                        📅 ရက်စွဲအပြန်အလှန်ပြောင်းရန်
+                    </h2>
+
+                    <button
+                        class="calendar-close"
+                        onclick="closeCalendar()"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div class="converter-box">
+
+                    <div class="converter-header">
+
+                        <h3 id="converterTitle">
+                            🇬🇧 အင်္ဂလိပ် → 🇲🇲 မြန်မာ
+                        </h3>
+
+                        <button
+                            class="switch-btn"
+                            onclick="switchConverter()"
+                        >
+                            ↔
+                        </button>
+
+                    </div>
+
+
+                    <div id="englishForm">
+
+                        <div class="form-group">
+
+                            <label>
+                                အင်္ဂလိပ် ခုနှစ် / လ / ရက်
+                            </label>
+
+                            <input
+                                type="date"
+                                id="engDate"
+                                class="date-input"
+                                value="2004-12-21"
+                            >
+
+                        </div>
+
+                        <button
+                            class="convert-btn"
+                            onclick="convertEngToMm()"
+                        >
+                            မြန်မာရက်စွဲသို့ ပြောင်းမည်
+                        </button>
+
+                        <div
+                            id="engResult"
+                            class="result-box"
+                        ></div>
+
+                    </div>
+
+
+                    <div
+                        id="myanmarForm"
+                        style="display:none;"
+                    >
+
+                        <div class="form-group">
+
+                            <label>
+                                မြန်မာသက္ကရာဇ် ခုနှစ်
+                            </label>
+
+                            <input
+                                type="number"
+                                id="mmYear"
+                                value="1366"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>မြန်မာလ</label>
+
+                            <select id="mmMonth">
+
+                                <option value="1">တန်ခူး</option>
+                                <option value="2">ကဆုန်</option>
+                                <option value="3">နယုန်</option>
+                                <option value="4">ဝါဆို</option>
+                                <option value="5">ဝါခေါင်</option>
+                                <option value="6">တော်သလင်း</option>
+                                <option value="7">သီတင်းကျွတ်</option>
+                                <option value="8">တန်ဆောင်မုန်း</option>
+                                <option value="9">နတ်တော်</option>
+                                <option value="10">ပြာသို</option>
+                                <option value="11">တပို့တွဲ</option>
+                                <option value="12">တပေါင်း</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="mm-row">
+
+                            <div class="form-group">
+
+                                <label>လအဆင့်</label>
+
+                                <select id="moonPhase">
+
+                                    <option value="0">လဆန်း</option>
+                                    <option value="1">လပြည့်</option>
+                                    <option value="2">လဆုတ်</option>
+                                    <option value="3">လကွယ်</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>ရက်</label>
+
+                                <input
+                                    type="number"
+                                    id="mmDay"
+                                    value="10"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="convert-btn"
+                            onclick="convertMmToEng()"
+                        >
+                            အင်္ဂလိပ်ရက်စွဲသို့ ပြောင်းမည်
+                        </button>
+
+                        <div
+                            id="mmResult"
+                            class="result-box"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="hero-sub">
+        Discover Your Destiny
+    </div>
+
+</section>
+
+
+<!-- ================= PAGE 2 CARDS ================= -->
+
+<section class="cards">
+
+
+    <!-- မဟာဘုတ် -->
+
+    <div class="card active">
+
+        <div>
+
+            <div class="card-icon">
+                ☸️
+            </div>
+
+            <h3>
+                မဟာဘုတ်
+            </h3>
+
+            <p>
+                မြန်မာ့ရိုးရာမဟာဘုတ်ဖြင့်
+                ကံဇာတာကိုတွက်ချက်ခြင်း
+            </p>
+
+        </div>
+
+        <a
+            href="maharbote4.html"
+            class="action-btn"
+        >
+            စတင်တွက်ချက်ရန်
+        </a>
+
+    </div>
+
+
+    <!-- နက္ခတ် -->
+
+    <div class="card">
+
+        <div>
+
+            <div class="card-icon">
+                ☀️
+            </div>
+
+            <h3>
+                နက္ခတ်
+            </h3>
+
+            <p>
+                ကြယ်တာရာနှင့်
+                နက္ခတ်များ၏ လွှမ်းမိုးမှုများ
+            </p>
+
+        </div>
+
+        <a
+            href="Nakat4.html"
+            class="action-btn"
+        >
+            စတင်တွက်ချက်ရန်
+        </a>
+
+    </div>
+
+
+    <!-- ရာသီခွင် -->
+
+    <div class="card">
+
+        <div>
+
+            <div class="card-icon">
+                ♈
+            </div>
+
+            <h3>
+                ရာသီခွင်
+            </h3>
+
+            <p>
+                သင့်ရာသီခွင်အလိုက်
+                နေ့စဉ်၊ အပတ်စဉ် ဟောစာတမ်းများ
+            </p>
+
+        </div>
+
+        <a
+            href="ZodiacMyanmar4.html"
+            class="action-btn"
+        >
+            စတင်တွက်ချက်ရန်
+        </a>
+
+    </div>
+
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   TODAY DATE LIMIT
+   Calendar မှာ ယနေ့ထက်နောက်ကျတဲ့ Date မရွေးနိုင်အောင်
+========================================================= */
+
+function getTodayLocal(){
+
+    const today = new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+/* =========================================================
+   SET DATE MAX = TODAY
+========================================================= */
+
+function setTodayDateLimit(){
+
+    const dateInput =
+        document.getElementById(
+            "engDate"
+        );
+
+    if(!dateInput){
+        return;
+    }
+
+    const today =
+        getTodayLocal();
+
+    /*
+       Browser Calendar မှာ
+       ယနေ့အထိပဲ ရွေးနိုင်မယ်
+    */
+
+    dateInput.max = today;
+
+    /*
+       လက်ရှိ value က Future ဖြစ်နေရင်
+       ယနေ့ကို ပြန်ထားမယ်
+    */
+
+    if(
+        dateInput.value &&
+        dateInput.value > today
+    ){
+
+        dateInput.value = today;
+
+    }
+}
+
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+function toggleCalendar(event){
+
+    if(event){
+        event.stopPropagation();
+    }
+
+    const panel =
+        document.getElementById(
+            "calendarPanel"
+        );
+
+    panel.classList.toggle("show");
+
+    /*
+       Calendar ဖွင့်တိုင်း
+       ယနေ့ Date ကို ပြန်စစ်မယ်
+    */
+
+    setTodayDateLimit();
+}
+
+
+function closeCalendar(){
+
+    document
+        .getElementById("calendarPanel")
+        .classList.remove("show");
+}
+
+
+/* CLICK INSIDE PANEL */
+
+document
+    .getElementById("calendarPanel")
+    .addEventListener(
+        "click",
+        function(event){
+
+            event.stopPropagation();
+
+        }
+    );
+
+
+/* CLICK OUTSIDE */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const wrapper =
+            document.querySelector(
+                ".calendar-wrapper"
+            );
+
+        if(
+            wrapper &&
+            !wrapper.contains(event.target)
+        ){
+
+            closeCalendar();
+
+        }
+
+    }
+);
+
+
+/* ESC */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Escape"){
+
+            closeCalendar();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SWITCH
+========================================================= */
+
+let currentMode = "eng";
+
+
+function switchConverter(){
+
+    const englishForm =
+        document.getElementById(
+            "englishForm"
+        );
+
+    const myanmarForm =
+        document.getElementById(
+            "myanmarForm"
+        );
+
+    const title =
+        document.getElementById(
+            "converterTitle"
+        );
+
+
+    if(currentMode === "eng"){
+
+        currentMode = "mm";
+
+        englishForm.style.display =
+            "none";
+
+        myanmarForm.style.display =
+            "block";
+
+        title.innerHTML =
+            "🇲🇲 မြန်မာ → 🇬🇧 အင်္ဂလိပ်";
+
+    }
+    else{
+
+        currentMode = "eng";
+
+        myanmarForm.style.display =
+            "none";
+
+        englishForm.style.display =
+            "block";
+
+        title.innerHTML =
+            "🇬🇧 အင်္ဂလိပ် → 🇲🇲 မြန်မာ";
+
+        /*
+           English Calendar ကို
+           ပြန်ဖွင့်လာရင် Today Limit ရှိနေစေမယ်
+        */
+
+        setTodayDateLimit();
+
+    }
+
+}
+
+
+/* =========================================================
+   MYANMAR CALENDAR DATA
+========================================================= */
+
+const monthNames = {
+
+    0:"ပထမဝါဆို",
+    1:"တန်ခူး",
+    2:"ကဆုန်",
+    3:"နယုန်",
+    4:"ဝါဆို",
+    5:"ဝါခေါင်",
+    6:"တော်သလင်း",
+    7:"သီတင်းကျွတ်",
+    8:"တန်ဆောင်မုန်း",
+    9:"နတ်တော်",
+    10:"ပြာသို",
+    11:"တပို့တွဲ",
+    12:"တပေါင်း"
+
+};
+
+
+const moonPhaseNames = [
+
+    "လဆန်း",
+    "လပြည့်",
+    "လဆုတ်",
+    "လကွယ်"
+
+];
+
+
+const weekDayNames = [
+
+    "စနေ",
+    "တနင်္ဂနွေ",
+    "တနင်္လာ",
+    "အင်္ဂါ",
+    "ဗုဒ္ဓဟူး",
+    "ကြာသပတေး",
+    "သောကြာ"
+
+];
+
+
+/* =========================================================
+   ERA
+========================================================= */
+
+const g_eras = [
+
+    {
+        eid:2,
+        begin:1217,
+        end:1311,
+        WO:-1,
+        NM:4,
+
+        fme:[
+            [1234,1],
+            [1261,-1]
+        ],
+
+        wte:[
+            [1263,1],
+            [1264,0]
+        ]
+    },
+
+    {
+        eid:3,
+        begin:1312,
+        end:9999,
+        WO:-0.5,
+        NM:8,
+
+        fme:[
+            [1377,1]
+        ],
+
+        wte:[
+            [1344,1],
+            [1345,0]
+        ]
+    }
+
+];
+
+
+/* =========================================================
+   BINARY SEARCH
+========================================================= */
+
+function bSearch(value,array){
+
+    let low=0;
+    let high=array.length-1;
+
+    while(low<=high){
+
+        const mid=
+            Math.floor(
+                (low+high)/2
+            );
+
+        if(array[mid][0]===value){
+            return mid;
+        }
+
+        if(array[mid][0]<value){
+            low=mid+1;
+        }
+        else{
+            high=mid-1;
+        }
+
+    }
+
+    return -1;
+}
+
+
+/* =========================================================
+   GREGORIAN -> JDN
+========================================================= */
+
+function w2j(y,m,d){
+
+    let a=
+        Math.floor(
+            (14-m)/12
+        );
+
+    y=y+4800-a;
+
+    m=m+12*a-3;
+
+    return(
+        d+
+        Math.floor(
+            (153*m+2)/5
+        )+
+        365*y+
+        Math.floor(y/4)-
+        Math.floor(y/100)+
+        Math.floor(y/400)-
+        32045
+    );
+}
+
+
+/* =========================================================
+   JDN -> GREGORIAN
+========================================================= */
+
+function j2w(j){
+
+    let f=
+        j+
+        1401+
+        Math.floor(
+            (
+                Math.floor(
+                    (4*j+274274)/146097
+                )*3
+            )/4
+        )-
+        38;
+
+    let e=4*f+3;
+
+    let g=
+        Math.floor(
+            (e%1461)/4
+        );
+
+    let h=5*g+2;
+
+    let day=
+        Math.floor(
+            (h%153)/5
+        )+1;
+
+    let month=
+        Math.floor(h/153)+3;
+
+    if(month>12){
+        month-=12;
+    }
+
+    let year=
+        Math.floor(e/1461)-
+        4716+
+        Math.floor(
+            (14-month)/12
+        );
+
+    return{
+        y:year,
+        m:month,
+        d:day
+    };
+}
+
+
+/* =========================================================
+   CHECK WATAT
+========================================================= */
+
+function chk_watat(my){
+
+    let era=g_eras[0];
+
+    for(
+        let i=g_eras.length-1;
+        i>=0;
+        i--
+    ){
+
+        if(my>=g_eras[i].begin){
+
+            era=g_eras[i];
+
+            break;
+        }
+    }
+
+
+    const SY=
+        1577917828/4320000;
+
+    const LM=
+        1577917828/53433336;
+
+    const MO=
+        1954168.050623;
+
+    const TA=
+        (SY/12-LM)*
+        (12-era.NM);
+
+
+    let ed=
+        (SY*(my+3739))%LM;
+
+    if(ed<TA){
+        ed+=LM;
+    }
+
+
+    let fm=
+        Math.round(
+            SY*my+
+            MO-
+            ed+
+            4.5*LM+
+            era.WO
+        );
+
+
+    let watat=0;
+
+
+    const TW=
+        LM-
+        (SY/12-LM)*
+        era.NM;
+
+
+    if(ed>=TW){
+        watat=1;
+    }
+
+
+    let i=
+        bSearch(
+            my,
+            era.wte
+        );
+
+    if(i>=0){
+        watat=
+            era.wte[i][1];
+    }
+
+
+    if(watat){
+
+        i=
+            bSearch(
+                my,
+                era.fme
+            );
+
+        if(i>=0){
+
+            fm+=
+                era.fme[i][1];
+
+        }
+
+    }
+
+
+    return{
+        fm:fm,
+        watat:watat
+    };
+}
+
+
+/* =========================================================
+   CHECK MYANMAR YEAR
+========================================================= */
+
+function chk_my(my){
+
+    let yd=0;
+    let y1;
+    let nd=0;
+    let werr=0;
+    let fm=0;
+
+
+    const y2=
+        chk_watat(my);
+
+    let myt=
+        y2.watat;
+
+
+    do{
+
+        yd++;
+
+        y1=
+            chk_watat(
+                my-yd
+            );
+
+    }
+    while(
+        y1.watat===0 &&
+        yd<3
+    );
+
+
+    if(myt){
+
+        nd=
+            (
+                y2.fm-
+                y1.fm
+            )%354;
+
+        myt=
+            Math.floor(nd/31)+1;
+
+        fm=
+            y2.fm;
+
+
+        if(
+            nd!==30 &&
+            nd!==31
+        ){
+
+            werr=1;
+
+        }
+
+    }
+    else{
+
+        fm=
+            y1.fm+
+            354*yd;
+
+    }
+
+
+    const tg1=
+        y1.fm+
+        354*yd-
+        102;
+
+
+    return{
+
+        myt:myt,
+        tg1:tg1,
+        fm:fm,
+        werr:werr
+
+    };
+}
+
+
+/* =========================================================
+   JDN -> MYANMAR
+========================================================= */
+
+function j2m(jd){
+
+    const SY=
+        1577917828/4320000;
+
+    const MO=
+        1954168.050623;
+
+
+    const jdn=
+        Math.round(jd);
+
+
+    const my=
+        Math.floor(
+            (
+                jdn-
+                0.5-
+                MO
+            )/SY
+        );
+
+
+    const yo=
+        chk_my(my);
+
+
+    let dd=
+        jdn-
+        yo.tg1+
+        1;
+
+
+    const b=
+        Math.floor(
+            yo.myt/2
+        );
+
+
+    const c=
+        Math.floor(
+            1/(yo.myt+1)
+        );
+
+
+    const myl=
+        354+
+        (1-c)*30+
+        b;
+
+
+    const mmt=
+        Math.floor(
+            (dd-1)/myl
+        );
+
+
+    dd-=
+        mmt*myl;
+
+
+    const a=
+        Math.floor(
+            (dd+423)/512
+        );
+
+
+    let mm=
+        Math.floor(
+            (
+                dd-
+                b*a+
+                c*a*30+
+                29.26
+            )/29.544
+        );
+
+
+    const e=
+        Math.floor(
+            (mm+12)/16
+        );
+
+
+    const f=
+        Math.floor(
+            (mm+11)/16
+        );
+
+
+    const md=
+        dd-
+        Math.floor(
+            29.544*mm-
+            29.26
+        )-
+        b*e+
+        c*f*30;
+
+
+    mm+=
+        f*3-
+        e*4;
+
+
+    let mml=
+        30-
+        (mm%2);
+
+
+    if(mm===3){
+        mml+=b;
+    }
+
+
+    const mp=
+        Math.floor(
+            (md+1)/16
+        )+
+        Math.floor(
+            md/16
+        )+
+        Math.floor(
+            md/mml
+        );
+
+
+    const fd=
+        md-
+        15*
+        Math.floor(
+            md/16
+        );
+
+
+    const wd=
+        (
+            (jdn+2)%7+7
+        )%7;
+
+
+    return{
+
+        my:my,
+        myt:yo.myt,
+        myl:myl,
+        mm:mm,
+        mmt:mmt,
+        mml:mml,
+        md:md,
+        mp:mp,
+        d:fd,
+        wd:wd
+
+    };
+}
+
+
+/* =========================================================
+   MONTH NAME
+========================================================= */
+
+function getMyanmarMonthName(m){
+
+    if(m.mm===0){
+        return "ပထမဝါဆို";
+    }
+
+    if(
+        m.mm===4 &&
+        m.myt>0
+    ){
+
+        return "ဒုတိယဝါဆို";
+
+    }
+
+    return(
+        monthNames[m.mm] ||
+        "မြန်မာလ"
+    );
+}
+
+
+/* =========================================================
+   STRICT GREGORIAN DATE VALIDATION
+========================================================= */
+
+function isValidGregorianDate(
+    year,
+    month,
+    day
+){
+
+    if(
+        !Number.isInteger(year) ||
+        !Number.isInteger(month) ||
+        !Number.isInteger(day)
+    ){
+
+        return false;
+
+    }
+
+    if(
+        month<1 ||
+        month>12
+    ){
+
+        return false;
+
+    }
+
+    const daysInMonth=
+        new Date(
+            year,
+            month,
+            0
+        ).getDate();
+
+    return(
+        day>=1 &&
+        day<=daysInMonth
+    );
+}
+
+
+/* =========================================================
+   VALIDATE ENGLISH DATE
+   + FUTURE DATE BLOCK
+========================================================= */
+
+function validateEnglishDate(){
+
+    const dateVal=
+        document.getElementById(
+            "engDate"
+        ).value;
+
+
+    if(!dateVal){
+        return false;
+    }
+
+
+    const parts=
+        dateVal.split("-");
+
+
+    const year=
+        parseInt(
+            parts[0],
+            10
+        );
+
+    const month=
+        parseInt(
+            parts[1],
+            10
+        );
+
+    const day=
+        parseInt(
+            parts[2],
+            10
+        );
+
+
+    /*
+       အရင်ဆုံး ရက်စွဲမှန်/မမှန် စစ်မယ်
+    */
+
+    if(
+        !isValidGregorianDate(
+            year,
+            month,
+            day
+        )
+    ){
+
+        alert(
+            "မမှန်ကန်သော အင်္ဂလိပ်ရက်စွဲ ဖြစ်နေပါသည်။"
+        );
+
+        document.getElementById(
+            "engDate"
+        ).value="";
+
+        return false;
+
+    }
+
+
+    /*
+       အရေးကြီးတဲ့ Future Date စစ်ဆေးမှု
+    */
+
+    const today=
+        getTodayLocal();
+
+
+    if(dateVal>today){
+
+        alert(
+            "အနာဂတ်ရက်စွဲကို ရွေးချယ်၍ မရပါ။\n\n"+
+            "ယနေ့ရက်စွဲအထိသာ ရွေးချယ်နိုင်ပါသည်။"
+        );
+
+        document.getElementById(
+            "engDate"
+        ).value=today;
+
+        return false;
+
+    }
+
+
+    return true;
+}
+
+
+/* =========================================================
+   ENGLISH -> MYANMAR
+========================================================= */
+
+function convertEngToMm(){
+
+    const dateVal=
+        document.getElementById(
+            "engDate"
+        ).value;
+
+
+    if(!dateVal){
+
+        alert(
+            "အင်္ဂလိပ်ရက်စွဲ ထည့်ပေးပါ။"
+        );
+
+        return;
+    }
+
+
+    /*
+       Today Limit ကို ပြန်သတ်မှတ်
+    */
+
+    setTodayDateLimit();
+
+
+    const today=
+        getTodayLocal();
+
+
+    /*
+       Future Date ကို လုံးဝမတွက်
+    */
+
+    if(dateVal>today){
+
+        alert(
+            "အနာဂတ်ရက်စွဲကို တွက်ချက်၍ မရပါ။\n\n"+
+            "ယနေ့ရက်စွဲအထိသာ ရွေးချယ်နိုင်ပါသည်။"
+        );
+
+        document.getElementById(
+            "engDate"
+        ).value=today;
+
+        return;
+    }
+
+
+    const parts=
+        dateVal.split("-");
+
+
+    const year=
+        parseInt(
+            parts[0],
+            10
+        );
+
+    const month=
+        parseInt(
+            parts[1],
+            10
+        );
+
+    const day=
+        parseInt(
+            parts[2],
+            10
+        );
+
+
+    if(
+        !isValidGregorianDate(
+            year,
+            month,
+            day
+        )
+    ){
+
+        alert(
+            "ဒီရက်စွဲ မမှန်ပါ။\n"+
+            "လအလိုက် ရက်အရေအတွက်ကို မှန်ကန်စွာထည့်ပါ။"
+        );
+
+        return;
+    }
+
+
+    const jd=
+        w2j(
+            year,
+            month,
+            day
+        );
+
+
+    const m=
+        j2m(jd);
+
+
+    const result=
+        document.getElementById(
+            "engResult"
+        );
+
+
+    result.style.display=
+        "block";
+
+
+    const monthName=
+        getMyanmarMonthName(m);
+
+
+    result.innerHTML=`
+
+        <b>မြန်မာရက်စွဲ</b>
+
+        <br>
+
+        • မြန်မာသက္ကရာဇ် :
+        <b>${m.my}</b> ခုနှစ်
+
+        <br>
+
+        • မြန်မာလ :
+        <b>${monthName}</b>
+
+        <br>
+
+        • ရက် :
+        <b>
+        ${moonPhaseNames[m.mp]}
+        ${m.d} ရက်
+        </b>
+
+        <br>
+
+        • နေ့ :
+        <b>${weekDayNames[m.wd]}နေ့</b>
+
+    `;
+}
+
+
+/* =========================================================
+   MYANMAR -> ENGLISH
+========================================================= */
+
+function convertMmToEng(){
+
+    const myear=
+        parseInt(
+            document.getElementById(
+                "mmYear"
+            ).value,
+            10
+        );
+
+
+    const mmonth=
+        parseInt(
+            document.getElementById(
+                "mmMonth"
+            ).value,
+            10
+        );
+
+
+    const mphase=
+        parseInt(
+            document.getElementById(
+                "moonPhase"
+            ).value,
+            10
+        );
+
+
+    const mday=
+        parseInt(
+            document.getElementById(
+                "mmDay"
+            ).value,
+            10
+        );
+
+
+    if(
+        !Number.isInteger(myear) ||
+        myear<1 ||
+        !Number.isInteger(mmonth) ||
+        mmonth<1 ||
+        mmonth>12 ||
+        !Number.isInteger(mphase) ||
+        mphase<0 ||
+        mphase>3 ||
+        !Number.isInteger(mday) ||
+        mday<1 ||
+        mday>15
+    ){
+
+        alert(
+            "မြန်မာရက်စွဲကို မှန်ကန်စွာထည့်ပါ။"
+        );
+
+        return;
+    }
+
+
+    const jd=
+        myanmarToJdn(
+            myear,
+            mmonth,
+            mphase,
+            mday
+        );
+
+
+    if(!jd){
+
+        alert(
+            "ဤမြန်မာရက်စွဲကို တွက်ချက်၍မရပါ။"
+        );
+
+        return;
+    }
+
+
+    const g=
+        j2w(jd);
+
+
+    if(
+        !isValidGregorianDate(
+            g.y,
+            g.m,
+            g.d
+        )
+    ){
+
+        alert(
+            "တွက်ချက်ထားသော အင်္ဂလိပ်ရက်စွဲ မမှန်ကန်ပါ။"
+        );
+
+        return;
+    }
+
+
+    /*
+       Myanmar → English ကလည်း
+       Future Date ဖြစ်မဖြစ် စစ်မယ်
+    */
+
+    const calculatedDate=
+        String(g.y).padStart(4,"0")+
+        "-"+
+        String(g.m).padStart(2,"0")+
+        "-"+
+        String(g.d).padStart(2,"0");
+
+
+    const today=
+        getTodayLocal();
+
+
+    if(calculatedDate>today){
+
+        alert(
+            "တွက်ချက်ထားသောရက်စွဲသည် အနာဂတ်ရက်စွဲ ဖြစ်နေပါသည်။\n\n"+
+            "ယနေ့ရက်စွဲအထိသာ ပြသနိုင်ပါသည်။"
+        );
+
+        return;
+    }
+
+
+    const result=
+        document.getElementById(
+            "mmResult"
+        );
+
+
+    result.style.display=
+        "block";
+
+
+    const formattedMonth=
+        String(g.m)
+        .padStart(2,"0");
+
+
+    const formattedDay=
+        String(g.d)
+        .padStart(2,"0");
+
+
+    result.innerHTML=`
+
+        <b>အင်္ဂလိပ်ရက်စွဲ</b>
+
+        <br>
+
+        • Gregorian Date :
+        <b>
+            ${g.y}-${formattedMonth}-${formattedDay}
+        </b>
+
+        <br>
+
+        • ခုနှစ် :
+        <b>${g.y}</b>
+
+        <br>
+
+        • လ :
+        <b>${formattedMonth}</b>
+
+        <br>
+
+        • ရက် :
+        <b>${formattedDay}</b>
+
+    `;
+}
+
+
+/* =========================================================
+   MYANMAR DATE -> JDN
+========================================================= */
+
+function myanmarToJdn(
+    my,
+    mm,
+    mp,
+    fd
+){
+
+    const yo=
+        chk_my(my);
+
+
+    if(!yo){
+        return null;
+    }
+
+
+    const b=
+        Math.floor(
+            yo.myt/2
+        );
+
+
+    const c=
+        yo.myt===0 ? 1 : 0;
+
+
+    let mml=
+        30-
+        (mm%2);
+
+
+    if(mm===3){
+        mml+=b;
+    }
+
+
+    let md;
+
+
+    if(mp===0){
+
+        if(
+            fd<1 ||
+            fd>15
+        ){
+
+            return null;
+
+        }
+
+        md=fd;
+
+    }
+
+    else if(mp===1){
+
+        md=15;
+
+    }
+
+    else if(mp===2){
+
+        if(
+            fd<1 ||
+            fd>15
+        ){
+
+            return null;
+
+        }
+
+        md=15+fd;
+
+    }
+
+    else if(mp===3){
+
+        md=mml;
+
+    }
+
+    else{
+
+        return null;
+
+    }
+
+
+    let monthAdjusted=
+        mm+
+        4-
+        Math.floor(
+            (mm+15)/16
+        )*4+
+        Math.floor(
+            (mm+12)/16
+        );
+
+
+    let dd=
+        md+
+        Math.floor(
+            29.544*
+            monthAdjusted-
+            29.26
+        )-
+        c*
+        Math.floor(
+            (monthAdjusted+11)/16
+        )*
+        30+
+        b*
+        Math.floor(
+            (monthAdjusted+12)/16
+        );
+
+
+    return(
+        dd+
+        yo.tg1-
+        1
+    );
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        /*
+           ⭐ အရေးကြီး
+           Page စဖွင့်တာနဲ့ Calendar
+           max = ယနေ့ Date
+        */
+
+        setTodayDateLimit();
+
+
+        /*
+           Default Date က 2004-12-21 ဖြစ်တဲ့အတွက်
+           အဲဒီ Date ကိုပဲ မြန်မာရက်စွဲအဖြစ် တွက်ပြမယ်
+        */
+
+        convertEngToMm();
+
+    }
+);
+
+</script>
+
+
+</body>
+</html>

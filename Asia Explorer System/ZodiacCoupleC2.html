@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Zodiac Couple Compatibility</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   ROOT
+========================= */
+
+:root{
+    --primary:#8b5cf6;
+    --primary-dark:#6d3de0;
+    --pink:#ec4899;
+    --pink-soft:#fff0f7;
+    --purple-soft:#f3efff;
+    --blue-soft:#eef7ff;
+    --green:#10b981;
+    --text:#28243b;
+    --muted:#777287;
+    --border:#e8e3f3;
+    --white:#ffffff;
+}
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"Padauk","Plus Jakarta Sans",sans-serif;
+    color:var(--text);
+    min-height:100vh;
+
+    background:
+        radial-gradient(circle at top left,rgba(236,72,153,.15),transparent 28%),
+        radial-gradient(circle at top right,rgba(139,92,246,.16),transparent 30%),
+        radial-gradient(circle at bottom center,rgba(59,130,246,.10),transparent 30%),
+        linear-gradient(135deg,#fff8fc,#f8f6ff,#f4f9ff);
+
+    padding:0 15px 35px;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar{
+    position:relative;
+    z-index:10;
+
+    width:calc(100% + 30px);
+    margin-left:-15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    gap:12px;
+
+    padding:12px clamp(16px,4vw,60px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6 0%,
+            #a855f7 40%,
+            #d946ef 70%,
+            #ec4899 100%
+        );
+
+    border-bottom:1px solid rgba(255,255,255,.25);
+
+    box-shadow:
+        0 8px 28px rgba(139,92,246,.25);
+
+    backdrop-filter:blur(14px);
+}
+
+/* Navbar Links */
+
+.navbar a,
+.navbar button{
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+
+    text-decoration:none;
+    cursor:pointer;
+
+    border-radius:12px;
+
+    padding:10px 19px;
+
+    transition:.25s;
+}
+
+/* Zodiac Link */
+
+.navbar a{
+    color:#ffffff;
+
+    background:rgba(255,255,255,.16);
+
+    border:1px solid rgba(255,255,255,.35);
+
+    box-shadow:
+        0 4px 12px rgba(60,20,100,.12);
+
+    backdrop-filter:blur(8px);
+}
+
+.navbar a:hover{
+    background:rgba(255,255,255,.28);
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(60,20,100,.18);
+}
+
+/* Recalculate Button */
+
+.navbar button{
+    color:#7c3aed;
+
+    border:1px solid rgba(255,255,255,.8);
+
+    background:#ffffff;
+
+    box-shadow:
+        0 5px 15px rgba(60,20,100,.16);
+}
+
+.navbar button:hover{
+    transform:translateY(-2px);
+
+    background:#fff4fa;
+
+    color:#ec4899;
+
+    box-shadow:
+        0 10px 22px rgba(60,20,100,.22);
+}
+
+.navbar button:active{
+    transform:scale(.97);
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container{
+    width:min(1100px,100%);
+    margin:30px auto 0;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.logo{
+    width:78px;
+    height:78px;
+    margin:0 auto 18px;
+    border-radius:26px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:38px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #ec4899
+        );
+
+    box-shadow:
+        0 18px 40px rgba(139,92,246,.25);
+}
+
+header h1{
+    font-family:"Plus Jakarta Sans","Padauk",sans-serif;
+    font-size:clamp(28px,5vw,44px);
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+header p{
+    max-width:700px;
+    margin:auto;
+
+    color:var(--muted);
+
+    line-height:1.9;
+    font-size:15px;
+}
+
+/* =========================
+   MAIN CARD
+========================= */
+
+.main-card{
+    background:rgba(255,255,255,.88);
+
+    border:
+        1px solid rgba(255,255,255,.95);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:32px;
+
+    padding:32px;
+
+    box-shadow:
+        0 20px 60px rgba(70,50,120,.10);
+}
+
+/* =========================
+   PEOPLE GRID
+========================= */
+
+.people-grid{
+    display:grid;
+
+    grid-template-columns:
+        1fr auto 1fr;
+
+    gap:25px;
+
+    align-items:center;
+}
+
+.person-card{
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfaff
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius:26px;
+
+    padding:28px;
+
+    transition:.3s;
+}
+
+.person-card:hover{
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 15px 35px rgba(100,80,150,.08);
+}
+
+/* =========================
+   PERSON TITLE
+========================= */
+
+.person-title{
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    margin-bottom:24px;
+}
+
+.person-icon{
+    width:54px;
+    height:54px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:27px;
+
+    background:
+        var(--purple-soft);
+}
+
+.person-title h2{
+    font-size:21px;
+
+    margin-bottom:2px;
+}
+
+.person-title p{
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.field label{
+    display:block;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+}
+
+input{
+    width:100%;
+
+    border:
+        1.5px solid var(--border);
+
+    border-radius:15px;
+
+    padding:14px 15px;
+
+    font-family:inherit;
+
+    font-size:15px;
+
+    background:white;
+
+    outline:none;
+
+    transition:.25s;
+}
+
+input:focus{
+    border-color:
+        var(--primary);
+
+    box-shadow:
+        0 0 0 4px rgba(139,92,246,.10);
+}
+
+/* =========================
+   ZODIAC PREVIEW
+========================= */
+
+.zodiac-preview{
+    margin-top:20px;
+
+    min-height:130px;
+
+    padding:20px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8f5ff,
+            #fff8fc
+        );
+
+    border:
+        1px dashed #d8c9ff;
+
+    text-align:center;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:.3s;
+}
+
+.zodiac-preview.empty{
+    color:var(--muted);
+}
+
+.preview-label{
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--muted);
+
+    margin-bottom:6px;
+}
+
+.preview-emoji{
+    font-size:45px;
+
+    line-height:1.1;
+}
+
+.preview-sign{
+    font-family:
+        "Plus Jakarta Sans",
+        "Padauk",
+        sans-serif;
+
+    font-size:23px;
+
+    font-weight:800;
+
+    margin-top:5px;
+}
+
+.preview-element{
+    margin-top:6px;
+
+    padding:5px 12px;
+
+    border-radius:50px;
+
+    background:white;
+
+    border:
+        1px solid var(--border);
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:
+        var(--primary);
+}
+
+/* =========================
+   HEART
+========================= */
+
+.heart-middle{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:45px;
+
+    animation:
+        heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat{
+
+    0%,
+    100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.18);
+    }
+
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.calculate-btn{
+    width:100%;
+
+    margin-top:30px;
+
+    padding:17px;
+
+    border:none;
+
+    border-radius:17px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-family:inherit;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #ec4899
+        );
+
+    box-shadow:
+        0 14px 30px rgba(139,92,246,.24);
+
+    transition:.25s;
+}
+
+.calculate-btn:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 18px 35px rgba(139,92,246,.30);
+}
+
+.calculate-btn:active{
+    transform:scale(.98);
+}
+
+/* =========================
+   RESULT SECTION
+========================= */
+
+.result-section{
+    display:none;
+
+    margin-top:30px;
+}
+
+.result-card{
+    background:
+        rgba(255,255,255,.9);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:32px;
+
+    padding:32px;
+
+    box-shadow:
+        0 20px 60px rgba(70,50,120,.10);
+}
+
+/* =========================
+   RESULT TOP
+========================= */
+
+.result-top{
+    text-align:center;
+}
+
+.result-zodiac{
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:22px;
+
+    flex-wrap:wrap;
+}
+
+.zodiac-box{
+    min-width:190px;
+
+    padding:22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #faf8ff
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius:24px;
+}
+
+.zodiac-emoji{
+    font-size:52px;
+
+    margin-bottom:5px;
+}
+
+.zodiac-name{
+    font-family:
+        "Plus Jakarta Sans",
+        "Padauk",
+        sans-serif;
+
+    font-size:21px;
+
+    font-weight:800;
+}
+
+.zodiac-date{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:5px;
+}
+
+.result-heart{
+    font-size:48px;
+
+    animation:
+        heartbeat 1.5s infinite;
+}
+
+/* =========================
+   SCORE
+========================= */
+
+.score-circle{
+    width:155px;
+    height:155px;
+
+    margin:28px auto 17px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #ec4899
+        );
+
+    box-shadow:
+        0 18px 45px rgba(139,92,246,.25);
+}
+
+.score{
+    font-family:
+        "Plus Jakarta Sans",
+        sans-serif;
+
+    font-size:43px;
+
+    font-weight:800;
+}
+
+.score-circle span{
+    font-size:13px;
+}
+
+.compatibility-title{
+    font-size:27px;
+
+    font-weight:800;
+
+    margin-bottom:6px;
+}
+
+.compatibility-desc{
+    color:var(--muted);
+
+    line-height:1.8;
+}
+
+/* =========================
+   ELEMENT BADGES
+========================= */
+
+.element-info{
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin-top:22px;
+}
+
+.element-badge{
+    padding:8px 14px;
+
+    border-radius:50px;
+
+    background:
+        var(--purple-soft);
+
+    color:
+        var(--primary-dark);
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.details-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:18px;
+
+    margin-top:32px;
+}
+
+.detail-box{
+    padding:22px;
+
+    border-radius:22px;
+
+    background:#fff;
+
+    border:
+        1px solid var(--border);
+}
+
+.detail-box.full{
+    grid-column:1/-1;
+}
+
+.detail-title{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:17px;
+
+    font-weight:800;
+
+    margin-bottom:10px;
+}
+
+.detail-box p{
+    color:#615c70;
+
+    font-size:14px;
+
+    line-height:1.95;
+}
+
+/* =========================
+   RESET
+========================= */
+
+.reset-btn{
+    display:block;
+
+    margin:30px auto 0;
+
+    padding:13px 24px;
+
+    border-radius:15px;
+
+    border:
+        1px solid var(--border);
+
+    background:white;
+
+    color:var(--text);
+
+    font-family:inherit;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.reset-btn:hover{
+    background:
+        var(--purple-soft);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:850px){
+
+    .people-grid{
+        grid-template-columns:1fr;
+    }
+
+    .heart-middle{
+        transform:rotate(90deg);
+
+        height:40px;
+    }
+
+}
+
+@media(max-width:650px){
+
+    body{
+        padding:0 12px 20px;
+    }
+
+    .navbar{
+        width:calc(100% + 24px);
+        margin-left:-12px;
+
+        padding:9px 12px;
+    }
+
+    .navbar a,
+    .navbar button{
+        padding:8px 13px;
+        font-size:13px;
+    }
+
+    .container{
+        margin-top:22px;
+    }
+
+    .main-card,
+    .result-card{
+        padding:20px;
+
+        border-radius:24px;
+    }
+
+    .person-card{
+        padding:22px;
+    }
+
+    .details-grid{
+        grid-template-columns:1fr;
+    }
+
+    .zodiac-box{
+        width:100%;
+    }
+
+    .result-heart{
+        transform:rotate(90deg);
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+
+<nav class="navbar">
+    
+    <a href="ChineseHome2.html">
+         Fortune
+    </a>
+
+    <a href="ZodiacChinese2.html">
+        ✨ Zodiac
+    </a>
+
+    <button
+        type="button"
+        id="navRecalculate"
+    >
+        🔄 ပြန်တွက်မည်
+    </button>
+
+</nav>
+
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+            💕
+        </div>
+
+        <h1>
+            Zodiac Couple Compatibility
+        </h1>
+
+        <p>
+            သင်တို့နှစ်ယောက်ရဲ့ မွေးသက္ကရာဇ်ကို ထည့်လိုက်ပါ။
+            မွေးသက္ကရာဇ်အပေါ်အခြေခံပြီး Zodiac Sign ကို
+            အလိုအလျောက်တွက်ချက်ပေးပါမယ်။
+        </p>
+
+    </header>
+
+
+    <!-- MAIN INPUT -->
+
+    <div class="main-card">
+
+        <div class="people-grid">
+
+
+            <!-- PERSON 1 -->
+
+            <div class="person-card">
+
+                <div class="person-title">
+
+                    <div class="person-icon">
+                        👤
+                    </div>
+
+                    <div>
+                        <h2>သင်</h2>
+
+                        <p>
+                            Your Birth Information
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        📅 သင့်မွေးသက္ကရာဇ်
+                    </label>
+
+                    <input
+                        type="date"
+                        id="person1Date"
+                    >
+
+                </div>
+
+
+                <div
+                    class="zodiac-preview empty"
+                    id="preview1"
+                >
+
+                    <div class="preview-label">
+                        ✨ သင်၏ Zodiac Sign
+                    </div>
+
+                    <div id="previewContent1">
+                        
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HEART -->
+
+            <div class="heart-middle">
+                💕
+            </div>
+
+
+            <!-- PERSON 2 -->
+
+            <div class="person-card">
+
+                <div class="person-title">
+
+                    <div class="person-icon">
+                        ❤️
+                    </div>
+
+                    <div>
+                        <h2>Partner</h2>
+
+                        <p>
+                            ချစ်သူ၏ Birth Information
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        📅 Partner ၏ မွေးသက္ကရာဇ်
+                    </label>
+
+                    <input
+                        type="date"
+                        id="person2Date"
+                    >
+
+                </div>
+
+
+                <div
+                    class="zodiac-preview empty"
+                    id="preview2"
+                >
+
+                    <div class="preview-label">
+                        ✨ Partner ၏ Zodiac Sign
+                    </div>
+
+                    <div id="previewContent2">
+                        
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="calculate-btn"
+            onclick="calculateCompatibility()"
+        >
+            💕 Compatibility တွက်မည်
+        </button>
+
+    </div>
+
+
+
+    <!-- RESULT -->
+
+    <section
+        class="result-section"
+        id="resultSection"
+    >
+
+        <div class="result-card">
+
+
+            <div class="result-top">
+
+
+                <div class="result-zodiac">
+
+
+                    <div class="zodiac-box">
+
+                        <div
+                            class="zodiac-emoji"
+                            id="emoji1"
+                        >
+                            ♈
+                        </div>
+
+                        <div
+                            class="zodiac-name"
+                            id="resultSign1"
+                        >
+                            Aries
+                        </div>
+
+                        <div
+                            class="zodiac-date"
+                            id="birthDate1"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="result-heart">
+                        💕
+                    </div>
+
+
+                    <div class="zodiac-box">
+
+                        <div
+                            class="zodiac-emoji"
+                            id="emoji2"
+                        >
+                            ♌
+                        </div>
+
+                        <div
+                            class="zodiac-name"
+                            id="resultSign2"
+                        >
+                            Leo
+                        </div>
+
+                        <div
+                            class="zodiac-date"
+                            id="birthDate2"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="element-info">
+
+                    <div
+                        class="element-badge"
+                        id="element1"
+                    ></div>
+
+                    <div
+                        class="element-badge"
+                        id="element2"
+                    ></div>
+
+                </div>
+
+
+                <div class="score-circle">
+
+                    <div
+                        class="score"
+                        id="score"
+                    >
+                        0%
+                    </div>
+
+                    <span>
+                        Compatibility
+                    </span>
+
+                </div>
+
+
+                <h2
+                    class="compatibility-title"
+                    id="compatibilityTitle"
+                >
+                    Great Match ❤️
+                </h2>
+
+
+                <p
+                    class="compatibility-desc"
+                    id="compatibilityDesc"
+                ></p>
+
+
+            </div>
+
+
+
+            <!-- DETAILS -->
+
+            <div class="details-grid">
+
+
+                <div class="detail-box">
+
+                    <div class="detail-title">
+                        ❤️ Love Compatibility
+                    </div>
+
+                    <p id="loveText"></p>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-title">
+                        💬 Communication
+                    </div>
+
+                    <p id="communicationText"></p>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-title">
+                        🤝 Relationship Strength
+                    </div>
+
+                    <p id="strengthText"></p>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-title">
+                        ⚡ Possible Challenges
+                    </div>
+
+                    <p id="challengeText"></p>
+
+                </div>
+
+
+                <div class="detail-box full">
+
+                    <div class="detail-title">
+                        🌟 Couple Summary
+                    </div>
+
+                    <p id="summaryText"></p>
+
+                </div>
+
+            </div>
+
+
+           
+
+        </div>
+
+    </section>
+
+
+   
+
+</div>
+
+
+<script>
+
+/* =================================
+   ZODIAC DATA
+================================= */
+
+const zodiacData = {
+
+    Aries:{
+        emoji:"♈",
+        element:"🔥 Fire"
+    },
+
+    Taurus:{
+        emoji:"♉",
+        element:"🌍 Earth"
+    },
+
+    Gemini:{
+        emoji:"♊",
+        element:"💨 Air"
+    },
+
+    Cancer:{
+        emoji:"♋",
+        element:"💧 Water"
+    },
+
+    Leo:{
+        emoji:"♌",
+        element:"🔥 Fire"
+    },
+
+    Virgo:{
+        emoji:"♍",
+        element:"🌍 Earth"
+    },
+
+    Libra:{
+        emoji:"♎",
+        element:"💨 Air"
+    },
+
+    Scorpio:{
+        emoji:"♏",
+        element:"💧 Water"
+    },
+
+    Sagittarius:{
+        emoji:"♐",
+        element:"🔥 Fire"
+    },
+
+    Capricorn:{
+        emoji:"♑",
+        element:"🌍 Earth"
+    },
+
+    Aquarius:{
+        emoji:"♒",
+        element:"💨 Air"
+    },
+
+    Pisces:{
+        emoji:"♓",
+        element:"💧 Water"
+    }
+
+};
+
+
+/* =================================
+   DATE → ZODIAC SIGN
+================================= */
+
+function getZodiacSign(dateString){
+
+    const date = new Date(dateString);
+
+    const month = date.getUTCMonth() + 1;
+    const day = date.getUTCDate();
+
+    if(
+        (month === 3 && day >= 21) ||
+        (month === 4 && day <= 19)
+    ){
+        return "Aries";
+    }
+
+    if(
+        (month === 4 && day >= 20) ||
+        (month === 5 && day <= 20)
+    ){
+        return "Taurus";
+    }
+
+    if(
+        (month === 5 && day >= 21) ||
+        (month === 6 && day <= 20)
+    ){
+        return "Gemini";
+    }
+
+    if(
+        (month === 6 && day >= 21) ||
+        (month === 7 && day <= 22)
+    ){
+        return "Cancer";
+    }
+
+    if(
+        (month === 7 && day >= 23) ||
+        (month === 8 && day <= 22)
+    ){
+        return "Leo";
+    }
+
+    if(
+        (month === 8 && day >= 23) ||
+        (month === 9 && day <= 22)
+    ){
+        return "Virgo";
+    }
+
+    if(
+        (month === 9 && day >= 23) ||
+        (month === 10 && day <= 22)
+    ){
+        return "Libra";
+    }
+
+    if(
+        (month === 10 && day >= 23) ||
+        (month === 11 && day <= 21)
+    ){
+        return "Scorpio";
+    }
+
+    if(
+        (month === 11 && day >= 22) ||
+        (month === 12 && day <= 21)
+    ){
+        return "Sagittarius";
+    }
+
+    if(
+        (month === 12 && day >= 22) ||
+        (month === 1 && day <= 19)
+    ){
+        return "Capricorn";
+    }
+
+    if(
+        (month === 1 && day >= 20) ||
+        (month === 2 && day <= 18)
+    ){
+        return "Aquarius";
+    }
+
+    return "Pisces";
+
+}
+
+
+/* =================================
+   AUTO UPDATE ZODIAC PREVIEW
+================================= */
+
+function updateZodiacPreview(person){
+
+    const input = document.getElementById(
+        person === 1
+            ? "person1Date"
+            : "person2Date"
+    );
+
+    const preview = document.getElementById(
+        person === 1
+            ? "preview1"
+            : "preview2"
+    );
+
+    const content = document.getElementById(
+        person === 1
+            ? "previewContent1"
+            : "previewContent2"
+    );
+
+    const dateValue = input.value;
+
+    if(!dateValue){
+
+        preview.classList.add("empty");
+
+        content.textContent =
+            "မွေးသက္ကရာဇ်ထည့်ပါ";
+
+        return;
+    }
+
+    const sign =
+        getZodiacSign(dateValue);
+
+    const zodiac =
+        zodiacData[sign];
+
+    preview.classList.remove("empty");
+
+    content.innerHTML = `
+
+        <div class="preview-emoji">
+            ${zodiac.emoji}
+        </div>
+
+        <div class="preview-sign">
+            ${sign}
+        </div>
+
+        <div class="preview-element">
+            ${zodiac.element}
+        </div>
+
+    `;
+
+}
+
+
+/* =================================
+   DATE INPUT EVENTS
+================================= */
+
+document
+.getElementById("person1Date")
+.addEventListener("change",()=>{
+
+    updateZodiacPreview(1);
+
+});
+
+document
+.getElementById("person2Date")
+.addEventListener("change",()=>{
+
+    updateZodiacPreview(2);
+
+});
+
+
+/* =================================
+   COMPATIBILITY SCORES
+================================= */
+
+const compatibilityScores = {
+
+    Aries:{
+        Aries:78,Taurus:58,Gemini:88,Cancer:55,
+        Leo:95,Virgo:60,Libra:85,Scorpio:68,
+        Sagittarius:92,Capricorn:50,Aquarius:90,Pisces:62
+    },
+
+    Taurus:{
+        Aries:58,Taurus:82,Gemini:60,Cancer:92,
+        Leo:65,Virgo:95,Libra:70,Scorpio:90,
+        Sagittarius:55,Capricorn:94,Aquarius:50,Pisces:88
+    },
+
+    Gemini:{
+        Aries:88,Taurus:60,Gemini:82,Cancer:58,
+        Leo:90,Virgo:70,Libra:95,Scorpio:62,
+        Sagittarius:92,Capricorn:55,Aquarius:94,Pisces:65
+    },
+
+    Cancer:{
+        Aries:55,Taurus:92,Gemini:58,Cancer:85,
+        Leo:68,Virgo:88,Libra:62,Scorpio:96,
+        Sagittarius:58,Capricorn:90,Aquarius:52,Pisces:95
+    },
+
+    Leo:{
+        Aries:95,Taurus:65,Gemini:90,Cancer:68,
+        Leo:85,Virgo:62,Libra:92,Scorpio:70,
+        Sagittarius:96,Capricorn:60,Aquarius:82,Pisces:65
+    },
+
+    Virgo:{
+        Aries:60,Taurus:95,Gemini:70,Cancer:88,
+        Leo:62,Virgo:84,Libra:65,Scorpio:92,
+        Sagittarius:58,Capricorn:96,Aquarius:60,Pisces:90
+    },
+
+    Libra:{
+        Aries:85,Taurus:70,Gemini:95,Cancer:62,
+        Leo:92,Virgo:65,Libra:85,Scorpio:72,
+        Sagittarius:90,Capricorn:58,Aquarius:96,Pisces:70
+    },
+
+    Scorpio:{
+        Aries:68,Taurus:90,Gemini:62,Cancer:96,
+        Leo:70,Virgo:92,Libra:72,Scorpio:88,
+        Sagittarius:65,Capricorn:90,Aquarius:55,Pisces:97
+    },
+
+    Sagittarius:{
+        Aries:92,Taurus:55,Gemini:92,Cancer:58,
+        Leo:96,Virgo:58,Libra:90,Scorpio:65,
+        Sagittarius:84,Capricorn:52,Aquarius:94,Pisces:70
+    },
+
+    Capricorn:{
+        Aries:50,Taurus:94,Gemini:55,Cancer:90,
+        Leo:60,Virgo:96,Libra:58,Scorpio:90,
+        Sagittarius:52,Capricorn:68,Aquarius:68,Pisces:88
+    },
+
+    Aquarius:{
+        Aries:90,Taurus:50,Gemini:94,Cancer:52,
+        Leo:82,Virgo:60,Libra:96,Scorpio:55,
+        Sagittarius:94,Capricorn:68,Aquarius:86,Pisces:60
+    },
+
+    Pisces:{
+        Aries:62,Taurus:88,Gemini:65,Cancer:95,
+        Leo:65,Virgo:90,Libra:70,Scorpio:97,
+        Sagittarius:70,Capricorn:88,Aquarius:60,Pisces:90
+    }
+
+};
+
+
+/* =================================
+   ELEMENT FUNCTION
+================================= */
+
+function getElement(sign){
+
+    const element =
+        zodiacData[sign].element;
+
+    if(element.includes("Fire")){
+        return "Fire";
+    }
+
+    if(element.includes("Earth")){
+        return "Earth";
+    }
+
+    if(element.includes("Air")){
+        return "Air";
+    }
+
+    return "Water";
+
+}
+
+
+/* =================================
+   COMPATIBILITY LEVEL
+================================= */
+
+function getCompatibilityText(score){
+
+    if(score >= 90){
+
+        return{
+            title:"Excellent Match 💖",
+            description:
+            "သင်တို့နှစ်ယောက်ရဲ့ Zodiac Energy တွေဟာ အပြန်အလှန်ကောင်းမွန်စွာ ပေါင်းစပ်နိုင်တဲ့ အလားအလာရှိပါတယ်။"
+        };
+
+    }
+
+    if(score >= 80){
+
+        return{
+            title:"Great Match ❤️",
+            description:
+            "သင်တို့နှစ်ယောက်မှာ ကောင်းမွန်တဲ့ နားလည်မှုနဲ့ relationship တည်ဆောက်နိုင်တဲ့ အလားအလာရှိပါတယ်။"
+        };
+
+    }
+
+    if(score >= 70){
+
+        return{
+            title:"Good Potential 💕",
+            description:
+            "ကွဲပြားမှုအချို့ရှိနိုင်ပေမယ့် အပြန်အလှန်နားလည်မှုရှိရင် ကောင်းမွန်တဲ့ relationship ဖြစ်လာနိုင်ပါတယ်။"
+        };
+
+    }
+
+    if(score >= 60){
+
+        return{
+            title:"Needs Understanding 🤝",
+            description:
+            "ဆက်သွယ်ရေးနဲ့ အပြန်အလှန်နားလည်မှုကို ပိုပြီးဂရုစိုက်ရင် relationship ကို ပိုကောင်းလာစေနိုင်ပါတယ်။"
+        };
+
+    }
+
+    return{
+        title:"Different but Possible 🌱",
+        description:
+        "Zodiac Energy မတူညီမှုတွေရှိနိုင်ပေမယ့် လေးစားမှုနဲ့ ကြိုးစားမှုက relationship တစ်ခုကို ကောင်းမွန်စေနိုင်ပါတယ်။"
+    };
+
+}
+
+
+/* =================================
+   RELATIONSHIP TEXT
+================================= */
+
+function generateRelationshipText(
+    sign1,
+    sign2,
+    score
+){
+
+    let loveText;
+    let communicationText;
+    let strengthText;
+    let challengeText;
+    let summaryText;
+
+    if(score >= 90){
+
+        loveText =
+        `${sign1} နဲ့ ${sign2} တို့ကြားမှာ အပြန်အလှန်ဆွဲဆောင်မှုနဲ့ နားလည်မှုကောင်းမွန်နိုင်ပါတယ်။`;
+
+        communicationText =
+        `နှစ်ယောက်စလုံး ပွင့်ပွင့်လင်းလင်း ဆက်သွယ်နိုင်ရင် relationship ကို ပိုမိုခိုင်မာစေနိုင်ပါတယ်။`;
+
+        strengthText =
+        `တစ်ယောက်ရဲ့အားသာချက်ကို တစ်ယောက်က ဖြည့်ဆည်းပေးနိုင်တဲ့ အလားအလာကောင်းရှိပါတယ်။`;
+
+        challengeText =
+        `Relationship ကောင်းနေသော်လည်း အပြန်အလှန်လေးစားမှုနဲ့ ကိုယ်ပိုင်နေရာပေးခြင်းကို ထိန်းသိမ်းဖို့လိုပါတယ်။`;
+
+    }
+
+    else if(score >= 75){
+
+        loveText =
+        `${sign1} နဲ့ ${sign2} တို့မှာ အချစ်ရေးကို တဖြည်းဖြည်းခိုင်မာအောင် တည်ဆောက်နိုင်တဲ့ အလားအလာရှိပါတယ်။`;
+
+        communicationText =
+        `စိတ်ထဲရှိတာကို ပွင့်ပွင့်လင်းလင်းပြောဆိုနိုင်ရင် misunderstanding တွေကို လျော့နည်းစေနိုင်ပါတယ်။`;
+
+        strengthText =
+        `တစ်ယောက်ကိုတစ်ယောက် အားပေးပြီး အတူတကွတိုးတက်နိုင်ပါတယ်။`;
+
+        challengeText =
+        `အလေ့အကျင့်နဲ့ အတွေးအမြင်ကွာခြားမှုတွေကို နားလည်ဖို့လိုနိုင်ပါတယ်။`;
+
+    }
+
+    else{
+
+        loveText =
+        `${sign1} နဲ့ ${sign2} တို့ကြားမှာ relationship တည်ဆောက်ဖို့ အချိန်နဲ့ နားလည်မှု ပိုလိုနိုင်ပါတယ်။`;
+
+        communicationText =
+        `တစ်ယောက်ရဲ့ ပြောဆိုဆက်ဆံပုံကို တစ်ယောက်က နားလည်ဖို့ အရေးကြီးပါတယ်။`;
+
+        strengthText =
+        `ကွဲပြားတဲ့ personality တွေကြောင့် အသစ်အဆန်းတွေကို တစ်ယောက်နဲ့တစ်ယောက် သင်ယူနိုင်ပါတယ်။`;
+
+        challengeText =
+        `အမြင်မတူမှုတွေဖြစ်လာတဲ့အခါ အနိုင်ယူဖို့ထက် နားလည်ဖို့ ကြိုးစားခြင်းက ပိုအရေးကြီးပါတယ်။`;
+
+    }
+
+    const element1 =
+        getElement(sign1);
+
+    const element2 =
+        getElement(sign2);
+
+    if(element1 === element2){
+
+        summaryText =
+        `${sign1} နဲ့ ${sign2} တို့မှာ ${element1} Element Energy တူညီမှုရှိတာကြောင့် အချို့သော စိတ်နေသဘောထားတွေကို နားလည်လွယ်နိုင်ပါတယ်။ ဒါပေမယ့် Zodiac Sign က relationship ရဲ့ အစိတ်အပိုင်းတစ်ခုသာဖြစ်ပြီး အပြန်အလှန်နားလည်မှုက ပိုအရေးကြီးပါတယ်။`;
+
+    }
+
+    else{
+
+        summaryText =
+        `${sign1} နဲ့ ${sign2} တို့ရဲ့ Zodiac Energy မတူညီမှုတွေက relationship မှာ ကွဲပြားတဲ့ အမြင်တွေ ဖြစ်စေနိုင်ပါတယ်။ သို့သော် ဆက်သွယ်ရေးကောင်းမွန်ခြင်း၊ ယုံကြည်မှုနဲ့ အပြန်အလှန်လေးစားမှုရှိရင် ကောင်းမွန်တဲ့ relationship တစ်ခုကို တည်ဆောက်နိုင်ပါတယ်။`;
+
+    }
+
+    return{
+        loveText,
+        communicationText,
+        strengthText,
+        challengeText,
+        summaryText
+    };
+
+}
+
+
+/* =================================
+   CALCULATE
+================================= */
+
+function calculateCompatibility(){
+
+    const date1 =
+        document.getElementById(
+            "person1Date"
+        ).value;
+
+    const date2 =
+        document.getElementById(
+            "person2Date"
+        ).value;
+
+    if(!date1 || !date2){
+
+        alert(
+            "ကျေးဇူးပြု၍ သင်နှင့် Partner နှစ်ယောက်စလုံး၏ မွေးသက္ကရာဇ်ကို ထည့်ပါ။"
+        );
+
+        return;
+    }
+
+    const sign1 =
+        getZodiacSign(date1);
+
+    const sign2 =
+        getZodiacSign(date2);
+
+    const score =
+        compatibilityScores[sign1][sign2];
+
+    const compatibility =
+        getCompatibilityText(score);
+
+    const relationship =
+        generateRelationshipText(
+            sign1,
+            sign2,
+            score
+        );
+
+    document.getElementById(
+        "emoji1"
+    ).textContent =
+        zodiacData[sign1].emoji;
+
+    document.getElementById(
+        "emoji2"
+    ).textContent =
+        zodiacData[sign2].emoji;
+
+    document.getElementById(
+        "resultSign1"
+    ).textContent =
+        sign1;
+
+    document.getElementById(
+        "resultSign2"
+    ).textContent =
+        sign2;
+
+    document.getElementById(
+        "birthDate1"
+    ).textContent =
+        formatDate(date1);
+
+    document.getElementById(
+        "birthDate2"
+    ).textContent =
+        formatDate(date2);
+
+    document.getElementById(
+        "element1"
+    ).textContent =
+        zodiacData[sign1].element;
+
+    document.getElementById(
+        "element2"
+    ).textContent =
+        zodiacData[sign2].element;
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        score + "%";
+
+    document.getElementById(
+        "compatibilityTitle"
+    ).textContent =
+        compatibility.title;
+
+    document.getElementById(
+        "compatibilityDesc"
+    ).textContent =
+        compatibility.description;
+
+    document.getElementById(
+        "loveText"
+    ).textContent =
+        relationship.loveText;
+
+    document.getElementById(
+        "communicationText"
+    ).textContent =
+        relationship.communicationText;
+
+    document.getElementById(
+        "strengthText"
+    ).textContent =
+        relationship.strengthText;
+
+    document.getElementById(
+        "challengeText"
+    ).textContent =
+        relationship.challengeText;
+
+    document.getElementById(
+        "summaryText"
+    ).textContent =
+        relationship.summaryText;
+
+    const resultSection =
+        document.getElementById(
+            "resultSection"
+        );
+
+    resultSection.style.display =
+        "block";
+
+    setTimeout(()=>{
+
+        resultSection.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    },100);
+
+}
+
+
+/* =================================
+   DATE FORMAT
+================================= */
+
+function formatDate(dateString){
+
+    const [year,month,day] =
+        dateString.split("-");
+
+    const date =
+        new Date(
+            year,
+            month - 1,
+            day
+        );
+
+    return new Intl.DateTimeFormat(
+
+        "en-US",
+
+        {
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+
+    ).format(date);
+
+}
+
+
+/* =================================
+   RESET CALCULATOR
+================================= */
+
+function resetCalculator(){
+
+    document.getElementById(
+        "person1Date"
+    ).value = "";
+
+    document.getElementById(
+        "person2Date"
+    ).value = "";
+
+    document.getElementById(
+        "preview1"
+    ).classList.add("empty");
+
+    document.getElementById(
+        "preview2"
+    ).classList.add("empty");
+
+    document.getElementById(
+        "previewContent1"
+    ).textContent =
+        "မွေးသက္ကရာဇ်ထည့်ပါ";
+
+    document.getElementById(
+        "previewContent2"
+    ).textContent =
+        "မွေးသက္ကရာဇ်ထည့်ပါ";
+
+    document.getElementById(
+        "resultSection"
+    ).style.display =
+        "none";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "person1Date"
+        ).focus();
+
+    },500);
+
+}
+
+
+/* =================================
+   NAVBAR RECALCULATE
+================================= */
+
+document
+.getElementById("navRecalculate")
+.addEventListener("click",()=>{
+
+    resetCalculator();
+
+});
+
+
+/* =================================
+   MAX DATE
+================================= */
+
+const today =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+document
+.getElementById("person1Date")
+.max = today;
+
+document
+.getElementById("person2Date")
+.max = today;
+
+</script>
+
+</body>
+</html>

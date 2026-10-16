@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ပွဲတော်များနှင့် ရိုးရာဓလေ့</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+            --bg: #f7f0e4;
+            --sidebar: #0d2a58;
+            --blue: #1b65d4;
+            --red: #7d2429;
+            --gold: #bd8738;
+            --text: #1e293b;
+            --white: #ffffff;
+        }
+
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Padauk', sans-serif;
+        }
+
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+
+        /* =========================================================
+           MAIN APP
+        ========================================================= */
+
+        .app-container {
+            width: 100%;
+            max-width: 1280px;
+            min-height: calc(100vh - 40px);
+            margin: auto;
+
+            display: flex;
+
+            background: #eaf4fd;
+
+            border-radius: 24px;
+            overflow: hidden;
+
+            box-shadow:
+                0 20px 40px rgba(13, 42, 88, 0.15);
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+
+            background: var(--sidebar);
+            color: white;
+
+            padding: 24px 16px;
+        }
+
+
+        /* Brand */
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255, 255, 255, 0.1);
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+
+        .brand-logo i {
+            font-size: 20px;
+        }
+
+
+        .brand-text h2 {
+            font-size: 15px;
+            line-height: 1.2;
+        }
+
+
+        .brand-text span {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+
+        /* Navigation */
+
+        .nav-menu {
+            list-style: none;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            color: #a0aec0;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+
+        .nav-item a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+
+        .nav-item.active a {
+            background: var(--blue);
+            color: #fff;
+        }
+
+
+        .nav-item i {
+            width: 18px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           MAIN CONTENT
+        ========================================================= */
+
+        .main-content {
+            flex: 1;
+
+            padding: 24px 32px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 20px;
+
+            overflow-y: visible;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .header {
+            min-height: 66px;
+
+            padding: 0 4px 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            border-bottom: 1px solid rgba(151, 38, 43, 0.14);
+        }
+
+
+        .lang-selector,
+        .user-profile {
+            background: #fffaf1;
+
+            border: 1px solid #eadbc5;
+
+            box-shadow:
+                0 8px 22px rgba(100, 58, 32, 0.08);
+        }
+
+
+        .lang-selector {
+            padding: 7px 14px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+        }
+
+
+        .user-profile {
+            width: 34px;
+            height: 34px;
+
+            margin-left: 10px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* =========================================================
+           SECTION TITLE
+        ========================================================= */
+
+        .festival-section-header {
+            margin-top: 24px;
+            margin-bottom: 18px;
+
+            text-align: left;
+        }
+
+
+        .festival-section-header h2 {
+            margin: 0;
+
+            font-size: 24px;
+            font-weight: 700;
+
+            color: #0d2a58;
+
+            line-height: 1.45;
+        }
+
+
+        /* =========================================================
+           CARDS GRID
+        ========================================================= */
+
+        .cards-grid {
+            margin-top: 4px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 22px;
+        }
+
+
+        /* =========================================================
+           CATEGORY CARD
+        ========================================================= */
+
+        .category-card {
+            position: relative;
+
+            height: 360px;
+
+            overflow: hidden;
+
+            border-radius: 18px;
+
+            border: 1px solid #dfc7a3;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 12px 28px rgba(91, 50, 30, 0.10);
+
+            transition: 0.3s;
+
+            display: flex;
+            align-items: flex-end;
+
+            outline: none;
+        }
+
+
+        .category-card:hover {
+            transform: translateY(-7px);
+
+            border-color: var(--gold);
+
+            box-shadow:
+                0 20px 38px rgba(91, 50, 30, 0.18);
+        }
+
+
+        .category-card:focus {
+            border-color: var(--blue);
+
+            box-shadow:
+                0 0 0 3px rgba(27, 101, 212, 0.25);
+        }
+
+
+        /* Background */
+
+        .card-bg {
+            position: absolute;
+
+            inset: 0;
+
+            background-size: cover;
+            background-position: center;
+
+            transition: 0.65s;
+        }
+
+
+        .category-card:hover .card-bg {
+            transform: scale(1.07);
+        }
+
+
+        /* Overlay */
+
+        .card-overlay {
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(63, 25, 23, 0.08) 0%,
+                    rgba(79, 30, 29, 0.70) 56%,
+                    rgba(66, 24, 25, 0.96) 100%
+                );
+        }
+
+
+        /* =========================================================
+           CARD BODY
+        ========================================================= */
+
+        .card-body {
+            position: relative;
+
+            z-index: 2;
+
+            padding: 28px;
+
+            color: #fff;
+        }
+
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+
+            background:
+                rgba(229, 183, 99, 0.20);
+
+            border:
+                1px solid rgba(255, 222, 157, 0.26);
+
+            color: #ffe2a0;
+
+            font-size: 21px;
+        }
+
+
+        .card-body h3 {
+            margin: 14px 0 8px;
+
+            font-size: 23px;
+
+            line-height: 1.42;
+        }
+
+
+        .card-body p {
+            color: #f3e8da;
+
+            font-size: 13px;
+
+            line-height: 1.78;
+
+            margin-bottom: 14px;
+        }
+
+
+        /* =========================================================
+           START LEARNING BUTTON
+        ========================================================= */
+
+        .btn-card {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 9px 16px;
+
+            border-radius: 7px;
+
+            color: #fff;
+
+            text-decoration: none;
+
+            background:
+                rgba(214, 166, 87, 0.25);
+
+            border:
+                1px solid rgba(255, 221, 153, 0.30);
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+
+        .btn-card:hover {
+            background: #bd8738;
+
+            border-color: #ffe0a3;
+
+            transform: translateX(3px);
+        }
+
+
+        .btn-card i {
+            transition: 0.25s;
+        }
+
+
+        .btn-card:hover i {
+            transform: translateX(4px);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            body {
+                padding: 10px;
+            }
+
+
+            .app-container {
+                flex-direction: column;
+            }
+
+
+            .sidebar {
+                width: 100%;
+            }
+
+
+            .nav-menu {
+                flex-direction: row;
+
+                flex-wrap: wrap;
+            }
+
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 0;
+            }
+
+
+            .app-container {
+                min-height: 100vh;
+
+                border-radius: 0;
+            }
+
+
+            .main-content {
+                padding: 14px;
+            }
+
+
+            .header {
+                min-height: 50px;
+            }
+
+
+            .festival-section-header {
+                margin-top: 10px;
+            }
+
+
+            .festival-section-header h2 {
+                font-size: 20px;
+            }
+
+
+            .cards-grid {
+                margin-top: 14px;
+            }
+
+
+            .category-card {
+                height: 285px;
+            }
+
+
+            .card-body {
+                padding: 20px;
+            }
+
+
+            .card-body h3 {
+                font-size: 20px;
+            }
+
+
+            .card-body p {
+                font-size: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     APP CONTAINER
+========================================================= -->
+
+<div class="app-container">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                <i class="fa-solid fa-earth-americas"></i>
+            </div>
+
+            <div class="brand-text">
+
+                <h2>
+                    Asia Explorer System
+                </h2>
+
+                <span>
+                    Culture & Tradition
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <ul class="nav-menu">
+
+            <li class="nav-item">
+
+                <a href="Global.html">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    ပင်မစာမျက်နှာ
+
+                </a>
+
+            </li>
+
+
+            <li class="nav-item">
+
+                <a href="Culture_with _chatbot.html">
+
+                    <i class="fa-solid fa-utensils"></i>
+
+                    ယဉ်ကျေးမှုနှင့်
+                    လိုက်နာရန်ကျင့်ဝတ်များ
+
+                </a>
+
+            </li>
+
+
+            <li class="nav-item active">
+
+                <a href="Festival_tradition_with_chatbot.html">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    ပွဲတော်များနှင့်
+                    ရိုးရာဓလေ့အခမ်းအနားများ
+
+                </a>
+
+            </li>
+
+
+            <li class="nav-item">
+
+                <a href="FoodRecommendation_with_chatbot.html">
+
+                    <i class="fa-solid fa-masks-theater"></i>
+
+                    အစားအစာများ
+
+                </a>
+
+            </li>
+
+
+            <li class="nav-item">
+
+                <a href="TravelSafety_with_chatbot.html">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    အထင်ကရနေရာများ
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+      
+        <!-- Section Title -->
+
+        <div class="festival-section-header">
+
+            <h2>
+                ပွဲတော်များနှင့် ရိုးရာဓလေ့များ
+            </h2>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CARDS
+        ================================================== -->
+
+        <section class="cards-grid">
+
+
+            <!-- =================================================
+                 CARD 1 - FESTIVALS
+            ================================================== -->
+
+            <div
+                class="category-card"
+                id="cardFestivals"
+                role="link"
+                tabindex="0"
+                data-href="Festivals_with_chatbot.html"
+            >
+
+                <div
+                    class="card-bg"
+                    style="
+                        background-image:
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80');
+                    "
+                >
+                </div>
+
+
+                <div class="card-overlay"></div>
+
+
+                <div class="card-body">
+
+
+                    <div class="card-icon">
+
+                        <i class="fa-solid fa-synagogue"></i>
+
+                    </div>
+
+
+                    <h3>
+
+                        ထင်ရှားကျော်ကြားသော
+                        <br>
+                        ပွဲတော်များ
+
+                    </h3>
+
+
+                    <p>
+
+                        ကမ္ဘာတစ်ဝှမ်းတွင် ကျင်းပသည့်
+                        ရိုးရာကျော်ကြားသော ပွဲတော်များ
+                        အကြောင်း။
+
+                    </p>
+
+
+                    <!-- IMPORTANT:
+                         Button is now a real link -->
+
+                    <a
+                        href="Festivals_with_chatbot.html"
+                        class="btn-card"
+                    >
+
+                        စတင်လေ့လာမည်
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CARD 2 - TRADITIONS
+            ================================================== -->
+
+            <div
+                class="category-card"
+                id="cardTraditions"
+                role="link"
+                tabindex="0"
+                data-href="Traditions_with_chatbot.html"
+            >
+
+                <div
+                    class="card-bg"
+                    style="
+                        background-image:
+                        url('https://images.unsplash.com/photo-1514533450685-4493e01d1fdc?auto=format&fit=crop&w=1000&q=80');
+                    "
+                >
+                </div>
+
+
+                <div class="card-overlay"></div>
+
+
+                <div class="card-body">
+
+
+                    <div class="card-icon">
+
+                        <i class="fa-solid fa-drum"></i>
+
+                    </div>
+
+
+                    <h3>
+
+                        ရိုးရာဓလေ့များနှင့်
+                        <br>
+                        အခမ်းအနားများ
+
+                    </h3>
+
+
+                    <p>
+
+                        ကမ္ဘာတစ်ဝှမ်း ရိုးရာဓလေ့ထုံးတမ်းများနှင့်
+                        အခမ်းအနားများ အကြောင်း။
+
+                    </p>
+
+
+                    <!-- IMPORTANT:
+                         Button is now a real link -->
+
+                    <a
+                        href="Traditions_with_chatbot.html"
+                        class="btn-card"
+                    >
+
+                        စတင်လေ့လာမည်
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /*
+     ============================================================
+     CARD NAVIGATION
+     ============================================================
+
+     data-href ထဲမှာ ထည့်ထားတဲ့ HTML page ကို ဖတ်ပြီး
+     Card ကို click လုပ်တဲ့အခါ အဲဒီ page ကို သွားပေးမယ်။
+    */
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+
+        // Card နှစ်ခုလုံးကို ရယူခြင်း
+
+        const cards =
+            document.querySelectorAll(".category-card");
+
+
+        cards.forEach(function (card) {
+
+
+            // သက်ဆိုင်ရာ page name
+
+            const targetPage =
+                card.getAttribute("data-href");
+
+
+            // Card ကို Click လုပ်ရင်
+
+            card.addEventListener("click", function (event) {
+
+
+                /*
+                 Button / Link ကိုနှိပ်တာဆိုရင်
+                 Card click event ကနေ ထပ်မပြောင်းစေဘူး။
+                 Link ရဲ့ href ကပဲ အလုပ်လုပ်မယ်။
+                */
+
+                if (
+                    event.target.closest(".btn-card")
+                ) {
+                    return;
+                }
+
+
+                if (targetPage) {
+
+                    window.location.href =
+                        targetPage;
+
+                }
+
+            });
+
+
+            // Keyboard - Enter
+
+            card.addEventListener("keydown", function (event) {
+
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (targetPage) {
+
+                        window.location.href =
+                            targetPage;
+
+                    }
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

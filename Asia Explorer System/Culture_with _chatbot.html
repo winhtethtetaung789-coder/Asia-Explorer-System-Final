@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <title>Asia 48 Countries - Interactive Map & Dataset Management</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body, html { width: 100%; height: 100%; background-color: #f1f5f9; overflow: hidden; }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            z-index: 500;
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .header h1 span { font-weight: 400; color: #64748b; }
+        .header p { font-size: 11px; font-weight: 700; color: #64748b; margin-top: 2px; letter-spacing: 0.5px; }
+
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            display: flex;
+            gap: 10px;
+            z-index: 500;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .legend-card {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 12px 14px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255,255,255,0.8);
+            z-index: 500;
+        }
+
+        .legend-title { font-size: 10px; font-weight: 800; color: #1e293b; margin-bottom: 6px; text-transform: uppercase; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: #475569; }
+        .color-box { width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; }
+
+        #map { width: 100vw; height: 100vh; background: #e2e8f0; }
+
+        .country-label {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.2s;
+        }
+        .country-label:hover { transform: scale(1.1); background: rgba(15, 23, 42, 0.95); }
+        .country-label i { font-size: 9px; color: #f43f5e; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .glass-modal-card {
+            background: rgba(224, 242, 254, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            width: 850px;
+            max-width: 95%;
+            max-height: 85vh;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(14, 116, 144, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            animation: scaleUp 0.3s ease;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            background: rgba(186, 230, 253, 0.6);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 { font-size: 16px; color: #0c4a6e; font-weight: 800; }
+
+        .modal-tabs {
+            display: flex;
+            background: rgba(186, 230, 253, 0.5);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            overflow-x: auto;
+            padding: 10px 55px 10px 10px;
+            gap: 8px;
+        }
+
+        .tab-item {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #0369a1;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-item i { font-size: 15px; }
+        .tab-item:hover { color: #0c4a6e; background: rgba(255, 255, 255, 0.6); }
+        .tab-item.active {
+            background: #ffffff;
+            color: #0284c7;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 12px rgba(14, 116, 144, 0.08);
+        }
+
+        .modal-body { padding: 30px; min-height: 200px; max-height: 70vh; overflow-y: auto; flex: 1; }
+        .tab-pane { display: none; animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: flex; justify-content: space-between; gap: 20px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-left h2 { font-size: 20px; color: #0c4a6e; margin-bottom: 6px; font-weight: 700; }
+        .content-left p { font-size: 13px; color: #0284c7; font-weight: 500; }
+        .content-right { flex: 1; font-size: 14px; line-height: 1.6; color: #1e293b; }
+
+        .content-right ul, .do-box ul, .dont-box ul { list-style-type: disc; padding-left: 20px; }
+        .content-right li, .do-box li, .dont-box li { margin-bottom: 8px; line-height: 1.6; }
+
+        .dress-image-preview {
+            display: block;
+            width: min(100%, 260px);
+            height: auto;
+            max-width: 260px;
+            max-height: 300px;
+            object-fit: contain;
+            object-position: center;
+            margin: 0 auto 12px;
+            background: transparent;
+            background: rgba(255,255,255,0.72);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .dos-donts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .do-box, .dont-box {
+            background: rgba(255, 255, 255, 0.55);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .section-title { font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-size: 15px; }
+        .green-text { color: #16a34a; }
+        .red-text { color: #dc2626; }
+
+        .chart-type-label {
+            display: block;
+            font-size: 7px;
+            letter-spacing: 2px;
+            color: #777;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .chart-unit {
+            font-size: 8px;
+            color: #777;
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1050px) {
+        }
+
+        @media (max-width: 700px) {
+        }
+
+        @keyframes growBar {
+            from { transform: scaleY(0); opacity: .2; }
+            to { transform: scaleY(1); opacity: 1; }
+        }
+
+        .modal-close-btn {
+            background: transparent; border: none; color: #0369a1; font-size: 22px; cursor: pointer;
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .modal-close-btn:hover { background: rgba(255, 255, 255, 0.8); color: #0c4a6e; }
+
+        @media (max-width: 900px) {
+            .chart-dashboard { grid-template-columns: 1fr; }
+            .chart-container.full-width { grid-column: auto; }
+        }
+
+        @media (max-width: 768px) {
+            .glass-modal-card { width: 95%; }
+            .tab-pane.active { flex-direction: column; }
+            .dos-donts-container { grid-template-columns: 1fr; }
+            .top-buttons { right: 12px; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+            .action-btn { padding: 7px 10px; font-size: 10px; }
+        }
+    
+/* =========================================================
+   DIRECT CULTURE CHATBOT — additive only
+   Does not change the existing map / table / analytics UI.
+   ========================================================= */
+#directChatbotRoot { position: fixed; inset: 0; z-index: 2000; pointer-events: none; font-family: sans-serif; }
+#directChatbotButton {
+    position: fixed; right: 24px; bottom: 24px; width: 58px; height: 58px;
+    border: 0; border-radius: 50%; cursor: pointer; pointer-events: auto;
+    background: linear-gradient(135deg,#0284c7,#0c4a6e); color: #fff;
+    box-shadow: 0 12px 28px rgba(2,132,199,.32); font-size: 22px;
+    display:flex; align-items:center; justify-content:center; transition:.2s ease;
+}
+#directChatbotButton:hover { transform: translateY(-3px) scale(1.03); }
+#directChatbotPanel {
+    position: fixed; right: 24px; bottom: 94px; width: min(430px, calc(100vw - 28px));
+    height: min(650px, calc(100vh - 120px)); background: rgba(248,252,255,.97);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.9); border-radius: 22px;
+    box-shadow: 0 24px 60px rgba(15,23,42,.22); overflow: hidden;
+    pointer-events: auto; display:none; flex-direction:column;
+}
+#directChatbotPanel.open { display:flex; animation: dcIn .22s ease; }
+@keyframes dcIn { from { opacity:0; transform:translateY(10px) scale(.98); } to { opacity:1; transform:none; } }
+.dc-head { padding:15px 17px; background:linear-gradient(135deg,#e0f2fe,#f8fafc); border-bottom:1px solid #dbeafe; display:flex; align-items:center; gap:11px; }
+.dc-avatar { width:39px; height:39px; border-radius:13px; background:#0284c7; color:#fff; display:grid; place-items:center; flex:0 0 auto; }
+.dc-head-title { flex:1; min-width:0; }
+.dc-head-title strong { display:block; color:#0c4a6e; font-size:14px; }
+.dc-head-title span { display:block; margin-top:2px; color:#64748b; font-size:10px; }
+.dc-close { border:0; background:transparent; color:#64748b; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:20px; }
+.dc-close:hover { background:#fff; color:#0c4a6e; }
+#dcMessages { flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth; }
+.dc-msg { max-width:91%; padding:10px 12px; border-radius:14px; font-size:12px; line-height:1.65; word-break:break-word; }
+.dc-msg.bot { align-self:flex-start; background:#fff; border:1px solid #e2e8f0; color:#1e293b; border-top-left-radius:5px; }
+.dc-msg.user { align-self:flex-end; background:#0284c7; color:#fff; border-top-right-radius:5px; }
+.dc-msg h4 { margin:0 0 5px; color:#0c4a6e; font-size:13px; }
+.dc-msg ul { margin:5px 0 0; padding-left:18px; }
+.dc-msg li { margin:3px 0; }
+.dc-msg .dc-section { margin-top:9px; padding-top:8px; border-top:1px solid #eef2f7; }
+.dc-msg .dc-label { font-weight:800; color:#0369a1; }
+.dc-chips { display:flex; gap:6px; flex-wrap:wrap; padding:0 15px 10px; }
+.dc-chip { border:1px solid #bae6fd; background:#fff; color:#0369a1; border-radius:999px; padding:7px 9px; font-size:10px; cursor:pointer; }
+.dc-chip:hover { background:#e0f2fe; }
+.dc-inputbar { display:flex; gap:7px; padding:10px; background:#fff; border-top:1px solid #e2e8f0; }
+#dcInput { flex:1; min-width:0; resize:none; height:42px; max-height:90px; border:1px solid #cbd5e1; border-radius:12px; padding:10px 11px; outline:none; font:12px sans-serif; color:#0f172a; }
+#dcInput:focus { border-color:#38bdf8; box-shadow:0 0 0 3px rgba(56,189,248,.12); }
+#dcSend { width:42px; height:42px; border:0; border-radius:12px; background:#0284c7; color:#fff; cursor:pointer; font-size:15px; }
+#dcSend:hover { background:#0369a1; }
+.dc-note { font-size:9px; color:#94a3b8; padding:0 15px 9px; }
+@media(max-width:600px) {
+  #directChatbotButton { right:14px; bottom:14px; }
+  #directChatbotPanel { right:8px; bottom:82px; width:calc(100vw - 16px); height:calc(100vh - 100px); border-radius:18px; }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Asian Culture & Etiquette Map</h1>
+        <p>ယဉ်ကျေးမှုနှင့် လိုက်နာရန်ကျင့်ဝတ်များ</p>
+    </div>
+
+    <div class="top-buttons">
+        <a href="Global.html" class="action-btn" onclick="goBack(event)">
+            <span>←</span> BACK
+        </a>
+    </div>
+
+    <div id="map"></div>
+    
+    <div class="legend-card">
+        <div class="legend-title">Regions (48 Countries):[cite: 3]</div>
+        <div class="legend-item"><div class="color-box" style="background: #e67e22;"></div> West Asia (18)</div>
+        <div class="legend-item"><div class="color-box" style="background: #f1c40f;"></div> Central Asia (5)</div>
+        <div class="legend-item"><div class="color-box" style="background: #2ecc71;"></div> South Asia (8)</div>
+        <div class="legend-item"><div class="color-box" style="background: #e74c3c;"></div> East Asia (5)</div>
+        <div class="legend-item"><div class="color-box" style="background: #3498db;"></div> Southeast Asia (11)</div>
+        <div class="legend-item"><div class="color-box" style="background: #8e44ad;"></div> North Asia (1)</div>
+    </div>
+
+    <!-- Country Culture Modal -->
+    <div id="cultureModal" class="modal-overlay">
+        <div class="glass-modal-card">
+            <div class="modal-tabs">
+                <button class="tab-item active" onclick="switchTab(event, 'culture')">
+                    <i class="fa-solid fa-globe"></i><span>ယဉ်ကျေးမှု</span>
+                </button>
+                <button class="tab-item" onclick="switchTab(event, 'greetings')">
+                    <i class="fa-solid fa-comments"></i><span>နှုတ်ဆက်မှု အလေ့အထများ</span>
+                </button>
+                <button class="tab-item" onclick="switchTab(event, 'dress')">
+                    <i class="fa-solid fa-shirt"></i><span>ရိုးရာဝတ်စုံ</span>
+                </button>
+                <button class="tab-item" onclick="switchTab(event, 'dosdonts')">
+                    <i class="fa-solid fa-th-large"></i><span>ရှောင်သင့်သော နှင့် လုပ်ဆောင်သင့်သော အပြုအမှု၊ အပြောအဆိုများ</span>
+                </button>
+                <button id="horoscopeTab" class="tab-item" onclick="openHoroscope()" style="display:none;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i><span id="horoscopeTabLabel">ဗေဒင်</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div id="culture" class="tab-pane active">
+                    <div class="content-left">
+                        <h2 id="modalCountryName">Country Name</h2>
+                        <p>ယဉ်ကျေးမှု</p>
+                    </div>
+                    <div class="content-right">
+                        <div id="modalCultureDesc">Information will be displayed here.</div>
+                    </div>
+                </div>
+                <div id="greetings" class="tab-pane">
+                    <div class="content-left"><h2>နှုတ်ဆက်မှု အလေ့အထများ</h2></div>
+                    <div class="content-right"><div id="modalGreetingsDesc">Information will be displayed here.</div></div>
+                </div>
+                <div id="dress" class="tab-pane">
+                    <div class="content-left"><h2>ရိုးရာဝတ်စုံ</h2></div>
+                    <div class="content-right">
+                        <img id="modalDressImage" class="dress-image-preview" src="" alt="Traditional Dress Code" style="display: none;">
+                        <div id="modalDressDesc">Information will be displayed here.</div>
+                    </div>
+                </div>
+                <div id="dosdonts" class="tab-pane">
+                    <div class="dos-donts-container">
+                        <div class="do-box">
+                            <div class="section-title green-text"><i class="fa-solid fa-circle-check"></i> လုပ်ဆောင်သင့်သော အပြုအမှု၊ အပြောအဆိုများ</div>
+                            <div id="modalDosDesc">Information will be displayed here.</div>
+                        </div>
+                        <div class="dont-box">
+                            <div class="section-title red-text"><i class="fa-solid fa-circle-xmark"></i> ရှောင်သင့်သော အပြုအမှု၊ အပြောအဆိုများ</div>
+                            <div id="modalDontsDesc">Information will be displayed here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close-btn" style="position: absolute; top: 15px; right: 20px; z-index: 10;" onclick="closeCountryModal()">&times;</button>
+        </div>
+    </div>
+
+    <!-- Dataset Table Modal -->
+    
+
+    <!-- Analytics Dashboard -->
+    
+
+    <!-- User Details Modal (for Export) -->
+    
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([28.0, 85.0], 3);
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        function goBack(e) {
+            if (e) e.preventDefault();
+            if (document.referrer !== "") {
+                window.history.back();
+            } else {
+                window.location.href="Global.html";
+            }
+        }
+
+        const regionColors = {
+            "North Asia": "#8e44ad", "East Asia": "#e74c3c", "SE Asia": "#3498db",
+            "South Asia": "#2ecc71", "Central Asia": "#f1c40f", "West Asia": "#e67e22"
+        };
+
+        const regionCountsData = [
+            { region: "West Asia", count: 18, color: "#e67e22" },
+            { region: "Southeast Asia", count: 11, color: "#3498db" },
+            { region: "South Asia", count: 8, color: "#2ecc71" },
+            { region: "East Asia", count: 5, color: "#e74c3c" },
+            { region: "Central Asia", count: 5, color: "#f1c40f" },
+            { region: "North Asia", count: 1, color: "#8e44ad" }
+        ];
+
+        const asia48Countries = {
+            "RUS":"North Asia", "CHN":"East Asia", "JPN":"East Asia", "KOR":"East Asia", "PRK":"East Asia", "MNG":"East Asia",
+            "MMR":"SE Asia", "THA":"SE Asia", "VNM":"SE Asia", "LAO":"SE Asia", "KHM":"SE Asia", "MYS":"SE Asia", 
+            "SGP":"SE Asia", "IDN":"SE Asia", "PHL":"SE Asia", "BRN":"SE Asia", "TLS":"SE Asia",
+            "IND":"South Asia", "PAK":"South Asia", "BGD":"South Asia", "LKA":"South Asia", "NPL":"South Asia", 
+            "BTN":"South Asia", "MDV":"South Asia", "AFG":"South Asia",
+            "KAZ":"Central Asia", "UZB":"Central Asia", "TKM":"Central Asia", "KGZ":"Central Asia", "TJK":"Central Asia",
+            "SAU":"West Asia", "ARE":"West Asia", "TUR":"West Asia", "IRN":"West Asia", "IRQ":"West Asia", "ISR":"West Asia",
+            "JOR":"West Asia", "LBN":"West Asia", "SYR":"West Asia", "YEM":"West Asia", "OMN":"West Asia", "KWT":"West Asia",
+            "QAT":"West Asia", "BHR":"West Asia", "CYP":"West Asia", "ARM":"West Asia", "AZE":"West Asia", "GEO":"West Asia",
+            "PSE":"West Asia"
+        };
+
+        const isoToKey = {
+            "AFG": "afghanistan", "ARM": "armenia", "AZE": "azerbaijan", "BHR": "bahrain",
+            "BGD": "bangladesh", "BTN": "bhutan", "BRN": "brunei", "KHM": "cambodia",
+            "CHN": "china", "CYP": "cyprus", "GEO": "georgia", "IND": "india",
+            "IDN": "indonesia", "IRN": "iran", "IRQ": "iraq", "ISR": "israel",
+            "JPN": "japan", "JOR": "jordan", "KAZ": "kazakhstan", "KWT": "kuwait",
+            "KGZ": "kyrgyzstan", "LAO": "laos", "LBN": "lebanon", "MYS": "malaysia",
+            "MDV": "maldives", "MNG": "mongolia", "MMR": "myanmar", "NPL": "nepal",
+            "PRK": "northkorea", "OMN": "oman", "PAK": "pakistan", "PSE": "palestine",
+            "PHL": "philippines", "QAT": "qatar", "SAU": "saudiarabia", "SGP": "singapore",
+            "KOR": "southkorea", "LKA": "srilanka", "SYR": "syria", "TJK": "tajikistan",
+            "THA": "thailand", "TLS": "timorleste", "TUR": "turkey", "TKM": "turkmenistan",
+            "ARE": "uae", "UZB": "uzbekistan", "VNM": "vietnam", "YEM": "yemen", "RUS": "russia"
+        };
+
+        const countryCoords = {
+            "MMR": [21.9162, 95.9560, "Myanmar"], "THA": [15.8700, 100.9925, "Thailand"],
+            "CHN": [35.8617, 104.1954, "China"], "JPN": [36.2048, 138.2529, "Japan"],
+            "VNM": [14.0583, 108.2772, "Vietnam"], "KOR": [35.9078, 127.7669, "South Korea"],
+            "PRK": [40.3399, 127.5101, "North Korea"], "IND": [20.5937, 78.9629, "India"],
+            "PAK": [30.3753, 69.3451, "Pakistan"], "BGD": [23.6850, 90.3563, "Bangladesh"],
+            "NPL": [28.3949, 84.1240, "Nepal"], "LKA": [7.8731, 80.7718, "Sri Lanka"],
+            "MYS": [4.2105, 101.9758, "Malaysia"], "SGP": [1.3521, 103.8198, "Singapore"],
+            "IDN": [0.7893, 113.9213, "Indonesia"], "PHL": [12.8797, 121.7740, "Philippines"],
+            "KHM": [12.5657, 104.9910, "Cambodia"], "LAO": [19.8563, 102.4955, "Laos"],
+            "BRN": [4.5353, 114.7277, "Brunei"], "MNG": [46.8625, 103.8467, "Mongolia"],
+            "KAZ": [48.0196, 66.9237, "Kazakhstan"], "UZB": [41.3775, 64.5853, "Uzbekistan"],
+            "TUR": [38.9637, 35.2433, "Turkey"], "IRN": [32.4279, 53.6880, "Iran"],
+            "IRQ": [33.2232, 43.6793, "Iraq"], "SAU": [23.8859, 45.0792, "Saudi Arabia"],
+            "ARE": [23.4241, 53.8478, "UAE"], "AFG": [33.9391, 67.7100, "Afghanistan"],
+            "RUS": [61.5240, 105.3188, "Russia"],
+            "ARM": [40.0691, 45.0382, "Armenia"],
+            "AZE": [40.1431, 47.5769, "Azerbaijan"],
+            "BHR": [26.0667, 50.5577, "Bahrain"],
+            "BTN": [27.5142, 90.4336, "Bhutan"],
+            "CYP": [35.1264, 33.4299, "Cyprus"],
+            "GEO": [42.3154, 43.3569, "Georgia"],
+            "ISR": [31.0461, 34.8516, "Israel"],
+            "JOR": [30.5852, 36.2384, "Jordan"],
+            "KGZ": [41.2044, 74.7661, "Kyrgyzstan"],
+            "KWT": [29.3117, 47.4818, "Kuwait"],
+            "LBN": [33.8547, 35.8623, "Lebanon"],
+            "MDV": [3.2028, 73.2207, "Maldives"],
+            "OMN": [21.4735, 55.9754, "Oman"],
+            "QAT": [25.3548, 51.1839, "Qatar"],
+            "SYR": [34.8021, 38.9968, "Syria"],
+            "TJK": [38.8610, 71.2761, "Tajikistan"],
+            "TKM": [38.9697, 59.5563, "Turkmenistan"],
+            "YEM": [15.5527, 48.5164, "Yemen"],
+            "PSE": [31.9522, 35.2332, "Palestine"]
+        };
+
+        const countriesData = {
+           afghanistan: {
+                name: "Afghanistan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSILQOZkDOsFtM6ylvSA7ARobS1PB0Ze1oDmiiRS9yQyw&s=10",
+                culture: "အာဖဂန်နစ္စတန်နိုင်ငံသည် အစ္စလာမ်ဘာသာရေးနှင့် ရှေးရိုးစဉ်လာ ဧည့်ဝတ်ကျေပွန်မှုကို အခြေခံသော လူ့အဖွဲ့အစည်းဖြစ်သည်။ မိသားစုဂုဏ်သိက္ခာနှင့် ဧည့်သည်ကို အထူးတလည် ဧည့်ခံခြင်းတို့သည် အဓိက ယဉ်ကျေးမှု ဖြစ်သည်။",
+                greetings: "အချင်းချင်း နှုတ်ဆက်သည့်အခါ ညာလက်ကို ရင်ဘတ်ပေါ်တင်၍ ဦးညွှတ်ကာ 'আসসালামু আলাইকুম' (အာစလာမွန် အလိုင်ကွမ်) ဟု နှုတ်ဆက်ကြသည်။",
+                dress: "အစ္စလာမ်ဝတ်စရာ စည်းမျဉ်းများအတိုင်း ကိုယ်ခန္ဓာကို လုံခြုံစွာဖုံးအုပ်သော ရိုးရာဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+               
+                dos: [
+                    "အိမ်တွင်းသို့ ဝင်ရောက်သည့်အခါ ဖိနပ်ချွတ်ရမည်။",
+                    "အစားအစာများကို ညာလက်ဖြင့်သာ စားသုံးရမည်။"
+                ],
+                donts: [
+                    "ဘယ်လက်ဖြင့် ပစ္စည်းပေးခြင်း သို့မဟုတ် စားသောက်ခြင်း မပြုရပါ။",
+                    "အများပြည်သူရှေ့တွင် ဆန့်ကျင်ဘက် လိင်သားချင်း ရင်းနှီးပြသခြင်း (PDA) လုံးဝ မပြုလုပ်ရပါ။",
+                    "ဘုရားသခင်နှင့် အစ္စလာမ်ဘာသာရေးကို မထီမဲ့မြင်ပြုခြင်း၊ ဝေဖန်ခြင်း တားမြစ်သည်။",
+                    "အမျိုးသမီးများနှင့် ပတ်သက်၍ ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ခြင်း သို့မဟုတ် အနီးကပ်စကားပြောခြင်း မပြုရပါ။"
+                ]
+            },
+            armenia: {
+                name: "Armenia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm-OnrLrGwgRszf9Z1c7H5FGKoYkfivpYXq_8FS6XljQ&s=10",
+                culture: "အာမေးနီးယားနိုင်ငံသည် ရှေးဟောင်းခရစ်ယာန်ယဉ်ကျေးမှုနှင့် ရိုးရာဓလေ့ထုံးတမ်းများကို တန်ဖိုးထားသည့် ဥရောပနှင့်အာရှ အစပ်အဟပ်ရှိသော နိုင်ငံဖြစ်သည်။",
+                greetings: "တွေ့ဆုံသည့်အခါ လက်ဆွဲနှုတ်ဆက်ခြင်းနှင့် ရင်းနှီးသူများအချင်းချင်း ပါးချင်းအပ်ကာ နှုတ်ဆက်ကြသည်။",
+                dress: "ခေတ်မီအဝတ်အစားများကို ဝတ်ဆင်ကြပြီး ပွဲလမ်းသဘင်များတွင် ရိုးရာဝတ်စုံများကို ဝတ်ဆင်လေ့ရှိသည်။",
+                dos: ["အိမ်သို့ အလည်သွားသည့်အခါ လက်ဆောင်ပစ္စည်း (ဥပမာ- ပန်း သို့မဟုတ် မုန့်) တစ်စုံတစ်ရာ ယူသွားခြင်းသည် ယဉ်ကျေးမှုဖြစ်သည်။"],
+                donts: ["အိမ်ရှင်၏ ခွင့်ပြုချက်မရှိဘဲ ဖိနပ်စီးလျက် အိမ်ထဲသို့ ဝင်ရောက်ခြင်း မပြုရပါ။",
+                    "နိုင်ငံရေးနှင့် သမိုင်းဆိုင်ရာ ထိလွယ်ရှလွယ် အငြင်းပွားဖွယ်ရာ အကြောင်းအရာများကို အလွယ်တကူ ဝေဖန်ဆွေးနွေးခြင်း မပြုသင့်ပါ။"
+                ]
+            },
+            azerbaijan: {
+                name: "Azerbaijan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK02K_x4p1Ob6X3zUZT-zU1jbeO7mhziJ2MfUUPOEQPQ&s=10",
+                culture: "အဇာဘိုင်ဂျန်နိုင်ငံသည် အရှေ့နှင့်အနောက် ယဉ်ကျေးမှုများ ရောနှောနေပြီး ဧည့်ဝတ်ကျေပွန်မှုနှင့် လက်ဖက်ရည်သောက်သုံးသည့် ဓလေ့ကို အထူးအလေးထားသည်။",
+                greetings: "ယဉ်ကျေးပျူငှာစွာ လက်ဆွဲနှုတ်ဆက်ကြပြီး အသက်ကြီးသူများကို အထူးလေးစားစွာ ဆက်ဆံသည်။",
+                dress: "မြို့ပြများတွင် ခေတ်မီအနောက်တိုင်း ဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်ရှင်များက ကမ်းလှမ်းသော လက်ဖက်ရည်နှင့် ဧည့်ခံစာများကို လက်ခံသုံးဆောင်ရမည်။"],
+                donts: ["စားသောက်နေစဉ်အတွင်း ခြေထောက်ကို ဆန့်တန်း၍ ထိုင်ခြင်း သို့မဟုတ် တစ်ပါးသူဆီသို့ ခြေဖဝါးပြခြင်း မလုပ်ရပါ။",
+                        "နိုင်ငံတော် အထိမ်းအမှတ်များနှင့် သမ္မတကို မလေးမစား ပြုမူပြောဆိုခြင်း မပြုရပါ။"
+                 ]
+            },
+            bahrain: {
+                name: "Bahrain",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiswEHMDp3IJap3UREDUgc29Qx0NAh2gFywZ64h1VyAA&s=10",
+                culture: "ဘယ်ရိန်းနိုင်ငံသည် အစ္စလာမ်ယဉ်ကျေးမှုကို အခြေခံသော်လည်း အာရပ်ပင်လယ်ကွေ့အတွင်း အလွန်ဖွံ့ဖြိုးပြီး ဧည့်သည်များကို ဖော်ရွေစွာ ဆက်ဆံသော နိုင်ငံဖြစ်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် ရိုးရာ သေါဘ် (Thobe) ဝတ်ဆင်ကြပြီး အမျိုးသမီးများသည် အဘါယာ (Abaya) ကို ဝတ်ဆင်ကြသည်။",
+               
+                dos: ["အများပြည်သူနေရာများတွင် ကိုယ်ခန္ဓာကို လုံခြုံစွာ ဖုံးအုပ်ဝတ်ဆင်ရမည်။"],
+                donts: ["အမျိုးသမီးများ၏ ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ကူးခြင်း မပြုရပါ။",
+                    "အစ္စလာမ်ဘာသာရေးနှင့် ဆန့်ကျင်သော လုပ်ရပ်များကို လူသိရှင်ကြား ပြုလုပ်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            bangladesh: {
+                name: "Bangladesh",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzSFkP1osiojQPbAnznktxX5IUocz9coq7AHgCokJayQ&s=10",
+                culture: "ဘင်္ဂလားဒေ့ရှ်နိုင်ငံသည် ကြွယ်ဝသော သိုင်းနှင့်ယဉ်ကျေးမှု အမွေအနှစ်များရှိပြီး ပွဲလမ်းသဘင်များကို စည်ကားသိုက်မြိုက်စွာ ကျင်းပတတ်သော လူ့အဖွဲ့အစည်းဖြစ်သည်။",
+                greetings: "မွတ်စလင်များအနေဖြင့် 'အာစလာမွန် အလိုင်ကွမ်' ဟု လည်းကောင်း၊ ဟိန္ဒူဘာသာဝင်များက 'နမေစတေ' ဟု လည်းကောင်း နှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသမီးများသည် ရိုးရာဇာခတ် ဆာရီ (Saree) များကို ဝတ်ဆင်ကြပြီး အမျိုးသားများသည် လုံချီ သို့မဟုတ် ပန်ချာပီ ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်များအတွင်းသို့ ဝင်ရောက်ရာတွင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ကိုယ်အင်္ဂါပေါ်လွင်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "ဘယ်လက်ကို အစားအစာစားသုံးရန်နှင့် ပစ္စည်းပေးကမ်းရန် အသုံးမပြုရပါ။"
+                ]
+            },
+            bhutan: {
+                name: "Bhutan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvu1Thz84NOsHdOAX3dluqBNszyPcO1J2w5xLBnb-4ZA&s=10",
+                culture: "ဘူတန်နိုင်ငံသည် ဗုဒ္ဓဘာသာ တန်ဖိုးများနှင့် 'စုစုပေါင်း အမျိုးသားပျော်ရွှင်မှု' (GNH) ကို အဓိကထား အသက်ရှင်နေထိုင်ကြသော နိုင်ငံဖြစ်သည်။",
+                greetings: "ခေါင်းကို အနည်းငယ်ငုံ့၍ ရိုသေစွာ လက်အုပ်ချီ နှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် 'ဂေါ' (Gho) နှင့် အမျိုးသမီးများသည် 'ကီးရာ' (Kira) ဟုခေါ်သော ရိုးရာဝတ်စုံများကို နေ့စဥ်ဝတ်ဆင်ကြရသည်။",
+                dos: ["ဘာသာရေး အဆောက်အအုံများနှင့် ဘုန်းကြီးကျောင်းများသို့ ဝင်လျှင် သပ်ရပ်စွာ ဝတ်ဆင်ရမည်။"],
+                donts: ["ဒေသခံများ၏ ယဉ်ကျေးမှုနှင့် ဘုရားပုထိုးများကို မလေးမစား ပြုမူခြင်း မပြုရပါ။",
+                    "ဘုရားကျောင်းများအတွင်း ဓာတ်ပုံရိုက်ကူးခြင်းနှင့် ဦးထုပ်ဆောင်းခြင်း တားမြစ်ထားသည်။"
+                ]
+            },
+            brunei: {
+                name: "Brunei",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7K4JPf2nHjhVQx1uaaS0fX9UES_8wciCU8XvX_GvIOw&s=10",
+                culture: "ဘရူနိုင်းနိုင်ငံသည် မလေးယဉ်ကျေးမှုနှင့် အစ္စလာမ်ဘာသာရေးကို တင်းကျပ်စွာ စောင့်ထိန်းသော ငြိမ်းချမ်းသည့်နိုင်ငံဖြစ်သည်။",
+                greetings: "လက်ဖဝါးချင်း ပွတ်သပ်ထိတွေ့ကာ မိမိရင်ဘတ်ကို ပြန်ထိသည့် ယဉ်ကျေးသော နှုတ်ဆက်နည်းကို အသုံးပြုသည်။",
+                dress: "ကိုယ်ခန္ဓာကို လုံခြုံစွာဖုံးအုပ်သော သပ်ရပ်သည့် အဝတ်အစားများကို ဝတ်ဆင်ရမည်။",
+                dos: ["အိမ်များသို့ အလည်သွားပါက ဝင်ပေါက်တွင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အရက်သေစာ သောက်စားခြင်းနှင့် လူသိရှင်ကြား ရောင်းချခြင်း မပြုရပါ။",
+                    "နိုင်ငံတော် ဘုရင်နှင့် မိသားစုဝင်များကို ဝေဖန်ပြစ်တင်ခြင်း လုံးဝ မပြုရပါ။"
+                ]
+            },
+            cambodia: {
+                name: "Cambodia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6Orimx91PwEOqkhXZAZA52WmXgaaj6vdGeDbAtFz0MA&s=10",
+                culture: "ကမ္ဘောဒီးယား ယဉ်ကျေးမှုသည် ထေရဝါဒဗုဒ္ဓဘာသာ၊ ရှေးဟောင်းခမာအင်ပါယာ၊ ဟိန္ဒူဘာသာ နှင့် နတ်ကိုးကွယ်မှု တို ရောစပ်ဖြစ်ပေါ်နေပြီး အနုပညာ၊ ဗိသုကာ နှင့် ရိုးရာအကများ ကြွယ်ဝသော အရှေ့တောင်အာရှ ယဉ်ကျေးမှုတစ်ခု ဖြစ်သည်။",
+                greetings: "ကမ္ဘောဒီးယားရိုးရာ 'စမ်ပယား' (Sampeah) နှုတ်ဆက်ခြင်းသည် လက်အုပ်ချီဦးညွှတ်ခြင်းဖြစ်ပြီး၊ လူမှုအဆင့်အတန်းအလိုက် ရင်ဘတ်မှ ဦးခေါင်းထိပ်အထိ လက်အနေအထား ၅ ဆင့် ကွဲပြားကာ ငယ်သူက ကြီးသူကို ဦးစွာနှုတ်ဆက်ရသည့် အရေးကြီးသော လူမှုဓလေ့ဖြစ်ပါသည်။ ",
+                dress: "ကမ္ဘောဒီးယားနိုင်ငံ၏ ဝတ်စားဆင်ယင်မှုတွင် အမျိုးသားဝတ်စုံ ဆမ်ပေါ့ (Sampot) နှင့် ဘက်စုံသုံး ကရော်မာ (Krama) ပုဝါတို့မှာ အဓိကဖြစ်ပြီး၊ အန်ကောဝတ်ကဲ့သို့သော သာသနိကနယ်မြေများသို့ သွားရောက်ရာတွင် ပခုံးနှင့် ဒူးဖုံးအုပ်သော ယဉ်ကျေးသည့် ဝတ်စုံများကို စနစ်တကျ ဝတ်ဆင်ရမည် ဖြစ်ပါသည်။",
+                dos: ["ဦးခေါင်းကို အမြင့်မြတ်ဆုံးဟု ယူဆသဖြင့် သူတစ်ပါးဦးခေါင်းကို မကိုင်ရပါ။ ခြေထောက်ကို အနိမ့်ဆုံးဟု သတ်မှတ်သဖြင့် ခြေထောက်ဖြင့် မညွှန်ရ၊ မတွန်းရ သလို ဘုရားနှင့် သံဃာတော်များဘက်သို ခြေဖဝါးလှည့်၍ မထိုင်ရပါ။",
+                    "လူကို လက်ညှိးမထိုးရဘဲ လက်ဝါးကို အောက်ဘက်လှည့်၍သာ ခေါ်ရမည်ဖြစ်ပြီး အများပြည်သူရှေ့တွင် ဖက်ခြင်း၊ နမ်းခြင်းများ ရှောင်ကြဉ်ရမည်။",
+                    "အမျိုးသမီးများသည် သံဃာတော်များကို တိုက်ရိုက်မထိတွေ့ရပါ။ ဒေသခံများ သိုမဟုတ် သံဃာတော်များကို ဓာတ်ပုံရိုက်လိုပါက အမြဲတမ်း ခွင့်ပြုချက်တောင်းရမည်။",
+                    "အများရှေ့တွင် အော်ဟစ်ခြင်းနှင့် ဒေါသထွက်ခြင်းကို ရှောင်ရမည် (မျက်နှာပျက်စရာဟု ယူဆသောကြောင့်ဖြစ်သည်)။ ထိုပြင် ခမာနီသမိုင်းနှင့် နိုင်ငံရေးကိစ္စများ ဝေဖန်ဆွေးနွေးခြင်းကို ရှောင်ကြဉ်သင့်သည်။",
+                    "ထမင်းစားနေစဉ် တူကို ထမင်းပန်းကန်ထဲ၌ မတ်တတ်စိုက်မထားရပါ (လူသေအတွက် အမွှေးတိုင်စိုက်သည့်ပုံစံနှင့် တူသဖြင့် အမင်္ဂလာဟု ယူဆကြသည်"
+                ], 
+                donts: ["ဘုရင်နှင့် တော်ဝင်မိသားစုကို ဝေဖန်ပြောဆိုခြင်း သိုမဟုတ် နောက်ပြောင်ခြင်းများကို လုံးဝမပြုလုပ်ရပါ။",
+                "လူအများရှေ့တွင် တစ်ဖက်လူ၏အမှားကို ပြင်းပြင်းထန်ထန် ထောက်ပြခြင်း သိုမဟုတ် အရှက်ရစေမည့် စကားလုံးများ သုံးစွဲခြင်းကို ရှောင်ကြဉ်ရပါမည်။",
+                "လူကြီးမိဘများနှင့် ဂုဏ်သရေရှိသူများကို ပစ္စည်းပေးခြင်း သိုမဟုတ် လက်ခံခြင်းပြုရာတွင် လက်တစ်ဖက်တည်းမသုံးဘဲ လက်နှစ်ဖက်စလုံးကို အသုံးပြုရပါမည်။",
+                "ဘယ်လက်ကို မသန့်ရှင်းဟု ယူဆသဖြင့် ပိုက်ဆံပေးခြင်း၊ ပစ္စည်းကမ်းခြင်း သိုမဟုတ် အစားအစာကျွေးခြင်းများတွင် ဘယ်လက်ကို တိုက်ရိုက်မသုံးသင့်ပါ။",
+                "ဘုရားဆင်းတုတော်များကို ကျောခိုင်း၍ ဓာတ်ပုံရိုက်ခြင်း၊ ဘုန်းကြီးကျောင်းအတွင်း ဆူညံခြင်းနှင့် အိမ်ရှင်ထက်ဦးအောင် အရင်စတင်စားသောက်ခြင်းတိုကို ရှောင်ကြဉ်ရပါမည်။"
+                ]
+            },
+            china: {
+                name: "China",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXONyodM26wE7CeGhWe1_3SHMdg3Bif5NEkOsAGZ2JqA&s=10",
+                culture: "တရုတ်ယဉ်ကျေးမှု (Chinese Culture) သည် ကမ္ဘာ့အစောဆုံးနှင့် အကြွယ်ဝဆုံး ယဉ်ကျေးမှုများထဲတွင် တစ်ခုအပါအဝင်ဖြစ်ပြီး Wikipedia အရ နှစ်ပေါင်း ၅,၀၀၀ ကျော် သမိုင်းကြောင်း ရှိခဲ့ပါသည်။ တရုတ်ရိုးရာ ယဉ်ကျေးမှုသည် အာရှတိုက်တစ်ခုလုံး၏ အတွေးအခေါ်၊ ဓလေ့ထုံးတမ်းနှင့် နိုင်ငံရေးအပေါ် နက်ရှိုင်းစွာ လွှမ်းမိုးမှု ရှိခဲ့သည်။",
+                greetings:  "တရုတ်လူမျိုးတို့သည် အဆင့်အတန်းနှင့် ရင်းနှီးမှုအလိုက် Nǐ hǎo၊ Nín hǎo နှင့် Chī fàn le ma စသည့် စကားစုများကို သုံးစွဲကာ ခပ်ဖွဖွလက်ဆွဲခြင်း သို့မဟုတ် ခေါင်းညိတ်ခြင်းဖြင့် နှုတ်ဆက်ကြပြီး [1]၊ နှုတ်ဆက်ချိန်တွင် မျက်လုံးချင်းစိုက်ကြည့်ခြင်းနှင့် ကိုယ်ထိလက်ရောက်ပြုမူမှုများကို ရှောင်ကြဉ်၍ အသက်အကြီးဆုံးသူကို ဦးစွာနှုတ်ဆက်ခြင်းဖြင့် ရိုသေမှုကို ပြသကြပါသည်။",
+                dress: "တရုတ်ရိုးရာဝတ်စုံတွင် ကိုယ်ကျပ်ဒီဇိုင်းနှင့် မင်္ဂလာဆောင်များတွင် အဓိကဝတ်ဆင်သည့် ချီပေါင် (Qipao) နှင့်၊ လက်အင်္ကျီပွများပါဝင်သော ရှေးဟောင်းဟန်လူမျိုးဝတ်စုံ ဟန်ဖူ (Hanfu) ဟူ၍ အမျိုးအစားကြီး နှစ်ခုရှိပြီး ယခုအခါ ၎င်းတို့ကို ခေတ်ပေါ်ဖက်ရှင်များနှင့် ပေါင်းစပ်၍ နေ့စဉ်ဝတ်ဆင်နိုင်ရန် ပြန်လည်ဆန်းသစ်လာကြပါသည်။",
+              
+                dos: ["နာမ်ကတ် သိုမဟုတ် လက်ဆောင်များ ပေးကမ်းခြင်းနှင့် လက်ခံခြင်းပြုရာတွင် လက်နှစ်ဖက်စလုံးကို အသုံးပြု၍ လေးစားမှုပြရန် ဖြစ်သည်။",
+                    "နောက်ကျခြင်းကို ရိုင်းစိုင်းပြီး ယုံကြည်ရခက်သည်ဟု ယူဆသဖြင့် ချိန်းဆိုမှုများသို မိနစ်အနည်းငယ် စောရောက်အောင် သွားရမည်။",
+                    "အခန်းထဲဝင်ခြင်း၊ ထိုင်ခြင်းနှင့် စားသောက်ခြင်းတိုတွင် အသက်အကြီးဆုံး သိုမဟုတ် ရာထူးအမြင့်ဆုံးသူကို အမြဲဦးစွာ ခွင့်ပြုပေးရမည်။",
+                    "လက်ဆောင်ရရှိပါက ပေးသူရှေ့တွင် ချက်ချင်းမဖောက်ဘဲ ကျေးဇူးတင်စကားပြောကာ ဘေးတွင် ခဏချထားရမည်။",
+                    "မိမိကိုယ်ကို နှိမ့်ချပြောဆိုခြင်း၊ ချီးမွမ်းခံရလျှင် ယဉ်ကျေးစွာ ငြင်းဆန်ခြင်းနှင့် တစ်ဖက်လူ၏ မိသားစု၊ ကျန်းမာရေးတိုကို စိုးရိမ်ပူပန်မှုရှိစွာ မေးမြန်းပေးခြင်းဖြင့် ဆက်ဆံရေးကို မြှင့်တင်ရမည်"
+                ],
+                donts: ["ထမင်းပန်းကန်ထဲတွင် တူကို မတ်တတ်စိုက်မထားရပါ (နာရေးတွင် အမွှေးတိုင်ထွန်းသည့်ပုံစံနှင့် တူသောကြောင့်ဖြစ်သည်)။",
+                        "လူ သိုမဟုတ် ပစ္စည်းကို လက်ညှိးမထိုးရ၊ သူတစ်ပါး၏ ခေါင်းကို မကိုင်ရ နှင့် ခြေဖဝါးဖြင့် တစ်ဖက်လူဘက်သို မညွှန်ရပါ။",
+                        "နာရေးနှင့် အဓိပ္ပာယ်တူသော နာရီ၊ လမ်းခွဲခြင်းကို ဆိုလိုသော ထီးနှင့် ဖိနပ်၊ ဆက်ဆံရေးဖြတ်တောက်ခြင်းကို ဆိုလိုသော ကတ်ကြေးတိုကို လက်ဆောင်မပေးရပါ။",
+                        "လက်ဆောင်များကို နာရေးသုံးအရောင်များဖြစ်သည့် အဖြူရောင် သိုမဟုတ် အမည်းရောင် စက္ကူများဖြင့် မထုပ်ရပါ (အနီ သိုမဟုတ် ရွှေရောင်ကိုသာ သုံးရမည်)။",
+                        "တစ်ဖက်လူ သိက္ခာကျစေမည့် ဝေဖန်ခြင်းနှင့် အော်ဟောက်ခြင်းများကို ရှောင်ရမည်ဖြစ်ပြီး နိုင်ငံရေးကဲ့သို အထိခိုက်မခံသော အကြောင်းအရာများကို မဆွေးနွေးသင့်ပါ။"
+                ]
+            },
+            cyprus: {
+                name: "Cyprus",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHlWFvQJL4Eh9yHvvH6fM9tkyC5jSaNwqAaO_eXQVWMw&s=10",
+                culture: "ဆိုက်ပရပ်စ်နိုင်ငံသည် ဂရိနှင့် တူရကီယဉ်ကျေးမှုများ ရောနှောတည်ရှိသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ခြင်းနှင့်အတူ ဖော်ရွေစွာ ပြုံးပြနှုတ်ဆက်ကြသည်။",
+                dress: "ဥရောပစတိုင် ခေတ်မီအဝတ်အစားများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["ဘုရားကျောင်းများသို့ ဝင်လျှင် သပ်ရပ်လျောက်ပတ်စွာ ဝတ်ဆင်ရမည်။"],
+                donts: ["အများပြည်သူနေရာများတွင် မဆင်မခြင် အော်ဟစ်ကျယ်လောင်စွာ ပြုမူခြင်း မပြုရပါ။",
+                    "နိုင်ငံရေးဆိုင်ရာ နှစ်ခြမ်းကွဲနေမှု အခြေအနေများကို ထိလွယ်ရှလွယ် မဆွေးနွေးသင့်ပါ။"
+                ]
+            },
+            georgia: {
+                name: "Georgia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiH86CC1TmaNwrXwwmnYyB1UM2Kp0dyVeJ40RHq3OYzg&s=10",
+                culture: "ဂျော်ဂျီယာနိုင်ငံသည် ဧည့်သည်ကို ဘုရားပေးလက်ဆောင်ကဲ့သို့ ရှုမြင်တတ်သည်။",
+                greetings: "'გამარჯობა' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ခေတ်မီ အနောက်တိုင်း ဝတ်စုံများကို အများဆုံး ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်သို့သွားလျှင် လက်ဆောင်အဖြစ် ပန်း သို့မဟုတ် ဝိုင်ပုလင်း ယူသွားရမည်။"],
+                donts: ["စားသောက်ပွဲများတွင် ခွင့်ပြုချက်မရှိဘဲ အလကားနေရင်း ထွက်သွားခြင်း မပြုလုပ်ရပါ။",
+                    "အိမ်ရှင်များ တိုက်ကျွေးသော ဝိုင် သို့မဟုတ် အစားအစာများကို အကြောင်းပြချက်မရှိဘဲ ငြင်းပယ်ခြင်းသည် မယဉ်ကျေးရာရောက်သည်။"
+                ]
+            },
+            india: {
+                name: "India",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRobbVngY1wDq9zW7H8xcfhWotVZUexf-P86LIt4Y7XvA&s=10",
+                culture: "အိန္ဒိယနိုင်ငံဟာ နှစ်ပေါင်း ၄,၅၀၀ ကျော် သက်တမ်းရှိပြီး ကမ္ဘာ့ရှေးအကျဆုံးနဲ့ စုံလင်ကွဲပြားမှုအရှိဆုံး ယဉ်ကျေးမှုတွေထဲက တစ်ခုဖြစ်ပါတယ်။ ရှေးဟောင်းရိုးရာဓလေ့များ၊ ကိုးကွယ်ယုံကြည်မှုများ၊ အနုပညာများနှင့် ဒေသန္တရဓလေ့ထုံးတမ်းများ စုစည်းထားသည့် နိုင်ငံတစ်ခု ဖြစ်ပါတယ်။",
+                greetings: "Namaste သည် အိန္ဒိယတစ်ဝန်း ဘုရားသခင်၏ အလင်းရောင်ကို အပြန်အလှန် အသိအမှတ်ပြုသည့် အသုံးအများဆုံး နှုတ်ဆက်နည်းဖြစ်ပြီး ဒေသအလိုက် Vanakkam နှင့် Sat Sri Akal ကဲ့သို့သော ကွဲပြားသည့် နှုတ်ဆက်မှုများလည်း ရှိပါသည်။ ထို့အပြင် လူကြီးမိဘများ၏ ခြေထောက်ကို ထိတွေ့၍Pranam ပြုလုပ်ခြင်းမှာ ကောင်းချီးမင်္ဂလာကို တောင်းခံသည့် အလွန်အရေးကြီးသော ယဉ်ကျေးမှုတစ်ခု ဖြစ်ပါသည်။",
+                dress: "အိန္ဒိယနိုင်ငံတွင် အမျိုးသားများသည် ကုရ်တာ-ပါဂျားမား (kurta-pajama) ကဲ့သို့သော ရိုးရာဝတ်စုံများကို ဝတ်ဆင်ကြပြီး အမျိုးသမီးများသည် ဆာရီ (sari) သို့မဟုတ် ဆာလ်ဝါ-ကမီးဇ် (salwar-kameez) ဝတ်စုံများကို အဓိကဝတ်ဆင်ကြပါသည်။ ဝတ်စားဆင်ယင်ရာတွင် လုံခြုံသိမ်မွေ့ရန် လိုအပ်ပြီး ဘုရားကျောင်းများနှင့် အိမ်များအတွင်းသို့ ဝင်ရောက်သည့်အခါ ဖိနပ်နှင့် ဦးထုပ်များကို ချွတ်ထားခဲ့ခြင်းဖြင့် လေးစားမှုကို ဖော်ပြကြပါသည်။",
+                dos: [" နှုတ်ဆက်ရာတွင် သိုမဟုတ် နှုတ်ဆက်လမ်းခွဲရာတွင် လက်အုပ်ချီ၍ 'Namaste' ဟု ပြောဆိုနှုတ်ဆက်ပါ။",
+                    " ပစ္စည်းများ ပေးခြင်း၊ လက်ခံခြင်းနှင့် အစားအစာ စားသောက်ခြင်းတိုအတွက် ညာဘက်လက်ကိုသာ အသုံးပြုရမည်။ (ဘယ်ဘက်လက်ကို မသန့်ရှင်းဟု ယူဆသောကြောင့်ဖြစ်သည်။)",
+                    "အထူးသဖြင့် အမျိုးသမီးများအနေဖြင့် ပခုံးနှင့် ဒူးများကို ဖုံးအုပ်ထားသော လုံခြုံသိမ်မွေ့သည့် အဝတ်အစားများကို ဝတ်ဆင်ရမည်။",
+                    " ဘုရားကျောင်းများ သိုမဟုတ် တစ်ဦးတစ်ယောက်၏ အိမ်သို မဝင်မီ ဖိနပ်နှင့် ဦးထုပ်များကို ချွတ်ထားခဲ့ရမည်။",
+                    "သက်ကြီးရွယ်အိုများကို အထူးလေးစားစွာ ဆက်ဆံပြီး ဆုံးမစကားနှင့် ကောင်းချီးများကို ခံယူရမည်။"
+                ],
+                donts: ["အမျိုးသားနှင့် အမျိုးသမီးများအကြား အများပြည်သူရှေ့တွင် ထိတွေ့ကိုင်တွယ်ခြင်း သိုမဟုတ် ချစ်ခင်ယုယမှုပြသခြင်းများကို ရှောင်ကြဉ်ရမည်။",
+                    " ဒေသခံလူများကို ဓာတ်ပုံရိုက်လိုပါက ခွင့်ပြုချက် ဦးစွာတောင်းပါ၊ ငြင်းဆိုလျှင် မရိုက်ပါနှင့်။",
+                    "လူများကို ခြေထောက်ဖြင့် ကျော်ခွခြင်း၊ ပစ္စည်းများကို ခြေထောက်ဖြင့် ထိခြင်း သို့မဟုတ် ဘာသာရေးဆိုင်ရာ နေရာများကို ခြေဖဝါးဖြင့် ညွှန်ပြခြင်းများ မပြုလုပ်ပါနှင့်။",
+                    "သားရေဖြင့် ပြုလုပ်ထားသော ခါးပတ်၊ အိတ် စသည့်ပစ္စည်းများကို ဘုရားကျောင်းများအတွင်းသို. ယူဆောင်ခြင်း မပြုပါနှင့်။",
+                    " လမ်းပေါ်တွင် တောင်းရမ်းနေသော ကလေးငယ်များကို ပိုက်ဆံ သို့မဟုတ် မုန့်များ တိုက်ရိုက်ပေးကမ်းခြင်း မပြုပါနှင့်။"
+                ]
+            },
+            indonesia: {
+                name: "Indonesia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRckcTz1SfAxWzsu3bD9DVgRRuxrAdJ9M65TlezYFPyPg&s=10",
+                culture: "အင်ဒိုနီးရှားနိုင်ငံသည် ကျွန်းစုပေါင်းများစွာ ပါဝင်ပြီး ယဉ်ကျေးမှုအထလက္ခဏာ အမျိုးမျိုး စုစည်းရာဒေသဖြစ်သည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ခြင်းနှင့်အတူ လက်ကို အနည်းငယ်ရင်ဘတ်ပေါ်တင်ကာ ယဉ်ကျေးစွာ နှုတ်ဆက်သည်။",
+                dress: "ဘုရားကျောင်းများနှင့် ဗလီများသို့သွားလျှင် ကိုယ်ခန္ဓာကို ဖုံးအုပ်သော အဝတ်အစားများ ဝတ်ဆင်ရမည်።",
+                dos: ["အိမ်တွင်းသို့ ဝင်ရောက်ရာတွင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ဒေါသထွက်ခြင်း၊ အသံကျယ်ကျယ်ဆဲဆိုခြင်း မပြုလုပ်ရပါ။",
+                    "ခေါင်းကို ထိကိုင်ခြင်းနှင့် ခြေထောက်ဖြင့် ပစ္စည်းများကို ညွှန်ပြခြင်း မပြုရပါ။"
+                ]
+            },
+            iran: {
+                name: "Iran",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOsPgYpJilSnAX_7nJQLMyOVoiSY5hg1R6ra7NiMZn-Q&s=10",
+                culture: "အီရန်နိုင်ငံသည် ရှေးဟောင်းပါရှားယဉ်ကျေးမှုကို အခြေခံပြီး ဧည့်ဝတ်ကျေပွန်ခြင်းကို မြတ်နိုးသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသမီးများသည် ခေါင်းစွပ်ပဝါ (Hijab) ကို မဖြစ်မနေ ဝတ်ဆင်ရမည်။",
+                dos: ["အိမ်များသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အမျိုးသမီးများ ခေါင်းစွပ်ပဝါမပါဘဲ အများပြည်သူရှေ့ ထွက်ခြင်း လုံးဝ မလုပ်ရပါ။",
+                    "အစ္စလာမ်ဥပဒေများကို ချိုးဖောက်ခြင်းနှင့် အစိုးရမူဝါဒများကို ပြင်းထန်စွာ ဝေဖန်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            iraq: {
+                name: "Iraq",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDVHW3j6JowoyFyTV3n3i-Yc75U3-UZPL5eb_2YJ-8LA&s=10",
+                culture: "အီရတ်နိုင်ငံသည် မက်ဆိုပိုတေးမီးယား ရှေးဟောင်းယဉ်ကျေးမှု၏ ပင်မစတင်ရာဒေသဖြစ်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာဝတ်စုံများနှင့် အစ္စလာမ်ဓလေ့ထုံးတမ်း လိုက်နာသော ဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်ရှင်များက ဧည့်ခံသော လက်ဖက်ရည် သို့မဟုတ် ကော်ဖီကို ဝမ်းမြောက်စွာ လက်ခံရမည်။"],
+                donts: ["အမျိုးသမီးများနှင့် ပတ်သက်၍ မလျော်ကန်သော အမူအရာ ပြုမူခြင်း မပြုရပါ။",
+                    "ဘယ်လက်ဖြင့် ပစ္စည်းပေးကမ်းခြင်း သို့မဟုတ် စားသောက်ခြင်း မပြုရပါ။"
+                ]
+            },
+            israel: {
+                name: "Israel",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThvA_P-HMlGjXO7itCepjcKJrLPZfcFLpbYBEpSABsAQ&s=10",
+                culture: "အစ္စရေးနိုင်ငံသည် යුဒဲယားယဉ်ကျေးမှုနှင့် ခေတ်မီနည်းပညာထွန်းကားရာ လူ့အဖွဲ့အစည်းဖြစ်သည်။",
+                greetings: "တိုက်ရိုက်ဖော်ရွေစွာ လက်ဆွဲနှုတ်ဆက်ကြပြီး 'ရှာလုမ်' ဟု နှုတ်ဆက်သည်။",
+                dress: "မြို့ပြများတွင် ခေတ်မီအဝတ်အစားများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["ဘာသာရေးဆိုင်ရာ အဆောက်အအုံများသို့ ဝင်လျှင် ဦးခေါင်းကို ဖုံးအုပ်ရန် လိုအပ်နိုင်သည်။"],
+                donts: ["နိုင်ငံရေးနှင့် ဘာသာရေးဆိုင်ရာ အငြင်းပွားဖွယ်ရာများကို ပြင်းထိုးပြောဆိုခြင်း မပြုရပါ။",
+                    "ဂျူးလူမျိုးတို့၏ ဘာသာရေးပွဲတော် 'ရှဗတ်' ရက်များအတွင်း အချို့သော လုပ်ဆောင်ချက်များကို ရှောင်ကြဉ်ရသည်။"
+                ]
+            },
+            japan: {
+                name: "Japan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC7ZlBFZ07zdW4EF9q8_Vyu_e8h9LPiguZRfDuKTZbeA&s=10",
+                culture: "ဂျပန်နိုင်ငံ၏ ယဉ်ကျေးမှုသည် ရှေးဟောင်းရိုးရာဓလေ့များနှင့် ခေတ်မီဆန်းသစ်သော နည်းပညာများ သဟဇာတဖြစ်စွာ ပေါင်းစပ်နေသည့် ကမ္ဘာ့စိတ်ဝင်စားစရာအကောင်းဆုံး ယဉ်ကျေးမှုတစ်ခု ဖြစ်သည်။ ၎င်းတွင် အပြန်အလှန် လေးစားမှု၊ စည်းကမ်းသေဝပ်မှုနှင့် သဘာဝတရားကို တန်ဖိုးထားမှုတို့ အခြေခံထားသည်။",
+                greetings:"ဂျပန်နိုင်ငံတွင် Aisatsu (နှုတ်ဆက်ခြင်း) သည် ရိုသေမှုကိုပြသည့် အရေးကြီးသော ယဉ်ကျေးမှုဖြစ်ပြီး လက်ဆွဲနှုတ်ဆက်ခြင်းထက် အဆင့်အတန်းအလိုက် ၁၅ ဒီဂရီ၊ ၃၀ ဒီဂရီ နှင့် ၄၅ ဒီဂရီ ဟူ၍ ဦးညွှတ်နှုတ်ဆက်ခြင်း (Ojiogi) ကို အဓိကအသုံးပြုကြသည်။ နှုတ်ဆက်စဉ် တစ်ဖက်လူကို တည့်တည့်မကြည့်ဘဲ ￼မျက်လုံးကို အောက်သို့ချထားရမည် ဖြစ်ကာ အချိန်အခါအလိုက် Ohayou Gozaimasu (သို့မဟုတ်) Konnichiwa နှင့် လုပ်ငန်းခွင်သုံး Otsukaresama Desu စသည့် စကားစုများကို ပြုံးရွှင်စွာဖြင့် စနစ်တကျ အသုံးပြုခြင်းက အကောင်းဆုံး အထင်အမြင်ကို ပေးစွမ်းနိုင်ပါသည်,။",
+                dress: "ဂျပန်နိုင်ငံ၏ ဝတ်စားဆင်ယင်မှုတွင် ရိုးရာဝတ်စုံ (ကီမိုနို၊ ယုခါတ၊ ဟခါးမ) များကို တာဘီနှင့် ဂေတာတို့ဖြင့် တွဲဖက်ဝတ်ဆင်သည့် ယဉ်ကျေးမှုနှင့် ခေတ်ပေါ်လမ်းဘေးဖက်ရှင် (Lolita, Cosplay) နှင့် စနစ်တကျဝတ်ဆင်ရသော ဝတ်စုံ (ကျောင်း/ရုံး) များသည် အတူတကွ ဒွန်တွဲတည်ရှိနေပါသည် ။",
+                dos: ["မည်သည့်နေရာတွင်မဆို စနစ်တကျတန်းစီရန်နှင့် လမ်းမများပေါ်တွင် အမှိက်ပုံးရှားပါးသဖြင့် မိမိအမှိက်ကို အိတ်ထဲထည့်၍ ကိုယ်တိုင်ပြန်သယ်သွားရမည်။",
+                    "အစားအစာကို သတ်မှတ်ထားသည့် နေရာတွင်သာ ရပ်၍စားသင့်ပြီး၊ စားသောက်ဆိုင်များတွင် ဝန်ဆောင်ခ (Tips) ပေးရန် မလိုပါ။",
+                    "ရထားနှင့် ဘတ်စ်ကားပေါ်တွင် ဖုန်းပြောခြင်း ရှောင်ကြဉ်ရန်၊ အသံတိုးတိုးဖြင့် ပြောဆိုရန်နှင့် လူကျပ်ပါက ကျောပိုးအိတ်ကို အရှေ့တွင် လွယ်ထားရန် လိုအပ်သည်။",
+                    "အိမ်များ၊ ရိုးရာဟိုတယ် (Ryokan) နှင့် ဘုရားကျောင်းအချိုသို့ ဝင်သည့်အခါ ဝင်ပေါက်တွင် ဖိနပ်ချွတ်၍ အိမ်တွင်းစီးဖိနပ် ပြောင်းစီးရမည်။",
+                    "တူကို ထမင်းပန်းကန်ထဲ စိုက်မထားရဘဲ၊ 'Arigatou Gozaimasu' (ကျေးဇူးတင်ပါသည်) နှင့် 'Sumimasen' (ခွင့်ပြုပါ/အားနာပါသည်) ကဲ့သိုသော ယဉ်ကျေးသည့် စကားလုံးများကို အမြဲသုံးစွဲသင့်သည်,။"
+                ],
+                donts: ["ရထား၊ ဘတ်စ်ကားများပေါ်တွင် ဖုန်းပြောခြင်း သိုမဟုတ် အသံကျယ်ကျယ် ပြောဆိုခြင်းကို ရှောင်ကြဉ်ရမည်ဖြစ်ပြီး နှာချေ၊ ချောင်းဆိုးပါက လုံခြုံစွာအုပ်ထားရမည်။",
+                    "တစ်ဖက်လူ စိတ်မကောင်းမဖြစ်စေရန် 'မရဘူး' ဟု တိုက်ရိုက်ငြင်းဆိုခြင်းထက် သွယ်ဝိုက်၍သာ ပြောဆိုရမည်။",
+                    "နာရေးအခမ်းအနားများနှင့် ဆင်တူသောကြောင့် ထမင်းပန်းကန်ထဲတွင် တူကို စိုက်မထားရသလို၊ တူအချင်းချင်းလည်း အစားအစာ လက်ဆင့်မကမ်းရပါ။",
+                    "လမ်းလျှောက်ရင်း ဆေးလိပ်မသောက်ရဘဲ သူတစ်ပါး (အထူးသဖြင့် ဂေးရှားမများနှင့် ကလေးငယ်များ) ကို ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ခြင်းကို ရှောင်ကြဉ်ရမည်။",
+                    "ငွေပေးချေရာတွင် ဝန်ထမ်းလက်ထဲ တိုက်ရိုက်မပေးဘဲ ဗန်းပြား (Tray) ထဲသိုသာ ထည့်ပေးရမည်ဖြစ်ပြီး တက်တူးရှိပါက အများသုံးနေရာများတွင် ဖုံးကွယ်ထားရန် လိုအပ်သည်။"
+
+                ]
+            },
+            jordan: {
+                name: "Jordan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4ZPlPl-7Uq9UfBhq4iw7juX_w_lmKRd0TeMOKv3t5-w&s=10",
+                culture: "ဂျော်ဒန်နိုင်ငံသည် အာရပ်ရိုးရာ ဧည့်ဝတ်ကျေပွန်မှုနှင့် ငြိမ်းချမ်းမှုကို အခြေခံသော ယဉ်ကျေးမှုရှိသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အစ္စလာမ်ဘာသာရေးနှင့် အာရပ်ရိုးရာ ဓလေ့ထုံးတမ်းနှင့်အညီ သပ်ရပ်စွာ ဝတ်ဆင်ရမည်။",
+                dos: ["အိမ်သို့သွားလျှင် အိမ်ရှင်အား လေးစားမှုပြသရန် ကော်ဖီ သို့မဟုတ် လက်ဖက်ရည်ကို လက်ခံသောက်သုံးရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ခန္ဓာကိုယ်ပေါ်လွင်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "ဘုရင်စနစ်နှင့် မင်းသားများကို မလေးမစား ပြောဆိုခြင်း သို့မဟုတ် ဝေဖန်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            kazakhstan: {
+                name: "Kazakhstan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuMSPbS4m5Mt3KGbn3m6nHMWX5DdK36hSvlHglvW4ohw&s=10",
+                culture: "ကာဇက်စတန်နိုင်ငံသည် မြင်းစီးယဉ်ကျေးမှုနှင့် နိုမက်လူ့အဖွဲ့အစည်း၏ အမွေအနှစ်များကို ထိန်းသိမ်းထားသည်။",
+                greetings: "ညာလက်ကို ရင်ဘတ်ပေါ်တင်၍ ဦးညွှတ်ကာ ဖော်ရွေစွာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ခေတ်မီအဝတ်အစားများနှင့်အတူ ရိုးရာပွဲလမ်းဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်တွင်းသို့ ဝင်ရောက်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["စားသောက်နေစဉ်အတွင်း အစားအစာကို လေလွင့်စေခြင်း မပြုရပါ။",
+                    "အိမ်ရှင်များက ပေးကမ်းသော မြင်းနို့ သို့မဟုတ် အစားအစာများကို ငြင်းပယ်ခြင်းသည် မယဉ်ကျေးရာရောက်သည်။"
+                ]
+            },
+            kuwait: {
+                name: "Kuwait",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLF3aukEJAClr1vyBixpg7atfahfi1ojc0eql0UxZJtg&s=10",
+                culture: "ကူဝိတ်နိုင်ငံသည် အာရပ်ပင်လယ်ကွေ့၏ စီးပွားရေးထွန်းကားရာဖြစ်ပြီး အစ္စလာမ်ယဉ်ကျေးမှုကို တင်းကျပ်စွာ လိုက်နာသည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် သေါဘ် ဝတ်ဆင်ကြပြီး အမျိုးသမီးများသည် အဘါယာ ဝတ်ဆင်သည်။",
+                dos: ["အများပြည်သူနေရာများတွင် ကိုယ်ခန္ဓာကို လုံခြုံစွာ ဖုံးအုပ်ဝတ်ဆင်ရမည်။"],
+                donts: ["အစိုးရနှင့် အစ္စလာမ်ဘာသာရေးကို ပြစ်တင်ဝေဖန်ခြင်း မပြုရပါ။",
+                    "အစ္စလာမ်ဥပဒေနှင့် ဆန့်ကျင်သော အရက်သေစာ သောက်စားခြင်းကို လူသိရှင်ကြား ပြုလုပ်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            kyrgyzstan: {
+                name: "Kyrgyzstan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-qmfZ6V5jAuXLZfsptHZHEkLbdefCgzTG5s3cpNCRA&s=10",
+                culture: "ကៀာဂျစ်စတန်နိုင်ငံသည် တောင်တန်းရှုခင်းများနှင့် နိုမက်လူမျိုးစုတို့၏ ရိုးရာများကို ဂုဏ်ယူသော နိုင်ငံဖြစ်သည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြပြီး အသက်ကြီးသူများကို အထူးဦးစားပေး နှုတ်ဆက်သည်။",
+                dress: "ခေတ်မီအဝတ်အစားများနှင့်အတူ ရိုးရာဦးထုပ်များကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်များသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အိမ်ရှင်များက တည်ခင်းသော လက်ဖက်ရည် သို့မဟုတ် အစားအစာများကို လုံးဝမစားဘဲ ငြင်းပယ်ခြင်း မပြုရပါ။",
+                    "အမျိုးသားများ၏ ရိုးရာဦးထုပ်ကို မြေပြင်ပေါ်သို့ ပစ်ချခြင်း လုံးဝ မလုပ်ရပါ။"
+                ]
+            },
+            laos: {
+                name: "Laos",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfbSWXdURxuJ8zU36M1AaMbG6vK5KPFaJdUF15UcdGoQ&s=10",
+                culture: "လာအိုနိုင်ငံ၏ ယဉ်ကျေးမှုသည် ထေရဝါဒဗုဒ္ဓဘာသာ၊ နတ်ကိုးကွယ်မှု အစဉ်အလာများနှင့် ကွဲပြားစုံလင်သော တိုင်းရင်းသားအမွေအနှစ်များ ပေါင်းစပ်ပါဝင်နေပြီး အသိုင်းအဝိုင်းလိုက် စည်းလုံးမှု၊ လေးစားသမှုရှိမှုနှင့် အေးဆေးတည်ငြိမ်သော လူနေမှုဘဝပုံစံပေါ်တွင် အဓိက အခြေခံထားသည်။",
+                greetings: "လာအိုနိုင်ငံတွင် လက်အုပ်ချီနှုတ်ဆက်သည့် 'နော့ပ်' (Nop) ကို အဆင့်အတန်းအလိုက် ပြုလုပ်ကြပြီး အမျိုးသမီးနှင့် ရဟန်းများကို ထိတွေ့ခြင်း ရှောင်ကြဉ်ရပါသည်။ လက်ရှိ အရင်းအမြစ်များသည် မလေးရှားနိုင်ငံအကြောင်းကိုသာ အဓိကဖော်ပြထားသဖြင့် လောနိုင်ငံ၏ အခြားရိုးရာဓလေ့များကို အသေးစိတ်ဖော်ပြရန် အကန့်အသတ်ရှိပါသည်။",
+                dress: "လာအိုနိုင်ငံတွင် အမျိုးသမီးများသည် ဆင်း (Sinh) ဟုခေါ်သော ရိုးရာထဘီနှင့် ဖားဘီယန်း (Pha Biang) ဟုခေါ်သော ရင်ဖုံးပုဝါကို ဝတ်ဆင်ကြပြီး၊ အမျိုးသားများမှာမူ အခမ်းအနားများတွင် ဆလောင် (Salong) ဟုခေါ်သော ဘောင်းဘီပွများကို ဝတ်ဆင်ကာ လုံခြုံယဉ်ကျေးစွာ ဝတ်စားဆင်ယင်မှုကို အလေးထားကြပါသည်။",
+                dos: ["လက်အုပ်ချီ ဦးညွှတ်၍ 'ဆဘိုင်းဒီ' (Sabaidee) ဟု ပြောဆိုနှုတ်ဆက်ပါ။",
+                    "အိမ်များ၊ ဘုန်းကြီးကျောင်းများနှင့် အချိုသော နေအိမ်ဆိုင်များအတွင်း မဝင်မီ ဖိနပ်ချွတ်ရပါမည်။",
+                    "အထူးသဖြင့် ဘာသာရေးဆိုင်ရာ နေရာများတွင် ပုခုံးနှင့် ဒူးဖုံးအုပ်သော အဝတ်အစားများကို ဝတ်ဆင်ရပါမည်။",
+                    "ပစ္စည်းများ ကမ်းပေးခြင်း သိုမဟုတ် လက်ခံခြင်း ပြုလုပ်ရာတွင် ညာဘက်လက်ကို အသုံးပြုခြင်းက ပို၍ ယဉ်ကျေးပါသည်။",
+                    " လူကြီးများ သိုမဟုတ် ထိုင်နေသူများ၏ ရှေ့မှ ဖြတ်သွားပါက ကိုယ်ကို အနည်းငယ် ကိုင်း၍ သွားခြင်းဖြင့် လေးစားမှုပြပါ။",
+                ],
+                donts: ["အခြားသူ၏ ခေါင်းကို ထိတွေ့ခြင်း သိုမဟုတ် ခေါင်းပေါ်မှ ကျော်ခွခြင်းမျိုး လုံးဝရှောင်ကြဉ်ပါ။",
+                    "ပစ္စည်းများ သိုမဟုတ် လူများကို ခြေထောက်ဖြင့် ညွှန်ပြခြင်း၊ ခြေထောက်ဖြင့် ပစ္စည်းများကို ရွှေ့ခြင်း မပြုလုပ်ရပါ။",
+                    "အမျိုးသမီးများအနေဖြင့် ရဟန်းသံဃာများကို တိုက်ရိုက် ထိတွေ့ခြင်း လုံးဝ ရှောင်ကြဉ်ရပါမည်။",
+                    " လူအများရှေ့တွင် ပွေ့ဖက်ခြင်း သိုမဟုတ် နမ်းခြင်းတိုသည် လာအိုယဉ်ကျေးမှုအရ မသင့်တော်ဟု ယူဆကြသည်။",
+                    "ဒေါသထွက်ခြင်း သိုမဟုတ် အသံကျယ်ကျယ် အော်ဟစ်ပြောဆိုခြင်းသည် တစ်ဖက်လူကို အားနာစေပြီး မိမိ၏ ဂုဏ်သိက္ခာကို ထိခိုက်စေပါသည်။"
+                ]
+            },
+            lebanon: {
+                name: "Lebanon",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3PmaxQBnGOBDYdQUrfQTc0w82UBmUOrJBJ80tKIXsRA&s=10",
+                culture: "လက်ဘနွန်နိုင်ငံသည် အရှေ့အလပိုင်း၏ ယဉ်ကျေးမှု အချက်အချာဖြစ်ပြီး အနုပညာကို အထူးမြတ်နိုးသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ခြင်းနှင့်အတူ ပါးချင်းသုံးကြိမ် အလှည့်ကျအပ်ကာ နှုတ်ဆက်သည်။",
+                dress: "ခေတ်မီ အနောက်တိုင်း ဖက်ရှင်ဝတ်စုံများကို အများဆုံး ဝတ်ဆင်ကြသည်။",
+                dos: ["လူမှုရေးပွဲလမ်းများတွင် သပ်ရပ်လှပစွာ ဝတ်ဆင်သွားရောက်ရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ကိုယ်ကျင့်တရားနှင့် မလျော်ကန်သော အမူအရာများ ပြုမူခြင်း မပြုရပါ။",
+                    "နိုင်ငံရေးနှင့် ဘာသာရေးကွဲပြားမှုဆိုင်ရာ ထိလွယ်ရှလွယ် အကြောင်းအရာများကို အငြင်းပွားဖွယ် မဆွေးနွေးသင့်ပါ။"
+                ]
+            },
+            malaysia: {
+                name: "Malaysia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShWCZ8ssQ1Vvn3KkQmIrcEw5hJYhS2NU3qaVD0UnTZaw&s=10",
+                culture: "မလေးရှားနိုင်ငံတွင် မလေး၊ တရုတ်၊ အိန္ဒိယ နှင့် တိုင်းရင်းသားမျိုးနွယ်စုများ၏ ယဉ်ကျေးမှုများ ကြွယ်ဝစွာ ရောယှက်ပါဝင်နေသည်။ ထိုသို့ ရောယှက်နေမှုက နိုင်ငံ၏ နေ့စဉ်လူနေမှုဘဝ၊ ဘာသာစကား၊ အစားအစာနှင့် အဓိကပွဲတော်များကို ပုံဖော်ပေးထားသည်။ အစ္စလာမ်ဘာသာသည် တရားဝင်ဘာသာဖြစ်သော်လည်း လူအများမှာ ဗုဒ္ဓဘာသာ၊ ဟိန္ဒူဘာသာ၊ ခရစ်ယာန်ဘာသာနှင့် အခြားဘာသာတရားများကို လွတ်လပ်စွာ ကိုးကွယ်ခွင့်ရှိကြသည်။",
+                greetings: "မလေးရှားတွင် နှုတ်ဆက်ရာ၌ ကျား/မ အကြား ထိတွေ့မှုကို ရှောင်ကြဉ်ပြီး တစ်ဖက်လူက လက်ဦးမဆန့်မချင်း လက်ဆွဲနှုတ်ဆက်ခြင်းထက် ရင်ဘတ်ပေါ်လက်တင်၍ ပြုံးကာ ဦးညွှတ်နှုတ်ဆက်ခြင်းက ပိုမိုဘေးကင်း၍ ယဉ်ကျေးပါသည်။ တရုတ်လူမျိုးများသည် လက်ဆွဲနှုတ်ဆက်လေ့ရှိသော်လည်း မလေးနှင့် အိန္ဒိယလူမျိုးများကို နှုတ်ဆက်ရာတွင်မူ တစ်ဖက်လူ၏ အဆင်ပြေမှုကို ကြည့်၍ လိုက်လျောညီထွေစွာ နှုတ်ဆက်ခြင်းဖြင့် အပြန်အလှန်လေးစားမှုကို ပြသသင့်ပါသည်။",
+                dress: "မလေးရှားဝတ်စုံများသည် လူမျိုးအလိုက် ကွဲပြားသော်လည်း လုံခြုံယဉ်ကျေးမှုကို အလေးထားကြပါသည်။ဘာတစ် (Batik) ထည်များကို ရိုးရာဝတ်စုံနှင့် လက်ဆောင်အဖြစ် အမြတ်တနိုး သုံးစွဲကြပြီး၊ ဗလီကျောင်းများတွင်မူ ဂျူးဘား (Jubah) ဝတ်ရုံရှည်နှင့် ခေါင်းပေါင်းများကို စည်းကမ်းတကျ ဝတ်ဆင်ရပါသည်။",
+                dos: ["နေအိမ်များ သိုမဟုတ် ဘာသာရေးဆိုင်ရာ ကျောင်းဆောင်များအတွင်းသို မဝင်မီ ဖိနပ်ချွတ်ရမည်။",
+                    "ဗလီကျောင်းများနှင့် ဘာသာရေးဆိုင်ရာ နေရာများသို သွားရောက်သည့်အခါ ပုခုံးနှင့် ဒူးဖုံးအုပ်သော ယဉ်ကျေးသည့် အဝတ်အစားများကို ဝတ်ဆင်ရမည်။",
+                    "အစားအစာ စားသောက်ခြင်း၊ ပစ္စည်းများ ကမ်းခြင်း သိုမဟုတ် လက်ဆောင်ပေးခြင်းတိုတွင် ညာဘက်လက်ကိုသာ အသုံးပြုရမည်။",
+                    "လက်ဆောင်ပစ္စည်းများ ပေးအပ်ခြင်း သိုမဟုတ် လက်ခံခြင်း ပြုလုပ်သည့်အခါ လေးစားမှု ပြသသည့်အနေဖြင့် လက်နှစ်ဖက်လုံးကို အသုံးပြုရမည်။",
+                    "အိမ်ရှင်က ကျွေးမွေးဧည့်ခံသော အစားအစာ သိုမဟုတ် ဖျော်ရည်ကို ငြင်းပယ်ခြင်းမျိုး မပြုဘဲ လေးစားမှုရှိရန် အနည်းငယ်ဖြစ်စေ မြည်းစမ်းကြည့်ရမည်။",
+                    
+                ],
+                donts: ["အစားအစာများကို ကိုင်တွယ်ခြင်း သိုမဟုတ် စားသောက်ခြင်းတိုတွင် မသန့်ရှင်းဟု ယူဆသော ဘယ်ဘက်လက်ကို လုံးဝမသုံးပါနှင့်။",
+                        "အခြားသူ၏ ခေါင်းကို ထိတွေ့ကိုင်တွယ်ခြင်း သိုမဟုတ် ခြေထောက်ဖြင့် ပစ္စည်းများကို ညွှန်ပြခြင်း၊ ရွှေ့ခြင်းမျိုး မပြုလုပ်ပါနှင့်။",
+                        "ဗလီကျောင်းများတွင် ဝတ်ပြုဆုတောင်းနေသူများ၏ ရှေ့မှ တည့်တည့် ဖြတ်သန်းသွားလာခြင်း မပြုပါနှင့်။ ",
+                        "ပျော်ရွှင်စရာ ပွဲလမ်းသဘင်များနှင့် လက်ဆောင်ထုပ်ပိုးမှုများတွင် နာရေးအရောင်များဖြစ်သော အဖြူ၊ အမည်း သိုမဟုတ် အပြာရောင်များကို ရှောင်ကြဉ်ပါ။",
+                        "လက်ဆောင်ပေးသူ၏ ရှေ့တွင် လက်ဆောင်ပစ္စည်းကို ချက်ချင်းဖွင့်ကြည့်ခြင်း သိုမဟုတ် အများပြည်သူနှင့်ဆိုင်သော နေရာများတွင် အသံကျယ်ကျယ် စကားပြောခြင်း တို့ကို ရှောင်ကြဉ်ပါ။",
+                    "ခေါင်းကို ထိကိုင်ခြင်းနှင့် ဘယ်လက်ဖြင့် ပစ္စည်းပေးကမ်းခြင်း မပြုရပါ။"
+                ]
+            },
+            maldives: {
+                name: "Maldives",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz0SCNxJNO9uRbPbSAipCJPCzyoGCeW_0JV8_x9tjC0g&s=10",
+                culture: "မော်လဒိုက်နိုင်ငံသည် အစ္စလာမ်ဘာသာရေးကို အခြေခံပြီး ခရီးသွားလုပ်ငန်းနှင့် ပင်လယ်ရေကြောင်း ယဉ်ကျေးမှု ထွန်းကားသည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ ဖော်ရွေစွာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ဒေသခံကျွန်းများတွင် ကိုယ်ခန္ဓာကို လုံခြုံစွာ ဝတ်ဆင်ရမည်။",
+                dos: ["ဗလီများသို့ ဝင်ရောက်ရာတွင် သပ်ရပ်လုံခြုံစွာ ဝတ်ဆင်ရမည်။"],
+                donts: ["သတ်မှတ်ထားသော ကမ်းခြေနေရာများမှလွဲ၍ ရေကူးဝတ်စုံဖြင့် သွားလာခြင်း မပြုရပါ။",
+                    "အစ္စလာမ်ဘာသာနှင့် ဆန့်ကျင်သော ပစ္စည်းများ သို့မဟုတ် အရက်သေစာများကို ဒေသခံကျွန်းများသို့ တင်ဆောင်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            mongolia: {
+                name: "Mongolia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdXRFoxF1ZmjJb5UJiOGSzogmsUuFlH15BXfIfkbw-AQ&s=10",
+                culture: "မွန်ဂိုလီးယားနိုင်ငံသည် မြင်းစီးခြင်းနှင့် ဧည့်ဝတ်ကျေပွန်မှုကို အထူးလေးစားသော နိုင်ငံဖြစ်သည်။",
+                greetings: "နှစ်ဖက်လက်များကို ဆန့်တန်း၍ 'ဟာဒါ' လက်ဆောင်ပေးကာ နှုတ်ဆက်သည်။",
+                dress: "ရိုးရာ 'ဒီလ်' ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်ရှင်များက ကမ်းလှမ်းသော လက်ဖက်ရည် သို့မဟုတ် နို့ထွက်ပစ္စည်းကို ညာလက်ဖြင့် လက်ခံရမည်။"],
+                donts: ["အိမ်တွင်းသို့ ဝင်ရောက်သည့်အခါ ဦးထုပ် သို့မဟုတ် ကုတ်အင်္ကျီကို မဆင်မခြင် ချွတ်ပစ်ခြင်း မပြုရပါ။",
+                    "အိမ်တံခါးဘောင်ကို နင်းမိခြင်း သို့မဟုတ် ခွက်ထဲရှိ လက်ဖက်ရည်ကို မြေပြင်သို့ လွှင့်ပစ်ခြင်း လုံးဝ မပြုရပါ။"
+                ]
+            },
+            myanmar: {
+                name: "Myanmar",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcVngYNETYOa9X_zGCbNy0nyyBr6GugyL2qoOWuDyl6w&s=10",
+                culture: "မြန်မာ့ယဉ်ကျေးမှုသည် ဗုဒ္ဓဘာသာတရား၊ တိုင်းရင်းသားလူမျိုးပေါင်းစုံ၏ အစဉ်အလာများ နှင့် ရှေးဟောင်းအမွေအနှစ်များ ပေါင်းစပ်ထားကာ လူကြီးသူမကို ရိုသေခြင်း၊ အလှူအတန်းရက်ရောခြင်းနှင့် ရပ်ရွာအသိုက်အမြုံကို တန်ဖိုးထားခြင်းတို့ဖြင့် ထင်ရှားသည်။",
+                greetings: "တရားဝင်နှုတ်ဆက်ရာတွင် 'မင်္ဂလာပါ'  ဟု သုံးနှုန်းပြီး ခင်မင်ရင်းနှီးသူများအကြားတွင်မူ 'ထမင်းစားပြီးပြီလား' ဟု မေးမြန်း၍ နှုတ်ဆက်လေ့ရှိသည်။ ရဟန်းသံဃာနှင့် လူကြီးသူမများကို လက်အုပ်ချီ၍ အရိုအသေပေး နှုတ်ဆက်ရပါသည်။",
+                dress: "မြန်မာတို့သည် လုံချည် (ပုဆိုးနှင့် ထဘီ) ကို ရိုးရာအင်္ကျီ၊ ညှပ်ဖိနပ် တို့နှင့် တွဲဖက်ဝတ်ဆင်ကြကာ, သဘာဝအလှကုန် သနပ်ခါး ကို လိမ်းခြယ်ခြင်းဖြင့် ရှေးမူမပျက် ရိုးရာအလှအပကို ဖော်ဆောင်ကြသည်,။",
+                dos: ["လူကြီးသူမများကို ခေါ်ဝေါ်ရာတွင် ဦးလေး၊ အဒေါ်၊ အစ်ကို၊ အစ်မ စသည့် နာမ်စားများကို စနစ်တကျ သုံးစွဲရမည် ။",
+                    "စကားပြောဆိုရာတွင် 'ခင်ဗျာ/ရှင်/ဟုတ်ကဲ့' တို့ကို ထည့်သွင်းပြောဆိုရမည့်အပြင် ကျေးဇူးတင်စကား နှင့် အားနာမှု ကိုလည်း ဖော်ပြရမည် ။",
+                    "လူကြီးများထံမှ ပစ္စည်းပေးခြင်း၊ လက်ခံခြင်းပြုရာတွင် လက်နှစ်ဖက်စလုံးကို သုံးရမည် ဖြစ်ပြီး၊ လူကြီးများရှေ့မှ ဖြတ်သွားပါက ကိုယ်ကို ကိုင်းညွတ် သွားလာရမည် ။",
+                    "ဘုရားကျောင်းကန်များ၊ သာသနိကနယ်မြေများနှင့် အိမ်တွင်းသို ဝင်သည့်အခါ ဖိနပ်နှင့် ခြေအိတ်များကို ချွတ်ရန် သတိပြုရမည် ။",
+                    "အစားအသောက်များကို လူကြီးများအား ဦးဦးဖျားဖျား ကျွေးမွေးလှူဒါန်း ရမည်ဖြစ်ပြီး ဘတ်စ်ကားပေါ်တွင် သံဃာတော်များ၊ သက်ကြီးရွယ်အိုများနှင့် ကိုယ်ဝန်ဆောင်များကို နေရာဦးစားပေး ရမည် ။"
+                ],
+                donts: ["မိမိထက် အသက်ကြီးသူ သိုမဟုတ် ရာထူးကြီးသူများကို အမည်တည်းသက်သက် မခေါ်ဘဲ ဂုဏ်ပုဒ်တပ်၍ ခေါ်ဆိုရန်နှင့် သူတစ်ပါး၏ ကိုယ်ရေးကိုယ်တာ မေးခွန်းများ (ဥပမာ - လစာ၊ အသက်၊ အိမ်ထောင်ရေး) မေးမြန်းခြင်းကို ရှောင်ကြဉ်ရမည် ။",
+                    "လူတစ်ဦးခေါင်းသည် ခန္ဓာကိုယ်၏ အမြင့်မြတ်ဆုံးနေရာ ဖြစ်သဖြင့် ကလေးငယ်များကို ချစ်၍ဖြစ်စေ၊ လူကြီးအချင်းချင်းဖြစ်စေ အခြားသူ၏ ခေါင်းကို ကိုင်တွယ်ခြင်း၊ ပုတ်ခြင်း လုံးဝမပြုလုပ်ရပါ။",
+                    " ခြေထောက်သည် အနိမ့်ဆုံးဖြစ်၍ ခြေထောက်ဖြင့် ပစ္စည်းများကို ညွှန်ပြခြင်း သို့မဟုတ် လူကြီးများနှင့် ဘုရားဆင်းတုတော်များရှိရာသို ခြေဆန့်ထိုင်ခြင်းကို အထူးရှောင်ရမည်။",
+                    "လူကြီးသူမများကို ပစ္စည်းပေးအပ်သည့်အခါ လက်တစ်ဖက်တည်းဖြင့် ပစ်ပေးသကဲ့သို မပြုလုပ်ဘဲ စနစ်တကျ ယဉ်ကျေးစွာ ပေးကမ်းရမည်။",
+                    "အမျိုးသမီးများအနေဖြင့် သံဃာတော်များကို တိုက်ရိုက်ထိတွေ့ခြင်း မပြုရန်နှင့် နေ့လယ် ၁၂ နာရီနောက်ပိုင်းတွင် သံဃာတော်များကို အစာ (ဆွမ်း) ကပ်ခြင်းရှောင်ရမည်။"
+                    
+                ]
+            },
+            nepal: {
+                name: "Nepal",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbMo8FoHjYxHoNK81IpmIwVRBR8X0g_X_ZRrFjE39pVQ&s=10",
+                culture: "နီပေါနိုင်ငံသည် ဟိမဝန္တာ တောင်တန်းဒေသ၏ အလှအပများနှင့် ဟိန္ဒူ၊ ဗုဒ္ဓဘာသာ ရောနှောယှက်တင်နေသော ရှေးဟောင်းယဉ်ကျေးမှု ပိုင်ဆိုင်သည်။",
+                greetings: "လက်နှစ်ဖက်ကို ပူးကပ်ကာ 'နမေစတေ' ဟု နှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် ဒေါရာ စူရဝါ ဝတ်ဆင်ကြသည်။",
+             
+                dos: ["အိမ်များ၊ ဘုရားကျောင်းများသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["ဘုရားဆင်းတုတော်များကို ကျောခိုင်း၍ ဓာတ်ပုံရိုက်ခြင်း မပြုရပါ။",
+                    "ဘုရားကျောင်းများနှင့် အထွတ်အမြတ်ထားရာ နေရာများအတွင်း သားရေပစ္စည်းများ ယူဆောင်သွားခြင်း မပြုရပါ။"
+                ]
+            },
+            northkorea: {
+                name: "North Korea",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR19hCdWPEiAYXprgS16jvPQm3_vdesSUAHUGcKKe1fjg&s=10",
+                culture: "မြောက်ကိုရီးယားနိုင်ငံသည် နိုင်ငံတော်ဝါဒနှင့် ခေါင်းဆောင်မှုဆိုင်ရာ ထုံးတမ်းစဉ်လာများကို တင်းကျပ်စွာ စောင့်ထိန်းသည်။",
+                greetings: "ဦးညွှတ်၍ လေးစားသမှုဖြင့် နှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာ ချိုဆွန်အော့ ဝတ်စုံများနှင့် သပ်ရပ်သည့် ဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အထိမ်းအမှတ် အဆောက်အအုံများရှေ့တွင် လေးစားစွာ ဦးညွှတ်ဂါရဝပြုရမည်။"],
+                donts: ["ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ကူးခြင်း မပြုရပါ။",
+                    "နိုင်ငံတော် ခေါင်းဆောင်များ၏ ပုံပါရှိသော ရုပ်ပုံကားချပ်များကို ညစ်ညမ်းစေခြင်း သို့မဟုတ် ခေါက်ခြင်း လုံးဝ မပြုရပါ။"
+                ]
+            },
+            oman: {
+                name: "Oman",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyk0g2pwYgfDLSHWH46J4nairDHHW-E73-d5eyNNXKxg&s=10",
+                culture: "အိုမန်နိုင်ငံသည် အာရပ်ပင်လယ်ကွေ့၏ ရိုးရာယဉ်ကျေးမှုနှင့် တည်ငြိမ်အေးချမ်းမှုကို ထိန်းသိမ်းထားသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် သေါဘ်နှင့်အတူ ခန်ဂျာ ခတ္တာဓားကို ချိတ်ဆွဲကြသည်။",
+                dos: ["အိမ်သို့သွားလျှင် အိမ်ရှင်က တည်ခင်းသော ဘာလီကော်ဖီနှင့် စွန်ပလွန်သီးကို လက်ခံစားသုံးရမည်။"],
+                donts: ["အများပြည်သူနေရာများတွင် မလျော်ကန်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "ခွင့်ပြုချက်မရှိဘဲ ဒေသခံအမျိုးသမီးများကို ဓာတ်ပုံရိုက်ကူးခြင်း တားမြစ်သည်။"
+                ]
+            },
+            pakistan: {
+                name: "Pakistan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC7fy5zHa-BZ8C7a48zvRZQdgzSRfC65S_V30LSZp9Xg&s=10",
+                culture: "ပါကစ္စတန်နိုင်ငံသည် အစ္စလာမ်ယဉ်ကျေးမှုနှင့် ဧည့်ဝတ်ကျေပွန်ခြင်းကို အထူးတန်ဖိုးထားသည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ရှာလဝါ ကမီဇ် ကို အမျိုးသားရော အမျိုးသမီးပါ ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်နှင့် ဗလီများထဲသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ဆန့်ကျင်ဘက်လိင်သားချင်း ထိတွေ့ပြသခြင်း (PDA) မပြုလုပ်ရပါ။",
+                    "ဘယ်လက်ဖြင့် အစားအစာစားသုံးခြင်း သို့မဟုတ် ပစ္စည်းပေးကမ်းခြင်း မပြုရပါ။"
+                ]
+            },
+            palestine: {
+                name: "Palestine",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Palestinian_traditional_embroidery_dress.jpg/800px-Palestinian_traditional_embroidery_dress.jpg",
+                culture: "ပလတ်စတိုင်းနိုင်ငံသည် ကြွယ်ဝသော အာရပ်ရိုးရာ လက်မှုပညာနှင့် ဇာထိုးပန်းထိုး အနုပညာကို ပိုင်ဆိုင်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာပန်းထိုးလက်ရာများပါရှိသော အဝတ်အစားများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်များသို့ အလည်သွားပါက ဧည့်ခံကျွေးမွေးမှုများကို လေးစားစွာ လက်ခံရမည်။"],
+                donts: ["အစ္စလာမ်နှင့် ခရစ်ယာန် ဘာသာရေးနေရာများတွင် မလျော်ကန်သော အဝတ်အစား ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "နိုင်ငံရေးနှင့် ဒေသန္တရ ပဋိပက္ခဆိုင်ရာ အခြေအနေများကို အလွယ်တကူ ဝေဖန်ခြင်း မပြုသင့်ပါ။"
+                ]
+            },
+            philippines: {
+                name: "Philippines",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkMCxizMlhP2j7jijd5VNvzcJgoxDIIRmWAA6nFsq_Ig&s=10",
+                culture: "ဖိလစ်ပိုင်ယဉ်ကျေးမှုသည် မူလအာရှအမြစ်များနှင့် စပိန်၊ အမေရိကန် ကိုလိုနီလွှမ်းမိုးမှုများ ပေါင်းစပ်ထားပြီး ဧည့်ဝတ်ကျေပွန်မှု၊ မိသားစုနှင့် အသိုင်းအဝိုင်း စည်းလုံးမှုကို အဓိကထားပါသည်။",
+                greetings: "ဖိလစ်ပိုင်နိုင်ငံတွင် လူကြီးမိဘများကို ရိုသေမှုပြသသောအားဖြင့် 'မာနိုပို' (Mano Po) ဟုခေါ်သည့် လူကြီး၏လက်ကို မိမိ၏နဖူးပေါ်သို့ ညင်သာစွာတင်၍ နှုတ်ဆက်သည့် အလေ့အထရှိပြီး၊ သူငယ်ချင်းအချင်းချင်း သို့မဟုတ် အဆင့်တူသူများအကြားတွင်မူ လက်ဆွဲနှုတ်ဆက်ခြင်း သို့မဟုတ် ပါးချင်းထိနှုတ်ဆက်ခြင်း (Beso-beso) တို့ကို ပြုလုပ်လေ့ရှိကြပါသည်။",
+                dress: "ဖိလစ်ပိုင်ရိုးရာဝတ်စုံအဖြစ် အမျိုးသားများက နာနတ်လျှော်ဖြင့်ပြုလုပ်သည့် ဘာရွန် (Barong) ကို ဝတ်ဆင်ပြီး၊ အမျိုးသမီးများက လိပ်ပြာတောင်ပံပုံစံ ဘာရိုး ဆာယာ (Baro't Saya) ကို ဝတ်ဆင်ကြပါသည်။",
+                dos: ["လူကြီးမိဘများကို နှုတ်ဆက်ရာတွင် သူတို၏လက်ကို မိမိနဖူးပေါ်သို ညင်သာစွာတင်၍ ရိုသေမှုပြပါ။",
+                    "စကားပြောရာတွင် 'Po' နှင့် 'Opo' ကဲ့သိုသော အဆုံးသတ် စကားလုံးများကို သုံးခြင်းဖြင့် လေးစားမှုပြပါ။ ",
+                    "ဖိလစ်ပိုင်လူမျိုးများသည် ဧည့်သည်ကို နွေးထွေးစွာ ကြိုဆိုတတ်သဖြင့် သူတို၏ ကျွေးမွေးဧည့်ခံမှုကို ကျေးဇူးတင်စွာဖြင့် လက်ခံပါ။",
+                    "အထူးသဖြင့် ဘုရားကျောင်းများကဲ့သိုသော ဘာသာရေးဆိုင်ရာ နေရာများသို သွားရောက်သည့်အခါ ယဉ်ကျေးစွာ ဝတ်ဆင်ပါ။",
+                    "အိမ်တွင်းသို့ မဝင်မီ ဖိနပ်ချွတ်ရန် လို၊ မလို အိမ်ရှင်ကို မေးမြန်းပါ သိုမဟုတ် တံခါးဝရှိ ဖိနပ်များကို ကြည့်၍ လိုက်နာပါ။"
+                ],
+                donts: ["အော်ဟစ်ခြင်း သိုမဟုတ် ဒေါသထွက်ခြင်းသည် တစ်ဖက်လူကို အရှက်ရစေပြီး မိမိ၏ ဂုဏ်သိက္ခာ (Face) ကို ထိခိုက်စေပါသည်။ ",
+                    "လူ သိုမဟုတ် ပစ္စည်းများကို လက်ညှိးဖြင့် ညွှန်ပြခြင်းထက် မျက်စိဖြင့် သိုမဟုတ် နှုတ်ခမ်းဖြင့် (Pouting) ညွှန်ပြတတ်သော ဒေသတွင်း အလေ့အထ ရှိသည်။",
+                    "ကျွေးမွေးသည့် အစားအစာကို လုံးဝငြင်းပယ်ခြင်းထက် အနည်းငယ်ဖြစ်စေ မြည်းစမ်းကြည့်ခြင်းက ပို၍ ယဉ်ကျေးပါသည်။",
+                    "သူစိမ်းများကို အကြာကြီး စိုက်ကြည့်ခြင်းသည် စိန်ခေါ်သကဲ့သို ခံစားရစေနိုင်သဖြင့် ရှောင်ကြဉ်ပါ။",
+                    " ချိန်းဆိုထားသည့် အချိန်ထက် အနည်းငယ် နောက်ကျတတ်သည့် အလေ့အထရှိသည်ကို နားလည်ပေးပါ။"
+                ]
+            },
+            qatar: {
+                name: "Qatar",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThMnPI5mrgb_ZlIFge5YWI3SA3mNI5p1HSBC84BCUt0Q&s=10",
+                culture: "ကာတာနိုင်ငံသည် အာရပ်ပင်လယ်ကွေ့၏ အစ္စလာမ်ယဉ်ကျေးမှုကို ထိန်းသိမ်းထားသည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် သေါဘ်နှင့် အမျိုးသမီးများသည် အဘါယာ ဝတ်ဆင်ရမည်။",
+                dos: ["အိမ်များ၊ ဗလီများသို့ ဝင်လျှင် သပ်ရပ်လုံခြုံစွာ ဝတ်ဆင်ရမည်။"],
+                donts: ["အမျိုးသမီးများ၏ ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ကူးခြင်း မပြုရပါ။",
+                    "အများပြည်သူနေရာများတွင် ကိုယ်အင်္ဂါပေါ်လွင်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            saudiarabia: {
+                name: "Saudi Arabia",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtQejOSYQeWRBsaT6Wy5sdBiORd3BrDcStmSscnsZ3YA&s=10",
+                culture: "ဆော်ဒီအာရေဗျနိုင်ငံသည် အစ္စလာမ်ဘာသာ၏ ပင်မဗဟိုဌာနဖြစ်ပြီး ရှေးဟောင်းအာရပ်ရိုးရာ ဧည့်ဝတ်ကျေပွန်မှုကို အထူးလေးစားသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ကိုယ်ခန္ဓာနှင့် ခြေထောက်များကို လုံခြုံစွာ ဖုံးအုပ်သော အဝတ်အစားများ ဝတ်ဆင်ရမည်။",
+                dos: ["အိမ်သို့သွားလျှင် အာရပ်ကော်ဖီနှင့် စွန်ပလွန်သီးကို လက်ခံရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ဆန့်ကျင်ဘက်လိင်သားချင်း ထိတွေ့ပြသခြင်း မပြုရပါ။",
+                    "အစ္စလာမ်ဘာသာရေးနှင့် ဆန့်ကျင်သော လုပ်ရပ်များနှင့် အရက်သေစာ သောက်စားခြင်း လုံးဝ မပြုလုပ်ရပါ။"
+                ]
+            },
+            singapore: {
+                name: "Singapore",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3aadsNFFXIG9Y8hP82sBs1t9PJ46l6SpR1DCwnBMbyQ&s=10",
+                culture: "စင်ကာပူနိုင်ငံသည် လူမျိုးစုံ နေထိုင်ကြပြီး စည်းကမ်းသေသပ်မှုနှင့် ဥပဒေစိုးမိုးမှုကို အလေးထားသည်။",
+                greetings: "စင်ကာပူတွင် လူမျိုးအလိုက် နှုတ်ဆက်ပုံကွဲပြားသော်လည်း လိပ်စာကတ်ကို လက်နှစ်ဖက်ဖြင့် လဲလှယ်ခြင်း၊ လူကြီးကိုဦးစားပေးခြင်းနှင့် လက်ညှိုးမသုံးဘဲ လက်ဖဝါးဖြင့် ညွှန်ပြခြင်းတို့ကို အလေးထားလိုက်နာရပါမည်။",
+                dress: "စင်ကာပူတွင် လူမျိုးစုအလိုက် တရုတ် (Cheongsam/Changshan)၊ မလေး (Baju Kurung/Melayu)၊ အိန္ဒိယ (Saree/Kurta) နှင့် ထူးခြားလှပသော ပီရာနကန် (Nyonya Kebaya) စသည့် ကိုယ်ပိုင်ဟန်ရှိသော ရိုးရာဝတ်စုံများ ရှိကြပါသည်။ ဤဝတ်စုံများကို ပွဲလမ်းသဘင်များနှင့် နေ့ထူးနေ့မြတ်များတွင် ဝတ်ဆင်ကြပြီး နိုင်ငံ၏ စုံလင်ကွဲပြားသော ယဉ်ကျေးမှု အမွေအနှစ်များကို ပေါ်လွင်စေပါသည်။ခေတ်မီ အနောက်တိုင်း ဝတ်စုံများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["Food Court နှင့် Hawker Center များတွင် စားပြီးပါက ပန်းကန်နှင့် လင်ဗန်းကို Tray Return Station သို ကိုယ်တိုင် ပြန်သိမ်းရပါမည်။",
+                    "အလျင်လိုသူများ ဘယ်ဘက်အခြမ်းမှ ကျော်တက်သွားနိုင်ရန်အတွက် စက်လှေကားပေါ်တွင် ညာဘက်ကပ်ရပ်ပေးရပါမည်။",
+                    "ရထားစီးခြင်း၊ ဘတ်စ်ကားစီးခြင်းနှင့် အစားအသောက်ဝယ်ခြင်းတို့တွင် ဘယ်တော့မှ ကြားဖြတ်မတိုးဘဲ တန်းစီရပါမည်။",
+                    " ငွေချေသည့်အခါ သိုမဟုတ် တစ်ဦးနှင့်တစ်ဦး လိပ်စာကတ်၊ ပစ္စည်းများ ကမ်းပေးသည့်အခါ လက်နှစ်ဖက်စလုံးဖြင့် ယဉ်ကျေးစွာ ပေးရပါမည်။",
+                    " ဆေးလိပ်ကို လမ်းဘေးရှိ အဝါရောင်စည်းတားထားသော နေရာ (Smoking Area) တွင်သာ သောက်ရပါမည်။ (Vape မှာမူ လုံးဝတရားမဝင်ပါ)။",
+                ],
+                donts: ["လမ်းပေါ်တွင် အမှိက်ပစ်မိပါက ဒေါ်လာ ၃၀၀ မှစ၍ ဒဏ်ငွေ ချက်ချင်းရိုက်ခံရပါမည်။",
+                    "MRT ရထားနှင့် ဘူတာရုံများအတွင်း ရေအပါအဝင် မည်သည့် အစားအသောက်မျှ စားသောက်ခွင့်မရှိပါ (ဒဏ်ငွေ ဒေါ်လာ ၅၀၀ ထိ ကျသင့်နိုင်သည်)။",
+                    " စင်ကာပူသို ပီကေ (Chewing Gum) ယူဆောင်လာခြင်းနှင့် လမ်းပေါ်တွင် ဝါးပြီး ထွေးချခြင်းကို ဥပဒေအရ တားမြစ်ထားသည်။",
+                    "လူကူးမျဉ်းကြား သိုမဟုတ် ခုံးကျော်တံတား မဟုတ်သည့်နေရာမှ လမ်းဖြတ်ကူးခြင်း (Jaywalking) လုံးဝမပြုလုပ်ရပါ။",
+                    " အနံ့ပြင်းထန်သောကြောင့် ဘတ်စ်ကားနှင့် ရထားများပေါ်သို ဒူးရင်းသီး ယူဆောင်ခွင့်မပြုပါ။"
+                ]
+            },
+            southkorea: {
+                name: "South Korea",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRALHcAA-JbkhjqECnYTJKkDN10TaMn-rUewId5Z7MQw&s=10",
+                culture: "တောင်ကိုရီးယားယဉ်ကျေးမှု (Culture) သည် ရှေးဟောင်းရိုးရာ အစဉ်အလာများနှင့် ခေတ်မီနည်းပညာ၊ ကမ္ဘာကျော် ဟယ်လျူ (Hallyu) ခေါ် ကိုရီးယားလှိုင်း ဖျော်ဖြေရေးတို့ ရောစပ်နေပြီး အသက်ကြီးသူကို ရိုသေခြင်း၊ အုပ်စုဖွဲ့လုပ်ဆောင်ခြင်းနှင့် ပညာရေးကို အထူးတန်ဖိုးထားခြင်းတို့အပေါ် အခြေခံထားသည်။",
+                greetings: "ခါးကို အနည်းာင်ကိုရီးယား အလုပ်ခွင်တွင် အဆင့်အတန်းကို လေးစားသောအားဖြင့် ဦးညွှတ်နှုတ်ဆက်ခြင်း (၁၅ ဒီဂရီမှ ၄၅ ဒီဂရီအထိ) ကို စနစ်တကျ ပြုလုပ်ရပြီး  လိပ်စာကတ်များကို လူတစ်ဦးချင်းစီ၏ ကိုယ်စားပြုအဖြစ် သတ်မှတ်ကာ လက်နှစ်ဖက်ဖြင့် ရိုသေစွာ လဲလှယ်ရပါသည်။ ရိုးရာနေ့ထူးနေ့မြတ်များတွင် လူကြီးမိဘများကို ဒူးထောက်ဦးချခြင်း  ဖြင့် အမြင့်ဆုံး လေးစားမှုပြသကြကာ မင်္ဂလာဆောင်နှင့် နာရေးကဲ့သို အခမ်းအနားများသို ကိုယ်တိုင်တက်ရောက်၍ ငွေကြေးလက်ဆောင် ပေးအပ်ခြင်း မှာလည်း မပျက်မကွက် လိုက်နာရမည့် လူမှုရေးတာဝန်တစ်ခု ဖြစ်ပါသည်။ငယ်ကိုင်း၍ ဦးညွှတ် နှုတ်ဆက်ကြသည်။",
+                dress: "ကိုရီးယားရိုးရာဝတ်စုံ (Hanbok) သည် ခန္ဓာကိုယ်အလှထက် လိုင်းအကွေးအဆန့်နှင့် သဘာဝအရောင်အသွေး လှပမှုကို ဦးစားပေးသည့် ဒီဇိုင်းဖြစ်ပြီး၊ ယနေ့ခေတ်တွင် နှစ်သစ်ကူး (Seollal)၊ ချူဆော့ (Chuseok) နှင့် မင်္ဂလာဆောင်များကဲ့သို့သော ရိုးရာနေ့ထူးနေ့မြတ်များတွင်သာ အဓိက ဝတ်ဆင်ကြပါသည်။။",
+                dos: [" လူကြီး သိုမဟုတ် ရာထူးကြီးသူထံမှ ပစ္စည်း (သို.) ပိုက်ဆံ ပေးလျှင်/ယူလျှင် လက်နှစ်ဖက်စလုံး သုံးရမည်။",
+                "လူကြီးများ သိုမဟုတ် ပထမဆုံးတွေ့ဖူးသူများကို အရိုအသေပေးသည့်အနေဖြင့် ခါးကိုင်းညွှတ် နှုတ်ဆက်ရမည်။",
+                " အိမ်များ၊ ရိုးရာစားသောက်ဆိုင်များနှင့် ဘုရားကျောင်းများထဲသို ဝင်သည့်အခါ ဖိနပ်ချွတ်ရမည်။",
+                "အများပြည်သူသုံး သယ်ယူပိုဆောင်ရေးယာဉ်များပေါ်တွင် ဖုန်းအကျယ်ကြီးပြောခြင်းကို ရှောင်ရမည်။",
+                "ကိုရီးယားတွင် အမှိူက်ကို အမျိုးအစားအလိုက် (အစားအသောက်၊ ပလတ်စတစ်၊ စက္ကူ) အသေအချာ ခွဲပစ်ရမည်။"
+
+                ],
+                donts: ["ဝိုင်းတွင် အသက်အကြီးဆုံးလူက ဇွန်း/တူ ကို စတင်မကိုင်မချင်း အခြားသူများ စားခွင့်မရှိပါ။",
+                "ထမင်းပန်းကန်ထဲ တူကို စိုက်ထောင်ထားခြင်းသည် နာရေးအခမ်းအနားကို သတိရစေသဖြင့် အလာမကောင်းဟု ယူဆသည်။",
+                "အရက် (သို) ရေ ငှဲပေးသည့်အခါ ညာလက်ဖြင့် ကန်တော့အိုးကို ကိုင်ပြီး ဘယ်လက်ဖြင့် ညာလက်ကောက်ဝတ်ကို ထိန်း၍ ငှဲရမည်။",
+                "မှင်နီဖြင့် နာမည်ရေးခြင်းသည် ကွယ်လွန်သူများကို ရည်ညွှန်းခြင်း ဖြစ်သည်ဟု ယူဆသဖြင့် လုံးဝရှောင်ရမည်။",
+                "ဘတ်စ်ကား သိုမဟုတ် မြေအောက်ရထားပေါ်တွင် ထိုခုံများ လွတ်နေသော်လည်း ဝင်မထိုင်ရပါ။",
+                "လူတစ်ယောက်ကို ညွှန်ပြလိုလျှင် လက်ဖဝါးကို အပေါ်ထောင်၍ ပြရမည်။ လက်ညှိးထိုးခြင်းသည် ရိုင်းပျသည်။"
+                ]
+            },
+            srilanka: {
+                name: "Sri Lanka",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZvQVRMSkwXzAAI_imU4CBTQs3ucs--UBEAppt_ZSfLw&s=10",
+                culture: "သီရိလင်္ကာနိုင်ငံသည် ထေရဝါဒ ဗုဒ္ဓဘာသာ ယဉ်ကျေးမှုနှင့် သဘာဝအလှတရားများ ထွန်းကားသော ကျွန်းနိုင်ငံဖြစ်သည်။",
+                greetings: "လက်နှစ်ဖက်ကို ပူးကပ်ကာ 'ආයුබෝවන්' ဟု နှုတ်ဆက်သည်။",
+                dress: "ပုခုံးနှင့် ဒူးဆစ် ဖုံးအုပ်ရမည်။",
+                dos: ["ဘုရားကျောင်းကန်များနှင့် အိမ်များထဲသို့ ဝင်လျှင် ဖိနပ်နှင့် ခြေအိတ်များကို ချွတ်ရမည်။"],
+                donts: ["ဘုရားဆင်းတုတော်များကို လက်ညှိုးထိုး၍ ညွှန်ပြခြင်း မပြုရပါ။",
+                    "ဗုဒ္ဓဆင်းတုတော်များရှေ့တွင် ကျောပေး၍ ဓာတ်ပုံရိုက်ကူးခြင်း လုံးဝ မပြုလုပ်ရပါ။"
+                ]
+            },
+            syria: {
+                name: "Syria",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ0yRz2... (syria unique image)",
+                culture: "ဆီးရီးယားနိုင်ငံသည် ရှေးဟောင်း သမိုင်းဝင်မြို့ပြများနှင့် ဧည့်ဝတ်ကျေပွန်သော အာရပ်ရိုးရာ အလေ့အထများ ပိုင်ဆိုင်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အာရပ်ရိုးရာ ဝတ်စုံများနှင့် သပ်ရပ်သော အဝတ်အစားများကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်ရှင်များက တည်ခင်းဧည့်ခံသော လက်ဖက်ရည် သို့မဟုတ် အစားအစာများကို ဝမ်းမြောက်စွာ လက်ခံရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် မလျော်ကန်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "ဘယ်လက်ဖြင့် အစားအစာစားသုံးခြင်း သို့မဟုတ် ပစ္စည်းပေးခြင်း မပြုရပါ။"
+                ]
+            },
+            tajikistan: {
+                name: "Tajikistan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhO2srcwZl_1ddkyfAVniNiOeHaHPkYQf7T3hE62IhjA&s=10",
+                culture: "တာဂျစ်ကိစတန်နိုင်ငံသည် ပါရှန်ယဉ်ကျေးမှုကို အခြေခံပြီး တောင်တန်းဒေသ ရိုးရာဓလေ့ထုံးတမ်းများကို မြတ်နိုးသည်။",
+                greetings: "ညာလက်ကို ရင်ဘတ်ပေါ်တင်၍ ဦးညွှတ်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ခေတ်မီဝတ်စုံများနှင့်အတူ ရိုးရာဦးထုပ်များကို ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်တွင်းသို့ ဝင်ရောက်သည့်အခါ ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["စားပွဲပေါ်ရှိ ပေါင်မုန့်ကို မျက်နှာမူရာ အောက်ဘက်သို့ လှန်၍ တင်ထားခြင်း မပြုရပါ။",
+                    "အိမ်ရှင်များက ဧည့်ခံသော ပေါင်မုန့် သို့မဟုတ် လက်ဖက်ရည်ကို လုံးဝပစ်ပယ်ခြင်း မပြုရပါ။"
+                ]
+            },
+            thailand: {
+                name: "Thailand",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_oNy2KRZwLeQ8ME7m6dz3lKCSXWS99L_ezZYYsP4nLg&s=10",
+                culture: "ထိုင်းနိုင်ငံ၏ ယဉ်ကျေးမှုသည် ဗုဒ္ဓဘာသာတရား၊ တော်ဝင်မိသားစုအပေါ် သစ္စာစောင့်သိမှုနှင့် ရိုသေနှိမ့်ချမှုတို့အပေါ် အခြေခံထားပြီး အိန္ဒိယ၊ တရုတ်နှင့် အရှေ့တောင်အာရှ ရိုးရာဓလေ့များ ပေါင်းစပ်နေသည်။ထိုင်းတို့သည် လောကဝတ်ပြေပြစ်ခြင်း၊ အပြုံးချိုခြင်းနှင့် ပျော်ပျော်နေတတ်ခြင်းတို့ကြောင့် လူသိများသည်။ထိုင်းနိုင်ငံ၏ ယဉ်ကျေးမှုသည် ထေရဝါဒဗုဒ္ဓဘာသာတရား၊ တော်ဝင်မိသားစုအပေါ် သစ္စာစောင့်သိမှုနှင့် ရိုသေနှိမ့်ချမှုတို့အပေါ် အခြေခံထားပြီး ပြုံးပျော်ရွှင်တတ်သော လူနေမှုပုံစံကြောင့် 'ပြုံးပျော်ရာနိုင်ငံ' ဟု ကျော်ကြားသည်။",
+                greetings: "ထိုင်းရိုးရာ 'ဝိုင်း' (Wai) နှုတ်ဆက်ခြင်းသည် လက်အုပ်ချီဦးညွှတ်၍ လေးစားမှုပြခြင်းဖြစ်ပြီး၊ လူမှုအဆင့်အတန်းအလိုက် လက်အနေအထားကွဲပြားကာ ငယ်သူက ကြီးသူကို ဦးစွာနှုတ်ဆက်ရသည့် အရေးကြီးသော လူမှုဓလေ့တစ်ခုဖြစ်ပါသည်။",
+                dress: "ထိုင်းရိုးရာ 'ချူထိုင်း' ဝတ်စုံသည် အမျိုးသမီးများအတွက် ချက္ကရီနှင့် စီဝါလိုင်၊ အမျိုးသားများအတွက် ဖရာရတ်ချာသန်ဟူ၍ ပုံစံအမျိုးမျိုးရှိပြီး မင်္ဂလာဆောင်နှင့် ရိုးရာပွဲတော်များကဲ့သို့သော အရေးကြီးသည့် အခမ်းအနားများတွင် အလေးထားဝတ်ဆင်ကြသည့် ယဉ်ကျေးမှုအနုပညာတစ်ခု ဖြစ်ပါသည်။",
+                dos: ["စကားပြောတိုင်း နောက်ပိတ်ဆုံးတွင် 'ခရပ်ဗ်/ခါး' ထည့်ပြောရန်နှင့် လက်အုပ်ချီ၍ 'ဝိုင်း' (Wai) ဖြင့် ယဉ်ကျေးစွာ နှုတ်ဆက်ရမည်။",
+                    "လူကြီးသူမများနှင့် သံဃာတော်များရှေ့မှ ဖြတ်သွားလျှင် ကိုယ်ကိုအနည်းငယ် ကိုင်းညွှတ်၍ သွားရန်နှင့် ပြုံးပြရမည်။",
+                    "ပစ္စည်းများ သိုမဟုတ် ငွေကြေးများကို ပေးကမ်းခြင်းနှင့် လက်ခံခြင်းပြုရာတွင် လက်နှစ်ဖက်စလုံးကို အသုံးပြုရမည်။",
+                    "ဘုရားကျောင်းဆောင်များနှင့် အိမ်များအတွင်းသို ဝင်လျှင် ဖိနပ်ချွတ်ရန်နှင့် သာသနိကနေရာများတွင် လုံခြုံစွာ ဝတ်ဆင်ရမည်။",
+                    "အများပြည်သူကြားတွင် ဒေါသထွက်ခြင်းကို ရှောင်ကြဉ်ပြီး ဗုဒ္ဓဆင်းတုတော်များအနီးတွင် ရိုသေလေးစားစွာ ပြုမူရမည်။"
+                ],
+                donts: ["ဘုရင်နှင့် တော်ဝင်မိသားစုကို ဝေဖန်ခြင်း၊ မလေးစားခြင်း သိုမဟုတ် ဘုရင့်ပုံပါသော ပိုက်ဆံနှင့် ဒင်္ဂါးပြားများကို ခြေထောက်ဖြင့် နင်းခြင်း မပြုရပါ။",
+                "ဦးခေါင်းကို အမြင့်မြတ်ဆုံးဟု ယူဆသဖြင့် သူတပါးခေါင်းကို မကိုင်ရပါ။ ခြေထောက်ကို အနိမ့်ဆုံးဟု ယူဆသဖြင့် ခြေဖဝါးဖြင့် လူ သိုမဟုတ် ဘုရားဆင်းတုတော်ဘက်သို မညွှန်ရပါ။",
+                "လူပုံအလယ်တွင် အော်ဟစ်ခြင်းနှင့် ဒေါသထွက်ခြင်းကို ရှောင်ကြဉ်ပါ (မျက်နှာပျက်စရာ ဖြစ်စေနိုင်သောကြောင့်ဖြစ်သည်)။ လူတစ်ဦးကို ညွှန်ပြလိုလျှင် လက်ညှိးမထိုးဘဲ လက်ဝါးဖြန့်၍သာ ပြရမည်။",
+                "အများပြည်သူကြားတွင် ဖက်ခြင်း သိုမဟုတ် နမ်းခြင်းကဲ့သိုသော ရိုးရာအရ လက်မခံသည့် အပြုအမူများကို ရှောင်ကြဉ်ရမည် (လက်တွဲရုံကိုသာ ခွင့်ပြုသည်)။",
+                "အမျိုးသမီးများသည် သံဃာတော်များကို တိုက်ရိုက်ထိတွေ့ခြင်း သိုမဟုတ် ပစ္စည်းကို လက်ကမ်းပေးခြင်း မပြုရပါ။"
+
+                ]
+            },
+            timorleste: {
+                name: "Timor-Leste",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK6sqCAJqrZ51vxF6y0iY7G-B47hVjADx5OKOPRt4S-Q&s=10",
+                culture: "တီမောလက်စတေ နိုင်ငံသည် ကက်သလစ်ဘာသာရေးကို အခြေခံသည်။",
+                greetings: "ဖော်ရွေစွာ လက်ဆွဲနှုတ်ဆက်ကာ ပြုံးပြနှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာ လက်ရက်ကန်းအထည်များကို အထူးပွဲများတွင် ဝတ်ဆင်ကြသည်။",
+                dos: ["အကြီးအကဲများနှင့် မိသားစုများကို လေးစားစွာ ဆက်ဆံရမည်။"],
+                donts: ["အများပြည်သူရှေ့တွင် ဒေါသတကြီး အော်ဟစ်ခြင်း မပြုရပါ။",
+                    "ဒေသခံတို့၏ အထွတ်အမြတ်ထားရာ သဘာဝနေရာများကို မလေးမစား ပြုမူခြင်း တားမြစ်သည်။"
+                ]
+            },
+            turkey: {
+                name: "Turkey",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcPWH5L45nZCdB3Yqfg1KZ_FizI-1EisiUN29PQe_zZg&s=10",
+                culture: "တူရကီနိုင်ငံသည် အရှေ့နှင့်အနောက် ယဉ်ကျေးမှုများ ဆုံရာဖြစ်ပြီး ဧည့်ဝတ်ကျေပွန်မှုကို တန်ဖိုးထားသည်။",
+                greetings: "လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "မြို့ပြများတွင် ခေတ်မီအနောက်တိုင်း ဝတ်စုံများ ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်များ၊ ဗလီများထဲသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["စားသောက်နေစဉ်အတွင်း သွားကြားထိုးတံကို အများရှေ့တွင် အကာအကွယ်မပါဘဲ သုံးခြင်း မပြုရပါ။",
+                    "နိုင်ငံတော် တည်ထောင်သူ အတาทုက် ကို မလေးမစား ပြုမူပြောဆိုခြင်း လုံးဝ မပြုလုပ်ရပါ။"
+                ]
+            },
+            turkmenistan: {
+                name: "Turkmenistan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlt_MjdG-G6xdOOn81XBgpJeZ2fVKunC1yqBV9SbRIfQ&s=10",
+                culture: "တာ့ခ်မင်နစ္စတန်နိုင်ငံသည် ပိုးထည်လက်မှုပညာနှင့် အာရှအလယ်ပိုင်း ရိုးရာဓလေ့များကို ထိန်းသိမ်းထားသည်။",
+                greetings: "ညာလက်ကို ရင်ဘတ်ပေါ်တင်၍ လေးစားစွာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာသိုးမွှေးဦးထုပ်ကြီးများနှင့် ရိုးရာပန်းထိုး ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်တွင်းသို့ ဝင်ရောက်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အိမ်ရှင်များက တည်ခင်းသော မုန့် သို့မဟုတ် လက်ဖက်ရည်ကို လုံးဝငြင်းပယ်ခြင်း မပြုရပါ။",
+                    "အစိုးရမူဝါဒများနှင့် နိုင်ငံတော်အထိမ်းအမှတ်များကို ပြစ်တင်ဝေဖန်ခြင်း မပြုရပါ။"
+                ]
+            },
+            uae: {
+                name: "UAE",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHjd9mZe7v6ERzv8Va1YESXa7zgI6Wk4qeeHK8__R-jg&s=10",
+                culture: "ယူအေအီးနိုင်ငံသည် အစ္စလာမ်ယဉ်ကျေးမှုကို အခြေခံသော်လည်း ခေတ်မီတိုးတက်မှုနှင့် လူမျိုးစုံ နေထိုင်ရာ ဒေသဖြစ်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် အဖြူရောင် သေါဘ် ဝတ်ဆင်ကြသည်။",
+                dos: ["အများပြည်သူနေရာများတွင် ယဉ်ကျေးသိမ်မွေ့စွာ ဝတ်ဆင်သွားလာရမည်။"],
+                donts: ["အမျိုးသမီးများ၏ ခွင့်ပြုချက်မရှိဘဲ ဓာတ်ပုံရိုက်ကူးခြင်း လုံးဝ မပြုလုပ်ရပါ။",
+                    "အများပြည်သူနေရာများတွင် ကိုယ်အင်္ဂါပေါ်လွင်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း တားမြစ်သည်။"
+                ]
+            },
+            uzbekistan: {
+                name: "Uzbekistan",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFI7LeHuQ6BzS9bIvcuCHQZ9X0fBnXnsAryb7hErvJPw&s=10",
+                culture: "ဥဇဘက်ကစ္စတန်နိုင်ငံသည် ပိုးလမ်းမကြီး၏ သမိုင်းဝင် ဗိသုကာလက်ရာများကို ဂုဏ်ယူသော နိုင်ငံဖြစ်သည်။",
+                greetings: "ညာလက်ကို ရင်ဘတ်ပေါ်တင်၍ ဦးညွှတ်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ရိုးရာစိန်ပန်းထိုး ဝတ်စုံများနှင့် ဦးထုပ်များ ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်များသို့ ဝင်လျှင် ဖိနပ်ချွတ်ရမည်။"],
+                donts: ["အိမ်ရှင်များက ကမ်းလှမ်းသော လက်ဖက်ရည်ကို လုံးဝငြင်းပယ်ခြင်း မပြုရပါ။",
+                    "စားပွဲပေါ်ရှိ ပေါင်မုန့်ကို မျက်နှာမူရာ အောက်ဘက်သို့ လှန်၍ တင်ခြင်း မပြုရပါ။"
+                ]
+            },
+            vietnam: {
+                name: "Vietnam",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_sqUUsRmUf-pCLfXjmEhZarrQy5PDg8oaYXmfsevGZQ&s=10",
+                culture: "ဗီယက်နမ်နိုင်ငံ၏ ယဉ်ကျေးမှုသည် ရှေးဟောင်းအရှေ့အာရှနှင့် တရုတ်တို့၏ လွှမ်းမိုးမှုများ၊ ဗုဒ္ဓဘာသာ၊ ကွန်ဖြူရှပ်ဝါဒနှင့် သဘာဝကိုးကွယ်မှုတို့ ရောနှောပေါင်းစပ်ထားပြီး မိသားစုကို အထူးတန်ဖိုးထားကာ ထူးခြားသော ရိုးရာဝတ်စုံနှင့် အစားအစာများဖြင့် ကြွယ်ဝသည်။",
+                greetings: "ဗီယက်နမ်နိုင်ငံတွင် 'Xin Chào' ဟုပြော၍ နှုတ်ဆက်ကြပြီး လူကြီးများကို ဦးခေါင်းညွတ်၍ လေးစားမှုပြသရပါသည်။ အမျိုးသားအချင်းချင်း လက်ဆွဲနှုတ်ဆက်လေ့ရှိသော်လည်း အမျိုးသမီးများကိုမူ ၎င်းတို့ဘက်က လက်စတင်မပေးလျှင် ဦးခေါင်းညွတ်ရုံသာ နှုတ်ဆက်သင့်ပြီး အသက်အရွယ်အလိုက် ￼နာမ်စားများကို မှန်ကန်စွာသုံးစွဲခြင်းသည် အရေးကြီးပါသည်။",
+                dress: "ဗီယက်နမ်နိုင်ငံတွင် အိုဒိုင်း (Áo Dài)၊ နွန်လာ (Nón Lá) နှင့် အိုဘားဘာ (Áo Bà Ba) ကဲ့သို့သော ရိုးရာဝတ်စုံများကို ဝတ်ဆင်သည့်အပြင်၊ နေ့စဉ်ဘဝတွင် ခေတ်ပေါ်အနောက်တိုင်းဝတ်စုံများကိုလည်း စနစ်တကျ တွဲဖက်ဝတ်ဆင်ကြပါသည်။",
+                dos: ["ပစ္စည်းများ၊ လက်ဆောင်များ သိုမဟုတ် လိပ်စာကတ်များကို ပေးကမ်းခြင်းနှင့် လက်ခံခြင်းပြုရာတွင် လက်နှစ်ဖက်စလုံးကို အသုံးပြု၍ လေးစားမှုကို ပြသရပါမည်။",
+                    "အစားအသောက် စားသည့်အခါ သိုမဟုတ် တံခါးအဝင်အထွက် ပြုလုပ်သည့်အခါ အသက်ကြီးသူများကို အရင်စတင်ခွင့် ပေးရပါမည်။",
+                    "ဒေသခံများ၏ နေအိမ် သိုမဟုတ် ဘုရားကျောင်းများထဲသို မဝင်မီ ဖိနပ်ကို အမြဲချွတ်ရပါမည်။",
+                    "စကားပြောဆိုသည့်အခါ မျက်လုံးချင်း ဆုံကြည့်ခြင်းဖြင့် အလေးထားမှုကို ပြသပြီး၊ အားနာစရာ သိုမဟုတ် အမှားအယွင်းရှိသည့် အခြေအနေမျိုးတွင် အပြုံးဖြင့် တုံပြန်ခြင်းဖြင့် အခြေအနေကို ပြေလည်စေနိုင်ပါသည်။",
+                    "တစ်ဖက်လူ၏ အသက်အရွယ်နှင့် အဆင့်အတန်းအလိုက် နာမ်စားများကို မှန်ကန်စွာ သုံးစွဲခြင်း (ဥပမာ - Anh, Chị) နှင့် 'Xin Chào' (မင်္ဂလာပါ)၊ 'Cảm ơn' (ကျေးဇူးတင်ပါသည်) ကဲ့သိုသော ဗီယက်နမ်စကားများကို အသုံးပြုခြင်းဖြင့် ပိုမိုရင်းနှီးမှု ရရှိစေနိုင်ပါသည်။"
+                    
+                ],
+                donts: ["ဦးခေါင်းကို အမြင့်မြတ်ဆုံးဟု ယူဆသဖြင့် သူတစ်ပါးဦးခေါင်းကို မကိုင်ရပါ။ ခြေဖဝါးကို လူ သိုမဟုတ် ဘာသာရေးဆင်းတုတော်များဘက်သို ချိန်ရွယ်၍ ထိုင်ခြင်းကိုလည်း အလွန်ရိုင်းသည်ဟု ယူဆသည်။",
+                    "လူ သို့မဟုတ် ပစ္စည်းကို လက်ညှိးတည့်တည့်မထိုးရဘဲ လက်ဝါးဖြန့်၍သာ ပြရမည်ဖြစ်ပြီး၊ လူပုံအလယ်တွင် အော်ဟစ်ခြင်းနှင့် ဒေါသထွက်ခြင်းကို ရှောင်ကြဉ်ရမည်။",
+                    "လူမြင်ကွင်းတွင် ဖက်လှဲတကင်းဖြစ်ခြင်းနှင့် နမ်းခြင်းကဲ့သိုသော ချစ်ခင်မှု အလွန်အကျွံပြသသည့် အမူအရာများကို ရှောင်ကြဉ်ရမည်။",
+                    "နိမိတ်မကောင်းဟု ယူဆသဖြင့် ထမင်းပန်းကန်ထဲသို တူကို ဒေါင်လိုက် မတ်တတ်စိုက်မထားရပါ။",
+                    "ဗီယက်နမ်စစ်ပွဲ၊ အစိုးရနှင့် နိုင်ငံရေးကဲ့သိုသော ထိရှလွယ်သည့် အကြောင်းအရာများကို အကျယ်တဝံ့ ဆွေးနွေးခြင်းကို ရှောင်ကြဉ်ပါ။"
+                ]
+            },
+            yemen: {
+                name: "Yemen",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoNkCDM-FHEH3TWAX6ydSeXkGFFoPzXPohUwn6HICQpg&s=10",
+                culture: "ယီမင်နိုင်ငံသည် ရှေးဟောင်းအာရပ် ဗိသုကာလက်ရာများနှင့် အလွန်ရင်းနှီးပျူငှာသော ဧည့်ဝတ်ကျေပွန်မှုကို ပိုင်ဆိုင်သည်။",
+                greetings: "'အာစလာမွန် အလိုင်ကွမ်' ဟု နှုတ်ဆက်ကာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "အမျိုးသားများသည် ရိုးရာပဝါနှင့် သေါဘ် ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်သို့သွားလျှင် အိမ်ရှင်၏ ဧည့်ခံကျွေးမွေးမှုကို လေးစားစွာ လက်ခံရမည်။"],
+                donts: ["အများပြည်သူနေရာများတွင် ကိုယ်အင်္ဂါပေါ်လွင်သော အဝတ်အစားများ ဝတ်ဆင်ခြင်း မပြုရပါ။",
+                    "ခွင့်ပြုချက်မရှိဘဲ ဒေသခံအမျိုးသမီးများကို ဓာတ်ပုံရိုက်ကူးခြင်း တားမြစ်သည်။"
+                ]
+            },
+            russia: {
+                name: "Russia",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Russian_traditional_clothing_%28Sarafans_and_Kosovorotka%29.jpg/800px-Russian_traditional_clothing_%28Sarafans_and_Kosovorotka%29.jpg",
+                culture: "ရုရှားနိုင်ငံသည် ဥရောပနှင့်အာရှ နှစ်ဖက်စလုံးတွင် ကျယ်ဝန်းပြီး စာပေ၊ ဂီတနှင့် ခိုင်မာသော ယဉ်ကျေးမှုရှိသည်။",
+                greetings: "ခိုင်မာစွာ လက်ဆွဲနှုတ်ဆက်ကြသည်။",
+                dress: "ခေတ်မီ အနောက်တိုင်း ဝတ်စုံများကို အဓိက ဝတ်ဆင်ကြသည်။",
+                dos: ["အိမ်သို့ အလည်သွားလျှင် လက်ဆောင်အဖြစ် ချိုချဉ် သို့မဟုတ် ပန်းစည်း ယူသွားရမည်။"],
+                donts: ["အဆောက်အအုံအတွင်းသို့ ဝင်လျှင် လက်အိတ်စွပ်လျက် လက်ဆွဲနှုတ်ဆက်ခြင်း မပြုရပါ။",
+                    "အိမ်တွင်းသို့ ဝင်ရောက်သည့်အခါ ဖိနပ်မချွတ်ဘဲ ဝင်ခြင်းသည် မယဉ်ကျေးရာရောက်သည်။"
+                ]
+            }
+        };
+
+        fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        const code = feature.id;
+                        if (asia48Countries[code]) {
+                            return { fillColor: regionColors[asia48Countries[code]], weight: 1, color: '#ffffff', fillOpacity: 0.9 };
+                        }
+                        return { opacity: 0, fillOpacity: 0 };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        const code = feature.id;
+                        if (asia48Countries[code] && countryCoords[code]) {
+                            const [lat, lng, name] = countryCoords[code];
+                            const customIcon = L.divIcon({
+                                className: 'custom-div-icon',
+                                html: `<div class="country-label"><i class="fa-solid fa-earth-asia"></i>${name}</div>`,
+                                iconSize: [90, 24], iconAnchor: [45, 12]
+                            });
+
+                            const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+                            marker.on('click', (event) => {
+                                if (event && event.originalEvent) {
+                                    L.DomEvent.stopPropagation(event.originalEvent);
+                                }
+                                const key = isoToKey[code];
+                                if (key) {
+                                    openCountryModal(key);
+                                } else {
+                                    console.warn("Country key not found for:", code);
+                                }
+                            });
+
+                            layer.on({
+                                click: () => {
+                                    const key = isoToKey[code];
+                                    if (key) openCountryModal(key);
+                                },
+                                mouseover: () => layer.setStyle({ weight: 2, fillOpacity: 1 }),
+                                mouseout: () => layer.setStyle({ weight: 1, fillOpacity: 0.9 })
+                            });
+                        }
+                    }
+                }).addTo(map);
+            })
+            .catch(error => {
+                console.error("Failed to load Asia map data:", error);
+                alert("Map data ကို မဖတ်နိုင်ပါ။ Internet connection ကို စစ်ဆေးပေးပါ။");
+            });
+
+        function formatList(content) {
+            if (!content) return "Information will be displayed here.";
+            if (Array.isArray(content)) {
+                return `<ul>${content.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>`;
+            }
+            return `<p>${escapeHTML(content)}</p>`;
+        }
+
+        let currentCountryKey = null;
+
+        function openCountryModal(countryKey) {
+            const data = countriesData[countryKey];
+
+            if (!data) {
+                console.error("Country data not found:", countryKey);
+                return;
+            }
+currentCountryKey = String(countryKey || "").toLowerCase();
+
+            document.getElementById("modalCountryName").textContent = data.name;
+            document.getElementById("modalCultureDesc").innerHTML = formatList(data.culture);
+            document.getElementById("modalGreetingsDesc").innerHTML = formatList(data.greetings);
+            document.getElementById("modalDressDesc").innerHTML = formatList(data.dress);
+
+            // modalTaboosDesc is not present in the current HTML layout.
+            // Guard it so a country-marker click cannot stop here with a
+            // "Cannot set properties of null" error.
+            const modalTaboosDesc = document.getElementById("modalTaboosDesc");
+            if (modalTaboosDesc) {
+                modalTaboosDesc.innerHTML = formatList(data.taboos);
+            }
+
+            const modalDosDesc = document.getElementById("modalDosDesc");
+            if (modalDosDesc) {
+                modalDosDesc.innerHTML = formatList(data.dos);
+            }
+
+            const modalDontsDesc = document.getElementById("modalDontsDesc");
+            if (modalDontsDesc) {
+                modalDontsDesc.innerHTML = formatList(data.donts);
+            }
+
+            const dressImage = document.getElementById("modalDressImage");
+            if (dressImage && data.image) {
+                dressImage.src = data.image;
+                dressImage.style.display = "block";
+                dressImage.onerror = function () {
+                    this.style.display = "none";
+                };
+            }
+
+            // Horoscope is available only for China and Myanmar.
+            const horoscopeTab = document.getElementById("horoscopeTab");
+            const horoscopeLabel = document.getElementById("horoscopeTabLabel");
+            if (horoscopeTab && horoscopeLabel) {
+                if (currentCountryKey === "china") {
+                    horoscopeTab.style.display = "flex";
+                    horoscopeLabel.textContent = "တရုတ်ဗေဒင်";
+                } else if (currentCountryKey === "myanmar") {
+                    horoscopeTab.style.display = "flex";
+                    horoscopeLabel.textContent = "မြန်မာဗေဒင်";
+                } else {
+                    horoscopeTab.style.display = "none";
+                }
+            }
+
+            document.querySelectorAll(".tab-item").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+
+            const firstTab = document.querySelector('.tab-item[onclick*="\'culture\'"]');
+            if (firstTab) firstTab.classList.add("active");
+
+            const culturePane = document.getElementById("culture");
+            if (culturePane) culturePane.classList.add("active");
+
+            document.getElementById("cultureModal").classList.add("active");
+        }
+
+        function closeCountryModal() {
+            document.getElementById("cultureModal").classList.remove("active");
+        }
+
+        function openHoroscope() {
+            if (currentCountryKey === "china") {
+                window.location.href = "ChineseHome1.html";
+            } else if (currentCountryKey === "myanmar") {
+                window.location.href = "MyanmarHome1.html";
+            }
+        }
+
+        function switchTab(event, tabId) {
+            document.querySelectorAll(".tab-item").forEach(tab => tab.classList.remove("active"));
+            if (event && event.currentTarget) event.currentTarget.classList.add("active");
+
+            document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.classList.add("active");
+        }
+
+
+
+        
+
+        function escapeHTML(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        const cultureModal = document.getElementById("cultureModal");
+        if (cultureModal) {
+            cultureModal.addEventListener("click", function(e) {
+                if (e.target === cultureModal) closeCountryModal();
+            });
+        }
+    </script>
+
+<!-- Direct Culture Chatbot: added without changing the existing UI -->
+<div id="directChatbotRoot">
+  <button id="directChatbotButton" aria-label="Open culture chatbot" title="Ask Culture Chatbot">
+    <i class="fa-solid fa-comments"></i>
+  </button>
+  <section id="directChatbotPanel" aria-label="Culture chatbot">
+    <div class="dc-head">
+      <div class="dc-avatar"><i class="fa-solid fa-robot"></i></div>
+      <div class="dc-head-title">
+        <strong>Asia Culture Chatbot</strong>
+        <span>Ask directly — no need to open the map</span>
+      </div>
+      <button class="dc-close" id="dcClose" aria-label="Close">&times;</button>
+    </div>
+    <div id="dcMessages"></div>
+    <div class="dc-chips">
+      <button class="dc-chip" data-q="Tell me about Myanmar">Myanmar</button>
+      <button class="dc-chip" data-q="What are the dress codes in Japan?">Japan dress</button>
+      <button class="dc-chip" data-q="Tell me all countries in Southeast Asia">SE Asia</button>
+      <button class="dc-chip" data-q="What information is included for each country?">What is included?</button>
+    </div>
+    <div class="dc-note">Answers are generated from the information stored in this page.</div>
+    <div class="dc-inputbar">
+      <textarea id="dcInput" placeholder="Ask about a country, culture, greeting, dress, taboo, Do's & Don'ts..." aria-label="Chat message"></textarea>
+      <button id="dcSend" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </section>
+</div>
+
+
+<script>
+/* =========================================================
+   DIRECT CULTURE CHATBOT ENGINE
+   Reads the existing countriesData / region data already
+   present in this file. No external AI/API is required.
+   ========================================================= */
+(function () {
+  const root = document.getElementById("directChatbotRoot");
+  const panel = document.getElementById("directChatbotPanel");
+  const openBtn = document.getElementById("directChatbotButton");
+  const closeBtn = document.getElementById("dcClose");
+  const messages = document.getElementById("dcMessages");
+  const input = document.getElementById("dcInput");
+  const send = document.getElementById("dcSend");
+  if (!root || !panel || !openBtn || !messages || !input || !send) return;
+
+  const dcEscape = (v) => String(v ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+  const dcText = (v) => Array.isArray(v) ? v.join(" ") : String(v ?? "");
+  const dcNorm = (v) => dcText(v).toLowerCase()
+    .replace(/[“”‘’]/g,"'").replace(/[^\p{L}\p{N}\s'-]/gu," ")
+    .replace(/\s+/g," ").trim();
+
+  function openChat() {
+    panel.classList.add("open");
+    if (!messages.dataset.ready) {
+      messages.dataset.ready = "1";
+      addBot(`မင်္ဂလာပါ 👋<br><br><b>Asia Culture Chatbot</b> ပါ။ ဒီ page ထဲမှာပါတဲ့ Asia နိုင်ငံများရဲ့ culture, greetings & etiquette, dress code, taboos, Do's & Don'ts စတဲ့အချက်အလက်တွေကို map မဖွင့်ဘဲ တိုက်ရိုက်မေးနိုင်ပါတယ်။<br><br>
+      ဥပမာ — <i>“Myanmar ရဲ့ ယဉ်ကျေးမှု၊ နှုတ်ဆက်ပုံနဲ့ တားမြစ်ချက်တွေ ပြောပါ”</i>၊ <i>“Japan dress code?”</i>၊ <i>“Southeast Asia နိုင်ငံတွေက ဘယ်နိုင်ငံတွေလဲ?”</i>`);
+    }
+    setTimeout(() => input.focus(), 80);
+  }
+  function closeChat() { panel.classList.remove("open"); }
+
+  function addUser(text) {
+    const el = document.createElement("div");
+    el.className = "dc-msg user";
+    el.textContent = text;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function addBot(html) {
+    const el = document.createElement("div");
+    el.className = "dc-msg bot";
+    el.innerHTML = html;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function listHtml(items) {
+    if (!Array.isArray(items)) return `<p>${dcEscape(items)}</p>`;
+    if (!items.length) return "<p>ဒီအပိုင်းမှာ အချက်အလက်မရှိပါ။</p>";
+    return "<ul>" + items.map(x => `<li>${dcEscape(x)}</li>`).join("") + "</ul>";
+  }
+
+  function countryRecords() {
+    if (typeof countriesData !== "undefined" && countriesData) return Object.values(countriesData);
+    return [];
+  }
+
+  function findCountry(q) {
+    const nq = dcNorm(q);
+    const records = countryRecords();
+    // Exact / full-name match first.
+    let hit = records.find(c => dcNorm(c.name) === nq);
+    if (hit) return hit;
+    // Known aliases.
+    const aliases = {
+      "burma":"Myanmar", "myanmar":"Myanmar", "မြန်မာ":"Myanmar",
+      "uae":"UAE", "united arab emirates":"UAE",
+      "south korea":"South Korea", "korea":"South Korea",
+      "north korea":"North Korea", "russia":"Russia",
+      "laos":"Laos", "vietnam":"Vietnam", "japan":"Japan",
+      "china":"China", "india":"India", "thailand":"Thailand"
+    };
+    for (const [alias,name] of Object.entries(aliases)) {
+      if (nq.includes(alias)) {
+        hit = records.find(c => dcNorm(c.name) === dcNorm(name));
+        if (hit) return hit;
+      }
+    }
+    // Longest country name first prevents partial-name collisions.
+    return [...records].sort((a,b)=>b.name.length-a.name.length)
+      .find(c => nq.includes(dcNorm(c.name)));
+  }
+
+  function regionMatches(q) {
+    const nq = dcNorm(q);
+    const aliases = [
+      ["Southeast Asia", ["southeast asia","south east asia","se asia","အရှေ့တောင်အာရှ"]],
+      ["South Asia", ["south asia","တောင်အာရှ"]],
+      ["East Asia", ["east asia","အရှေ့အာရှ"]],
+      ["Central Asia", ["central asia","အလယ်အာရှ"]],
+      ["West Asia", ["west asia","အနောက်အာရှ"]],
+      ["North Asia", ["north asia","မြောက်အာရှ"]]
+    ];
+    return aliases.find(([, words]) => words.some(w => nq.includes(w)));
+  }
+
+  function answerCountry(c, q) {
+    const nq = dcNorm(q);
+    const all = !/(culture|ယဉ်ကျေး|general|အထွေထွေ|greeting|နှုတ်ဆက်|etiquette|dress|ဝတ်|taboo|တားမြစ်|do's|dont|don't|မလုပ်|လုပ်သင့်|အမူအရာ)/i.test(q);
+    const want = {
+      culture: /(culture|ယဉ်ကျေး|general|အထွေထွေ)/i.test(q),
+      greetings: /(greeting|နှုတ်ဆက်|etiquette|လက်ဆွဲ|အမူအရာ)/i.test(q),
+      dress: /(dress|ဝတ်|အဝတ်|clothing)/i.test(q),
+      taboos: /(taboo|တားမြစ်|မပြု|မလုပ်ရ|ရှောင်)/i.test(q),
+      dos: /(do's|dos|လုပ်သင့်|ပြုသင့်)/i.test(q),
+      donts: /(don'ts|donts|မလုပ်သင့်|မပြုသင့်)/i.test(q)
+    };
+    let out = `<h4>${dcEscape(c.name)} — Culture Information</h4>`;
+    if (all || want.culture) out += `<div class="dc-section"><span class="dc-label">General Culture</span><br>${dcEscape(c.culture)}</div>`;
+    if (all || want.greetings) out += `<div class="dc-section"><span class="dc-label">Greetings & Etiquette</span><br>${dcEscape(c.greetings)}</div>`;
+    if (all || want.dress) out += `<div class="dc-section"><span class="dc-label">Dress Code</span><br>${dcEscape(c.dress)}</div>`;
+    if (all || want.taboos) out += `<div class="dc-section"><span class="dc-label">Taboos</span>${listHtml(c.taboos)}</div>`;
+    if (all || want.dos) out += `<div class="dc-section"><span class="dc-label">Do's</span>${listHtml(c.dos)}</div>`;
+    if (all || want.donts) out += `<div class="dc-section"><span class="dc-label">Don'ts</span>${listHtml(c.donts)}</div>`;
+    return out;
+  }
+
+  function answerRegion(regionName) {
+    const records = countryRecords();
+    const key = regionName === "Southeast Asia" ? "SE Asia" : regionName;
+    let names = [];
+    if (typeof asia48Countries !== "undefined") {
+      const codeToName = (typeof countryCoords !== "undefined") ? countryCoords : {};
+      Object.entries(asia48Countries).forEach(([iso, reg]) => {
+        if (reg === key && codeToName[iso]) names.push(codeToName[iso][2]);
+      });
+    }
+    if (!names.length) {
+      names = records.map(c=>c.name).filter(n => false);
+    }
+    return `<h4>${dcEscape(regionName)}</h4><div class="dc-section"><span class="dc-label">${names.length} countries</span><ul>${names.map(n=>`<li>${dcEscape(n)}</li>`).join("")}</ul></div>`;
+  }
+
+  function answerMeta(q) {
+    const nq = dcNorm(q);
+    if (/(how many|number|ဘယ်နှ|ဘယ်လောက်|countries|နိုင်ငံ)/i.test(nq) && /(asia|အာရှ)/i.test(nq)) {
+      return `<h4>Asia dataset</h4><p>ဒီ page မှာ <b>48 Asian countries</b> အတွက် culture information ပါဝင်ပါတယ်။ Region အလိုက် West Asia, Southeast Asia, South Asia, East Asia, Central Asia နဲ့ North Asia ဆိုပြီး ခွဲထားပါတယ်။</p>`;
+    }
+    if (/(what information|ဘာတွေပါ|ဘာအချက်|included|ပါဝင်)/i.test(nq)) {
+      return `<h4>Country information fields</h4><ul>
+        <li>General Culture</li><li>Greetings & Etiquette</li><li>Dress Code</li>
+        <li>Taboos</li><li>Do's</li><li>Don'ts</li>
+      </ul><p>ဒီအချက်အလက်တွေကို နိုင်ငံတစ်နိုင်ငံချင်းစီအတွက် page ထဲက dataset မှာ သိမ်းထားပါတယ်။</p>`;
+    }
+    if (/(dataset|session interaction|user query|bot response)/i.test(nq)) {
+      return `<h4>Session Interactions Dataset Viewer</h4><p>Table ထဲမှာ <b>Time, Category, User Query, Bot Response</b> ဆိုတဲ့ columns တွေပါပါတယ်။ နိုင်ငံကိုကြည့်တဲ့ interaction ကို “Country Details” အဖြစ် မှတ်တမ်းတင်ပါတယ်။</p>`;
+    }
+    if (/(analytics|chart|graph|bar chart|pie|radar|doughnut)/i.test(nq)) {
+      return `<h4>Analytics</h4><p>Analytics dashboard မှာ country views ranking, most viewed countries, country view share, users by age group, age-group distribution နဲ့ age-group profile ဆိုတဲ့ chart ၆ မျိုး ပါပါတယ်။</p>`;
+    }
+    return null;
+  }
+
+  function answerGeneral(q) {
+    const records = countryRecords();
+    const nq = dcNorm(q);
+    // Search the stored country content for topic terms and return the strongest matches.
+    const terms = nq.split(" ").filter(x=>x.length>2);
+    const scored = records.map(c => {
+      const hay = dcNorm([c.name,c.culture,c.greetings,c.dress,dcText(c.taboos),dcText(c.dos),dcText(c.donts)].join(" "));
+      let score = 0;
+      terms.forEach(t => { if (hay.includes(t)) score += 1; });
+      return {c,score};
+    }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+    if (!scored.length) return null;
+    let out = `<h4>သက်ဆိုင်တဲ့ အချက်အလက်များ</h4>`;
+    scored.forEach(({c}) => {
+      out += `<div class="dc-section"><span class="dc-label">${dcEscape(c.name)}</span><br>${dcEscape(c.culture)}</div>`;
+    });
+    return out + `<p style="margin-top:8px;color:#64748b">နိုင်ငံတစ်နိုင်ငံကို အပြည့်အစုံလိုချင်ရင် “${dcEscape(records[0]?.name || "Myanmar")} အကြောင်းပြောပါ” လို မေးနိုင်ပါတယ်။</p>`;
+  }
+
+  function generateAnswer(q) {
+    const region = regionMatches(q);
+    if (region && /(country|နိုင်ငံ|list|စာရင်း|ဘယ်နိုင်ငံ)/i.test(q)) return answerRegion(region[0]);
+    const country = findCountry(q);
+    if (country) return answerCountry(country, q);
+    const meta = answerMeta(q);
+    if (meta) return meta;
+    return answerGeneral(q) || `<h4>မေးခွန်းကို နားလည်ဖို့ နည်းနည်းပိုရှင်းပေးပါ။</h4>
+      <p>နိုင်ငံအမည် + အကြောင်းအရာကို တိုက်ရိုက်မေးနိုင်ပါတယ်။ ဥပမာ — <b>“Myanmar culture”</b>, <b>“Japan greetings”</b>, <b>“Thailand dress code”</b>, <b>“India taboos”</b>၊ ဒါမှမဟုတ် <b>“Southeast Asia countries”</b>။</p>`;
+  }
+
+  function submitQuestion() {
+    const q = input.value.trim();
+    if (!q) return;
+    addUser(q);
+    input.value = "";
+    setTimeout(() => addBot(generateAnswer(q)), 120);
+  }
+
+  openBtn.addEventListener("click", openChat);
+  closeBtn && closeBtn.addEventListener("click", closeChat);
+  send.addEventListener("click", submitQuestion);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitQuestion(); }
+  });
+  document.querySelectorAll(".dc-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      input.value = btn.getAttribute("data-q") || "";
+      submitQuestion();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

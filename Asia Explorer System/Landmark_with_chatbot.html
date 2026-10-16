@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asia Landmarks Map</title>
+    
+    <!-- Leaflet CSS & FontAwesome -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f1f5f9;
+        }
+
+
+        /* Top Left Header */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            z-index: 500;
+            pointer-events: none;
+        }
+
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+
+        .header h1 span {
+            font-weight: 400;
+            color: #64748b;
+        }
+
+
+        .header p {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+        }
+
+
+
+        /* Culture.html-style analytics controls */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            display: flex;
+            gap: 10px;
+            z-index: 500;
+        }
+
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+
+        .action-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+
+        /* Dataset Table Styling */
+        .dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .dataset-table th, .dataset-table td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .dataset-table th {
+            background: #0284c7;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dataset-table tr:not(:last-child) td { border-bottom: 1px solid #f1f5f9; }
+
+        .dataset-table tr:hover td { background: #f8fafc; }
+
+
+        .chart-type-label {
+            display: block;
+            font-size: 7px;
+            letter-spacing: 2px;
+            color: #777;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+
+        .chart-unit {
+            font-size: 8px;
+            color: #777;
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+            white-space: nowrap;
+        }
+
+
+        .vbar {
+            width: min(42px, 75%);
+            min-height: 8px;
+            border-radius: 9px 9px 3px 3px;
+            position: relative;
+            transform-origin: bottom;
+            animation: growBar .75s cubic-bezier(.2,.8,.2,1);
+            box-shadow: 0 8px 16px rgba(59,130,246,.14);
+        }
+
+
+        .vbar::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255,255,255,.35), transparent 55%);
+            pointer-events: none;
+        }
+
+            from { transform: scaleY(0); opacity: .2; }
+
+            to { transform: scaleY(1); opacity: 1; }
+
+
+        .summary-note {
+            font-size: 9px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+
+        /* User profile analytics card */
+        .profile-card {
+            background: linear-gradient(145deg, #f8fbff, #ffffff);
+        }
+
+
+        .profile-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+
+        .profile-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            box-shadow: 0 10px 20px rgba(99,102,241,.22);
+        }
+
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+
+        .profile-meta {
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+
+        .profile-stat {
+            padding: 13px 14px;
+            background: #f8fafc;
+            border-radius: 13px;
+            margin-top: 9px;
+            border: 1px solid #eef2f7;
+        }
+
+
+        .profile-stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+
+
+        .profile-stat-label {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+
+        .profile-stat-value {
+            font-size: 12px;
+            color: #0f172a;
+            font-weight: 900;
+        }
+
+
+        .age-meter {
+            margin-top: 9px;
+            height: 9px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+
+        .age-meter-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #06b6d4, #6366f1, #ec4899);
+            transition: width .7s ease;
+        }
+
+
+        .profile-empty {
+            padding: 18px 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+
+        .profile-empty i {
+            font-size: 28px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            margin-top: 14px;
+        }
+
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 9px;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+
+        .chart-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+            .glass-modal-card { width: 95%; }
+
+            .tab-pane.active { flex-direction: column; }
+
+            .dos-donts-container { grid-template-columns: 1fr; }
+
+            .top-buttons { right: 12px; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+            .action-btn { padding: 7px 10px; font-size: 10px; }
+
+            .vbar { width: 28px; }
+
+
+        /* Map Canvas */
+        #map {
+            width: 100vw;
+            height: 100vh;
+            background: #e2e8f0;
+        }
+
+
+        /* Grid Effect Background */
+        #map::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(203, 213, 225, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(203, 213, 225, 0.4) 1px, transparent 1px);
+            background-size: 35px 35px;
+            pointer-events: none;
+            z-index: 400;
+        }
+
+
+         /* Bottom Right Legend Panel */
+        .legend-card {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 12px 14px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255,255,255,0.8);
+            z-index: 500;
+        }
+
+
+        .legend-title {
+            font-size: 10px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+
+        .color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+
+
+        /* Top Right Back Button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 75px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 8px 18px;
+            border-radius: 9999px;
+            color: #1e293b;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            z-index: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+
+        .back-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+
+        .back-btn:active {
+            transform: translateY(0);
+        }
+
+
+        /* Marker Custom Styling */
+        .landmark-pin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+
+        .landmark-badge-pin {
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 2px solid white;
+        }
+
+
+        .country-label {
+            background: rgba(15, 23, 42, 0.85);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+
+        /* Modal Popup Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+
+        .modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            border-radius: 20px;
+            overflow-y: auto;
+            position: relative;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+            from { transform: scale(0.9) translateY(10px); opacity: 0; }
+
+            to { transform: scale(1) translateY(0); opacity: 1; }
+
+
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+
+        .close-modal-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+
+
+        /* Country astrology button beside Close */
+        .modal-top-actions{position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:8px;z-index:10}
+        .astrology-btn{border:none;color:#fff;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:none;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.12);transition:.2s}
+        .astrology-btn.chinese{background:linear-gradient(135deg,#dc2626,#991b1b)}
+        .astrology-btn.myanmar{background:linear-gradient(135deg,#059669,#047857)}
+        .astrology-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
+        .modal-top-actions .close-modal-btn{position:static;flex-shrink:0}
+        @media(max-width:500px){.modal-top-actions{top:14px;right:14px;gap:6px}.astrology-btn{padding:7px 10px;font-size:10px}.modal-top-actions .close-modal-btn{width:30px;height:30px}}
+
+        .modal-country-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #0f172a;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            padding-right: 40px;
+        }
+
+
+        .landmark-card-item {
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+
+        .landmark-card-item:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+            border-color: #cbd5e1;
+        }
+
+
+        .landmark-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+
+        .landmark-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+
+        .landmark-loc {
+            font-size: 12px;
+            color: #64748b;
+            margin: 4px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+
+        .badge-container {
+            margin: 8px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+
+        .badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+
+        .landmark-desc {
+            font-size: 13px;
+            color: #334155;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+
+        .action-btns {
+            display: flex;
+            margin-top: 12px;
+        }
+
+
+        .btn-act {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            transition: background 0.2s ease;
+        }
+
+
+        .btn-map-link { 
+            background: #2563eb; 
+            color: white; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+
+        .btn-map-link:hover {
+            background: #1d4ed8;
+        }
+
+        /* Country-specific astrology cards */
+        .country-astrology-card {
+            margin: 0 0 20px;
+            padding: 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fff7ed, #fffbeb);
+            border: 1px solid #fed7aa;
+            text-align: center;
+        }
+        .country-astrology-card.myanmar {
+            background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+            border-color: #bfdbfe;
+        }
+        .country-astrology-card h3 { margin: 0 0 6px; font-size: 17px; color: #0f172a; }
+        .country-astrology-card p { margin: 0 0 12px; font-size: 12px; color: #475569; line-height: 1.6; }
+        .astrology-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            padding: 10px 16px; border-radius: 10px; text-decoration: none;
+            background: #f97316; color: #fff; font-size: 12px; font-weight: 800;
+        }
+        .country-astrology-card.myanmar .astrology-btn { background: #2563eb; }
+
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Asian Landmarks & Tourist Attractions Map</h1>
+        <p>အထင်ကရနေရာများ</p>
+    </div>
+
+
+    <div class="top-buttons">
+        
+        
+        
+        <a href="TravelSafety_with_chatbot.html" class="action-btn" onclick="goBack(event)">
+            <span>←</span> BACK
+        </a>
+    </div>
+
+    <!-- Map Canvas -->
+    <div id="map"></div>
+
+    <!-- Legend Panel -->
+    <div class="legend-card">
+        <div class="legend-title">ဒေသများ (၄၈ နိုင်ငံ):</div>
+        <div class="legend-item"><div class="color-box" style="background: #e67e22;"></div> အနောက်အာရှ (၁၈)</div>
+        <div class="legend-item"><div class="color-box" style="background: #f1c40f;"></div> အလယ်အာရှ (၅)</div>
+        <div class="legend-item"><div class="color-box" style="background: #2ecc71;"></div> တောင်အာရှ (၈)</div>
+        <div class="legend-item"><div class="color-box" style="background: #e74c3c;"></div> အရှေ့အာရှ (၅)</div>
+        <div class="legend-item"><div class="color-box" style="background: #3498db;"></div> အရှေ့တောင်အာရှ (၁၁)</div>
+        <div class="legend-item"><div class="color-box" style="background: #8e44ad;"></div> မြောက်အာရှ (၁)</div>
+    </div>
+
+    <!-- Modal Layout -->
+    <div class="modal-overlay" id="landmarkModal" onclick="checkOuterClick(event)">
+        <div class="modal-content">
+            <div class="modal-top-actions">
+                <button id="astrologyBtn" class="astrology-btn" onclick="openCountryAstrology()"><i class="fa-solid fa-star-and-crescent"></i><span id="astrologyBtnText">ဗေဒင်မေးရန်</span></button>
+                <button class="close-modal-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-country-title" id="modalCountryTitle">Country Name</div>
+            <div id="landmarksList"></div>
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+
+
+
+
+
+
+
+        // 1. Initialize Map
+        const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([28.0, 85.0], 3);
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        function goBack() {
+            if (document.referrer !== "") {
+                window.history.back();
+            } else {
+                window.location.href = "TravelSafety.html";
+            }
+        }
+
+        const regionColors = {
+            "North Asia": "#8e44ad", "East Asia": "#e74c3c", "SE Asia": "#3498db",
+            "South Asia": "#2ecc71", "Central Asia": "#f1c40f", "West Asia": "#e67e22"
+        };
+
+        const asia48Countries = {
+            "RUS":"North Asia", "CHN":"East Asia", "JPN":"East Asia", "KOR":"East Asia", "PRK":"East Asia", "MNG":"East Asia",
+            "MMR":"SE Asia", "THA":"SE Asia", "VNM":"SE Asia", "LAO":"SE Asia", "KHM":"SE Asia", "MYS":"SE Asia", 
+            "SGP":"SE Asia", "IDN":"SE Asia", "PHL":"SE Asia", "BRN":"SE Asia", "TLS":"SE Asia",
+            "IND":"South Asia", "PAK":"South Asia", "BGD":"South Asia", "LKA":"South Asia", "NPL":"South Asia", 
+            "BTN":"South Asia", "MDV":"South Asia", "AFG":"South Asia",
+            "KAZ":"Central Asia", "UZB":"Central Asia", "TKM":"Central Asia", "KGZ":"Central Asia", "TJK":"Central Asia",
+            "SAU":"West Asia", "ARE":"West Asia", "TUR":"West Asia", "IRN":"West Asia", "IRQ":"West Asia", "ISR":"West Asia",
+            "JOR":"West Asia", "LBN":"West Asia", "SYR":"West Asia", "YEM":"West Asia", "OMN":"West Asia", "KWT":"West Asia",
+            "QAT":"West Asia", "BHR":"West Asia", "CYP":"West Asia", "ARM":"West Asia", "AZE":"West Asia", "GEO":"West Asia"
+        };
+
+        // Render GeoJSON Map Boundaries
+        fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        const code = feature.id;
+                        if (asia48Countries[code]) {
+                            return { fillColor: regionColors[asia48Countries[code]], weight: 1, color: '#ffffff', fillOpacity: 0.8 };
+                        }
+                        return { opacity: 0, fillOpacity: 0 };
+                    }
+                }).addTo(map);
+            });
+
+        // 2. Landmarks Data Structure (Excluding Phone Numbers & Enhanced Details)
+        const asiaLandmarksData = {
+    // --- East Asia (5) ---
+    "1": {
+        country: "China", lat: 35.8617, lng: 104.1954,
+        landmarks: [
+            { 
+                name: "Great Wall of China", 
+                location: "Beijing", 
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4_IJGTfskJyw2S6He3ZPu1fy8QlspXSRVOU7RVcED7A&s=10", 
+                badges: ["#UNESCO", "#History"], 
+                details: "ကမ္ဘာ့အံ့ဖွယ်တစ်ခုဖြစ်သော သမိုင်းဝင် တရုတ်တံတိုင်းကြီး ဖြစ်ပါသည်။", 
+                mapUrl: "https://maps.google.com/?q=Great+Wall+of+China" 
+            },
+            { 
+                name: "Forbidden City", 
+                location: "Beijing", 
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT927bj3-_KGOUdHQ9vHcRIoaJQzUDcBRM48TfcV_K6bg&s=10", 
+                badges: ["#Palace", "#Culture"], 
+                details: "မင်နှင့် ချင်မင်းဆက်တို့၏ ရှေးဟောင်း နန်းတော်ကြီး ဖြစ်ပါသည်။", 
+                mapUrl: "https://maps.google.com/?q=Forbidden+City" 
+            },
+            { 
+                name: "Terracotta Army", 
+                location: "Xi'an", 
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6sSPbM35Z5GFqF8qI0ju0QcS6CSr99LBIlt3dhuJbA&s=10", 
+                badges: ["#Ancient", "#History"], 
+                details: "ချင်ရှီဟွမ် ဧကရာဇ်၏ မြေစိုင်မြေထု စစ်သည်တော် ရုပ်တုများ ဖြစ်ပါသည်။", 
+                mapUrl: "https://maps.google.com/?q=Terracotta+Army" 
+            },
+            { 
+                name: "The Bund", 
+                location: "Shanghai", 
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNypFLcE90iIba0nnlgxMqGza5F5mRPbN4K-qUqWc9kg&s=10", 
+                badges: ["#City", "#Scenic"], 
+                details: "ရှန်ဟိုင်းမြို့၏ ခေတ်ပြိုင် ဗိသုကာနှင့် ရှုခင်းများကို ကြည့်ရှုနိုင်သော ကမ်းနားလမ်း ဖြစ်ပါသည်။", 
+                mapUrl: "https://maps.google.com/?q=The+Bund+Shanghai" 
+            },
+            { 
+                name: "Zhangjiajie National Forest Park", 
+                location: "Hunan", 
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc-ghnzCMF2v-SKwTVto5y0cZHKgRpcgYeKDwAZSe1UA&s=10", 
+                badges: ["#Nature", "#Scenic"], 
+                details: "Avatar ရုပ်ရှင်ထဲမှ ကျောက်တောင်ကြီးများ၏ စိတ်ကူးပုံရိပ်များ ရယူခဲ့ရာ နေရာဖြစ်ပါသည်။", 
+                mapUrl: "https://maps.google.com/?q=Zhangjiajie" 
+            }
+        ]
+    },
+    "2": {
+        country: "Japan", lat: 36.2048, lng: 138.2529,
+        landmarks: [
+            { name: "Mount Fuji", location: "Shizuoka", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP0eKCKEF5cZgX8opgxjfOnxRcTB2bbjaJz61P8U6Y1Q&s=10", badges: ["#Nature", "#Iconic"], details: "ဂျပန်နိုင်ငံ၏ အမြင့်ဆုံးနှင့် သင်္ကေတဖြစ်သော ဖူဂျီတောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Fuji" },
+            { name: "Fushimi Inari Shrine", location: "Kyoto", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1m2t_LQheTdTxjiT470dphQwYH8Nd31lrJQ3YpAMIpQ&s=10", badges: ["#Culture", "#Shrine"], details: "ထောင်ပေါင်းများစွာသော တိုရီအီ တံခါးနီများ တည်ရှိရာ နတ်ကျောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Fushimi+Inari+Shrine" },
+            { name: "Tokyo Skytree", location: "Tokyo", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQAJ8UvTUhbDdYjdzgMYUqWUdmadJXvJsC8bPXqtzwLg&s=10", badges: ["#Modern", "#Tower"], details: "တိုကျိုမြို့၏ အလှကို ၃၆၀ ဒီဂရီ ကြည့်ရှုနိုင်သော ကမ္ဘာ့အမြင့်ဆုံး တာဝါတစ်ခု ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tokyo+Skytree" },
+            { name: "Universal Studios Japan", location: "Osaka", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvUBHHtvnEWb13NWspkeJShFyh-CCZy_Na2XLd8bJmBA&s=10", badges: ["#Park", "#Fun"], details: "Super Nintendo World အပါအဝင် စိတ္တဇဥယျာဉ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Universal+Studios+Japan" },
+            { name: "Hiroshima Peace Memorial", location: "Hiroshima", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLATYvH3ndzC9SbW8yOOfzZLZOjIqrqKXyKKSVxJf0kw&s=10", badges: ["#History", "#UNESCO"], details: "ငြိမ်းချမ်းရေး အထိမ်းအမှတ် သမိုင်းဝင် အဆောက်အအုံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Hiroshima+Peace+Memorial" }
+        ]
+    },
+    "3": {
+        country: "South Korea", lat: 35.9078, lng: 127.7669,
+        landmarks: [
+            { name: "Gyeongbokgung Palace", location: "Seoul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtUGhnCGGgWHwzc5CGcphV5fMY5lXDqsY3gWAL9OGncw&s=10", badges: ["#History", "#Palace"], details: "ဂျိုဆွန်းမင်းဆက်၏ သမိုင်းဝင် ပင်မ နန်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gyeongbokgung+Palace" },
+            { name: "N Seoul Tower", location: "Seoul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdAem1PEX5FjN0uwr8-WBPOYmOj1aJgb7bqF29tKwa4g&s=10", badges: ["#City", "#Tower"], details: "ဆိုးလ်မြို့၏ ရှုခင်းအလှကို အထက်စီးမှ ကြည့်ရှုနိုင်သော နာမည်ကြီး တာဝါဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=N+Seoul+Tower" },
+            { name: "Jeju Island", location: "Jeju", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYyCiVUqbUKD795nnPyHEUUp9aqCr6ANVcvyxoh-edFQ&s=10", badges: ["#Nature", "#Island"], details: "မီးတောင်ကျောက်တောင်များနှင့် သဘာဝအလှတရားများ ပြည့်နှက်နေသော အပန်းဖြေကျွန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jeju+Island" },
+            { name: "Bukchon Hanok Village", location: "Seoul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwPDjKzyLqx8fgwKknlQA17ghFzVmaRYQlVG5RAd8j_A&s=10", badges: ["#Culture", "#Traditional"], details: "ကိုရီးယား ရိုးရာအိမ်ခြေများကို လေ့လာနိုင်သော သမိုင်းဝင် ကျေးရွာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bukchon+Hanok+Village" },
+            { name: "Gamcheon Culture Village", location: "Busan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHfzkhihqIGoSc7S6FLCEj7_UKoM4iwJoFEDPVH7rbeQ&s=10", badges: ["#Art", "#Scenic"], details: "အရောင်စုံ အိမ်ကလေးများနှင့် ပန်းချီနံရံများကြောင့် လူသိများသော ဆူဆန်မြို့၏ နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gamcheon+Culture+Village" }
+        ]
+    },
+    "4": {
+        country: "North Korea", lat: 40.3399, lng: 127.5101,
+        landmarks: [
+            { name: "Juche Tower", location: "Pyongyang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbMul1Xlj3HwcijKgB2CEBp-hGBFUkWxnDJLykbQa5Ag&s=10", badges: ["#Monument", "#City"], details: "ဂျူချဲအတွေးအခေါ်ကို ဂုဏ်ပြုဆောက်လုပ်ထားသော တာဝါကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Juche+Tower" },
+            { name: "Kumsusan Palace of the Sun", location: "Pyongyang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSchDrUklgAJWnOsUYDhpbewi_mIaZAECvwfe9ffqEvNQ&s=10", badges: ["#History", "#Memorial"], details: "ခေါင်းဆောင်ကြီးများ၏ ဂူဗိမာန်နှင့် အထိမ်းအမှတ် နန်းတော်ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kumsusan+Palace" },
+            { name: "Arch of Triumph", location: "Pyongyang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdfuOTei9hE3YkmHoSpqSmjGtp1FgpCdoexOoQl0TKBQ&s=10", badges: ["#Monument", "#History"], details: "ပါရီမြို့ရှိ အောင်ပွဲခံတံခါးထက် ပိုမိုကြီးမားစွာ ဆောက်လုပ်ထားသော အောင်ပွဲခံတံခါး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Arch+of+Triumph+Pyongyang" },
+            { name: "Mount Paektu", location: "Samjiyon", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLqdxy1uFMtk1Kwhw4DmKTXxI1Eo2JL0pt41XQahaAsA&s=10", badges: ["#Nature", "#Volcano"], details: "ကိုရီးယားလူမျိုးတို့၏ အဓိက သမိုင်းဝင် သဘာဝ မီးတောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Paektu" },
+            { name: "Myohyang-san", location: "Pyongan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStFbTvyuysKlWIQ3HUgf_3QHjtTHtFmMKKyrTkbbElLw&s=10", badges: ["#Nature", "#Scenic"], details: "သာယာလှပသော တောင်တန်းကြီးနှင့် ပြတိုက်များ တည်ရှိရာ နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Myohyang" }
+        ]
+    },
+    "5": {
+        country: "Mongolia", lat: 46.8625, lng: 103.8467,
+        landmarks: [
+            { name: "Genghis Khan Statue Complex", location: "Tsonjin Boldog", img: "https://images.unsplash.com/photo-1548013146-72479768bada", badges: ["#Statue", "#Iconic"], details: "ကမ္ဘာ့အကြီးဆုံး ဂျင်းဂစ်ခန် မြင်းစီးစတီးရုပ်တုကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Genghis+Khan+Statue" },
+            { name: "Gobi Desert", location: "Omnogovi", img: "https://images.unsplash.com/photo-1548013146-72479768bada", badges: ["#Nature", "#Desert"], details: "ကျယ်ပြောလှသော သဲကန္တာရနှင့် ဒိုင်နိုဆောရုပ်ကြွင်းများ ထွက်ရှိရာ နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gobi+Desert" },
+            { name: "Khuvsgul Lake", location: "Khuvsgul", img: "https://images.unsplash.com/photo-1548013146-72479768bada", badges: ["#Nature", "#Lake"], details: "မွန်ဂိုးလီးယား၏ အကြီးဆုံး ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Khuvsgul+Lake" },
+            { name: "Erdene Zuu Monastery", location: "Kharakhorum", img: "https://images.unsplash.com/photo-1548013146-72479768bada", badges: ["#History", "#Monastery"], details: "မွန်ဂိုးလီးယား၏ ရှေးအတိုင်း ကျန်ရှိနေသော ဗုဒ္ဓဘာသာ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Erdene+Zuu+Monastery" },
+            { name: "Terelj National Park", location: "Tuv", img: "https://images.unsplash.com/photo-1548013146-72479768bada", badges: ["#Nature", "#Park"], details: "လိပ်ကျောက်တောင်နှင့် သဘာဝ တောင်တန်း အလှတရားများ တည်ရှိရာ ပန်းခြံဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Terelj+National+Park" }
+        ]
+    },
+
+    // --- Southeast Asia (11) ---
+    "6": {
+        country: "Myanmar", lat: 21.9162, lng: 95.9560,
+        landmarks: [
+            { name: "shwedagon pagoda(ရွှေတိဂုံစေတီတော်)", location: "Yangon(ရန်ကုန်)", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbwklmvJ2v7Y1FMtfhcLmzwbvtYJzy-FcHOJMB7S4Itw&s=10", badges: ["#Pagoda", "#Iconic"], details: "နှစ်ပေါင်း ၂၅၀၀ ကျော် သက်တမ်းရှိပြီး မြတ်စွာဘုရား၏ ဆံတော်ဓာတ်များ ကိန်းဝပ်စခေတ်တည်ရှိရာ ကမ္ဘာကျော် ရွှေတိဂုံစေတီတော်မြတ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Shwedagon+Pagoda" },
+            { name: "Bagan(ပုဂံ ရှေးဟောင်းနယ်မြေ)", location: "Magway/Yangon(မကွေး/မန္တလေး)", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcAJUZpgbz062AuNIVplzOHLICldVZe1KE0Eb5E7QbDQ&s=10", badges: ["#UNESCO", "#History"], details: "၁၁ ရာစုမှ ၁၃ ရာစုအတွင်း တည်ဆောက်ခဲ့သော စေတီပုထိုးပေါင်း ၃၅၀၀ ကျော် တည်ရှိရာ ယူနက်စကို ကမ္ဘာ့အမွေအနှစ်ဝင် သမိုင်းဝင် နယ်မြေ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bagan" },
+            { name: "အင်းလေးကန်", location: "ရှမ်းပြည်နယ်", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpjXA8_sX2zO0GIXTxfbESATrORv-CBYlzMBnLEFaYLg&s=10", badges: ["#Nature", "#Culture"], details: "ခြေထောက်ဖြင့် လှေလှော်သည့် အင်းသားတို့၏ ထူးခြားသော ရိုးရာ၊ ရေပေါ်စိုက်ခင်းများနှင့် ရေပေါ်ရွာများ တည်ရှိရာ သဘာဝ အင်းအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Inle+Lake" },
+            { name: "ကျိုက်ထီးရိုးစေတီတော်", location: "မွန်ပြည်နယ်", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnF4PGiKz8txCul-4tYSDu2VKEbBu6Mo6o-EDVKV0zHg&s=10", badges: ["#Pagoda", "#Holy"], details: "တောင်စောက်ကမ်းပါးယံတွင် အဟုန်မပျက် တည်ရှိနေသော ဆန်းကြယ်သည့် ရွှေကျောက်တုံးပေါ်မှ စေတီတော်မြတ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kyaiktiyo+Pagoda" },
+            { name: "ငပလီကမ်းခြေ", location: "ရခိုင်ပြည်နယ်", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxaXcAEnSdzOX2mNCYRc9K9OsLaQySySFDV1K17W4tGg&s=10", badges: ["#Beach", "#Nature"], details: "ရေပြာလွင်လွင်၊ သဲသောင်ဖြူဖြူနှင့် အုန်းတောများ ဝန်းရံထားသော မြန်မာနိုင်ငံ၏ အလှပဆုံး ပင်လယ်ကမ်းခြေ အပန်းဖြေစခန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ngapali+Beach" }
+        ]
+    },
+    "7": {
+        country: "Thailand", lat: 15.8700, lng: 100.9925,
+        landmarks: [
+            { name: "Grand Palace", location: "Bangkok", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWWxlhkNLPlqcsD8L8gvqsvRVrbpxiKFbtsla0HMRsyA&s=10", badges: ["#Palace", "#Culture"], details: "ဘန်ကောက်မြို့ရှိ ခန်းနားလှသော သမိုင်းဝင် ရာမဘုရင်များ၏ နန်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Grand+Palace+Bangkok" },
+            { name: "Wat Arun", location: "Bangkok", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuvIhWO1cXRY33oWjAD3zG51GNqqSGmaUoeiaECT_bmw&s=10", badges: ["#Temple", "#Scenic"], details: "ကျောက်ဖရားမြစ်ကမ်းဘေးရှိ အရုဏ်ဦး ကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Wat+Arun" },
+            { name: "Phi Phi Islands", location: "Krabi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCcePm8eTNPdKkiiG7XdxNVDttuDDQ_EDiyLfCj7AVHA&s=10", badges: ["#Nature", "#Beach"], details: "ကမ္ဘာကျော် ပင်လယ်ကမ်းခြေနှင့် ရေအောက်သဘာဝ အလှတရားများ တည်ရှိရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Phi+Phi+Islands" },
+            { name: "Sukhothai Historical Park", location: "Sukhothai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYj8Ubtim0GFLtbYmqHNV46GLCJkq5HKexzxwZpsdt_A&s=10", badges: ["#UNESCO", "#History"], details: "ထိုင်းနိုင်ငံ၏ ပထမဆုံး မင်းဆက်တည်ခဲ့ရာ ရှေးဟောင်း မြို့တော်ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sukhothai+Historical+Park" },
+            { name: "Chiang Mai Old City", location: "Chiang Mai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiqy9GlfxRlpy9SiV3geHr_MO2IUAMHHSqFgi3J4IhKA&s=10", badges: ["#Culture", "#City"], details: "ရှေးဟောင်း ကျောင်းတော်ပေါင်းများစွာနှင့် မြောက်ပိုင်း ယဉ်ကျေးမှု တည်ရှိရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Chiang+Mai+Old+City" }
+        ]
+    },
+    "8": {
+        country: "Vietnam", lat: 14.0583, lng: 108.2772,
+        landmarks: [
+            { name: "Ha Long Bay", location: "Quang Ninh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH0wipCnDtH-PUZa3SKnhXmgn8cfbWSaSt3h1TnKe5NQ&s=10", badges: ["#UNESCO", "#Nature"], details: "ကျောက်တောင်ပေါင်း ထောင်ဂဏန်း ဝန်းရံထားသည့် သဘာဝ အလှပဆုံး ပင်လယ်ကွေ့ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ha+Long+Bay" },
+            { name: "Hoi An Ancient Town", location: "Quang Nam", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAS7SEuAUj8EOkKDAfqqNr0cAR3X_n55oF7CvwG0jifw&s=10", badges: ["#Culture", "#UNESCO"], details: "မီးအိမ်ရောင်စုံများဖြင့် လှပသော သမိုင်းဝင် ရှေးဟောင်း ကုန်သွယ်ရေး မြို့ကလေး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Hoi+An" },
+            { name: "Golden Bridge (Hands Bridge)", location: "Da Nang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-g3lTlJ8Tfrg80k0R0Fk1NMlSIPmaItaJgQB2FEvY7A&s=10", badges: ["#Iconic", "#Bridge"], details: "ဧရာမ ကျောက်လက်ဝါးကြီးနှစ်ခုက မထားသည့် ရွှေရောင် တံတားကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Golden+Bridge+Da+Nang" },
+            { name: "Cu Chi Tunnels", location: "Ho Chi Minh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt0W0ATOPqQJeWHAK5Rx6dJxgafOVHESBJA73Y5fqDjQ&s=10", badges: ["#History", "#Tunnel"], details: "ဗီယက်နမ်စစ်ပွဲအတွင်း အသုံးပြုခဲ့သော မြေအောက် လှိုဏ်ဂူကွန်ရက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cu+Chi+Tunnels" },
+            { name: "Sapa Terraced Rice Fields", location: "Lao Cai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgYL76UJTFysz_LJhclN9rrZDaODAeyE_plM6gSq60bA&s=10", badges: ["#Nature", "#Scenic"], details: "လှေကားထစ် စိုက်ခင်းများနှင့် တောင်ပေါ် တိုင်းရင်းသားရွာများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sapa" }
+        ]
+    },
+    "9": {
+        country: "Cambodia", lat: 12.5657, lng: 104.9910,
+        landmarks: [
+            { name: "Angkor Wat", location: "Siem Reap", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjTYO2zlaypwrxglYC_vll5p6peF2XoySNlquBfYxLrA&s=10", badges: ["#UNESCO", "#History"], details: "ကမ္ဘာ့အကြီးဆုံး ရှေးဟောင်း ဘာသာရေး အဆောက်အအုံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Angkor+Wat" },
+            { name: "Bayon Temple", location: "Siem Reap", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCSPjH9Xpcth0VwFb_iynW6s4N-O-J_30ntg5-iKRd4w&s=10", badges: ["#Temple", "#Ancient"], details: "ပြုံးနေသော ကျောက်မျက်နှာကြီးများ ထွင်းထုထားသည့် ကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bayon+Temple" },
+            { name: "Royal Palace", location: "Phnom Penh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNOowgU8uK0AwsFsaFeOnErpb4hfuMVawHaiaAatBhpg&s=10", badges: ["#Palace", "#Culture"], details: "ဖနွမ်းပင်မြို့ရှိ ခမဲရ် ဘုရင်မင်းဆက်တို့၏ စီးစံရာ နန်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Royal+Palace+Phnom+Penh" },
+            { name: "Koh Rong", location: "Sihanoukville", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2m8no4iCZGnTLwwBy6GyUiR59plNoMdPSB1FTYZTlHQ&s=10", badges: ["#Nature", "#Island"], details: "ဖြူလွန်းသော သဲသောင်ပြင်များနှင့် ပင်လယ်ကမ်းခြေ အပန်းဖြေကျွန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Koh+Rong" },
+            { name: "Tonle Sap Lake", location: "Siem Reap", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8hys_pElFsXlWUXdeTRHX48O9ynJFBj6G2_JzMfvSYQ&s=10", badges: ["#Nature", "#Lake"], details: "အရှေ့တောင်အာရှ၏ အကြီးဆုံး ရေချိုအိုင်နှင့် ရေပေါ်ရွာများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tonle+Sap" }
+        ]
+    },
+    "10": {
+        country: "Laos", lat: 19.8563, lng: 102.4955,
+        landmarks: [
+            { name: "Luang Prabang Old Town", location: "Luang Prabang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDWTW-HiEiAmP0d-pETfuFWGTx-55ne13di0xxIsMlLg&s=10", badges: ["#UNESCO", "#Culture"], details: "ပြင်သစ် ကိုလိုနီနှင့် ရိုးရာ ဗိသုကာ ပေါင်းစပ်ထားသော ရှေးဟောင်း မြို့တော်ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Luang+Prabang" },
+            { name: "Kuang Si Waterfall", location: "Luang Prabang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDY0sH5drW5gn74fCc18_Ef-Y5i3ARg82kaISP0RQ4Gg&s=10", badges: ["#Nature", "#Waterfall"], details: "စိမ်းပြာရောင် ရေအိုင်များနှင့် အလွန်လှပသော သဘာဝ ရေတံခွန် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kuang+Si+Waterfall" },
+            { name: "Pha That Luang", location: "Vientiane", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOumLe6gT7d2Tr2eMc18leg2LT3ZFQozbfhko8vai_kQ&s=10", badges: ["#Iconic", "#Temple"], details: "လာအိုနိုင်ငံ၏ အမျိုးသား သင်္ကေတ ရွှေစေတီတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Pha+That+Luang" },
+            { name: "Vang Vieng", location: "Vientiane Province", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSMX8GMYoZ63fnJtKXcVNWhV2gCV81UrUnyMXoZz9hQ&s=10", badges: ["#Nature", "#Adventure"], details: "ထုံးကျောက်တောင်များနှင့် မြစ်တွင်း စွန့်စားခန်းများအတွက် လူသိများပါသည်။", mapUrl: "https://maps.google.com/?q=Vang+Vieng" },
+            { name: "Plain of Jars", location: "Xiangkhoang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp-mU8fkKIO26VgcKCnWL5EW1vOVvbLnTPwn8MSkjZOQ&s=10", badges: ["#History", "#Mystery"], details: "ကျောက်အိုးကြီးများ ဆန်းကြယ်စွာ စိစေ့တည်ရှိရာ သမိုင်းဝင် နယ်မြေဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Plain+of+Jars" }
+        ]
+    },
+    "11": {
+        country: "Malaysia", lat: 4.2105, lng: 101.9758,
+        landmarks: [
+            { name: "Petronas Twin Towers", location: "Kuala Lumpur", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUhZmfbwruh6ClwL9kCZJDjA4nvtJftqt4CEFkoCzqMg&s=10", badges: ["#Modern", "#Iconic"], details: "မလေးရှား၏ ကမ္ဘာကျော် မျှို့မျှော် ညီနောင်တာဝါကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Petronas+Twin+Towers" },
+            { name: "Batu Caves", location: "Selangor", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc8hA4ETZ0auhSKsM420tODDdmHZ4hTbI92H8D8JJovA&s=10", badges: ["#Culture", "#Cave"], details: "ဆေးရောင်စုံ လှေကားများနှင့် ထိန်းသိမ်းထားသော ဟိန္ဒူ ဂူကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Batu+Caves" },
+            { name: "Mount Kinabalu", location: "Sabah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz5YXUaqc8GXKKAUsOaWLt-cbxQjUPKAyIGefd4JDGCQ&s=10", badges: ["#Nature", "#Mountain"], details: "ဘော်နီယိုကျွန်း၏ အမြင့်ဆုံးနှင့် စိန်ခေါ်မှုများသော တောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Kinabalu" },
+            { name: "George Town", location: "Penang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0UhCO77GW4az5GWg_5-JQiVBnzY8ZiTi7oF8yl-N8nA&s=10", badges: ["#UNESCO", "#StreetArt"], details: "လမ်းဘေး ပန်းချီများ၊ အစားအသောက်နှင့် သမိုင်းဝင် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=George+Town+Penang" },
+            { name: "Langkawi Cable Car", location: "Kedah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMFhvezoJdpX1VeuJXEr3ZkrssKyXraEBxAvf_Z3R9Mw&s=10a", badges: ["#Scenic", "#Adventure"], details: "တောင်တန်းများနှင့် ပင်လယ်ပြင်ကို ကြည့်ရှုနိုင်သော ကေဘယ်ကား ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Langkawi+Cable+Car" }
+        ]
+    },
+    "12": {
+        country: "Singapore", lat: 1.3521, lng: 103.8198,
+        landmarks: [
+            { name: "Marina Bay Sands", location: "Singapore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0_iyyhhfS1QVMR3UBLDy15uFim8ZQhy6rvpyMG-X0Ow&s=10", badges: ["#Modern", "#Iconic"], details: "စင်ကာပူနိုင်ငံ၏ ခေတ်မီဆန်းသစ်သော သင်္ကေတ အဆောက်အအုံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Marina+Bay+Sands" },
+            { name: "Gardens by the Bay", location: "Singapore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuFyEwhnnoGR6Gp3L3KUGCa5lif8QWsKl34NnmJeEKaw&s=10", badges: ["#Nature", "#Design"], details: "Supertree သစ်ပင်တုကြီးများနှင့် ဖန်လုံအိမ် ဥယျာဉ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gardens+by+the+Bay" },
+            { name: "Merlion Park", location: "Singapore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQav8FfAXyVfyH5GUdc6WRmtQOqPlla8eFDTSx_7Hysjg&s=10", badges: ["#Statue", "#Iconic"], details: "ခြင်္သေ့ခေါင်း ငါးခန္ဓာကိုယ် ပုံစံ စင်ကာပူ၏ အဓိက ရုပ်တုကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Merlion+Park" },
+            { name: "Sentosa Island", location: "Singapore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbgN1jkOWxdSfi8hNOmpbgjS6lKsRNAzO3imiKqmVQIw&s=10", badges: ["#Resort", "#Beach"], details: "ကမ်းခြေများ၊ Universal Studios ပါဝင်သော အပန်းဖြေကျွန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sentosa+Island" },
+            { name: "Jewel Changi Airport", location: "Singapore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXH2ApN9fuUW7BJQONEmLAuXhCrNHKtMT4iPx3gzWuyg&s=10", badges: ["#Airport", "#Waterfall"], details: "အဆောက်အအုံ အတွင်းရှိ ကမ္ဘာ့အကြီးဆုံး မိုးလုံလေလုံ ရေတံခွန်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jewel+Changi+Airport" }
+        ]
+    },
+    "13": {
+        country: "Indonesia", lat: -0.7893, lng: 113.9213,
+        landmarks: [
+            { name: "Borobudur Temple", location: "Magelang", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToyHqdDGdhmiOwu2CnhN_m-f82foyIO3UAgqmgx09Xpg&s=10", badges: ["#UNESCO", "#Ancient"], details: "၉ ရာစုခေတ် ကမ္ဘာ့အကြီးဆုံး ဗုဒ္ဓဘာသာ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Borobudur" },
+            { name: "Ubud", location: "Bali", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcbBVq2Y7TSoBnxLdj1vTiRHMU2jRBdZByrOjkyjI8XQ&s=10", badges: ["#Nature", "#Culture"], details: "ဘာလီကျွန်း၏ စပါးခင်းများ၊ ယဉ်ကျေးမှုနှင့် အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ubud+Bali" },
+            { name: "Komodo National Park", location: "East Nusa Tenggara", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk172OzKBbyH5Q5Jo7zVQdfgVHgl4dXRf6LyXF3Jt5QA&s=10", badges: ["#Nature", "#Wildlife"], details: "ကမ္ဘာ့အကြီးဆုံး ကိုမိုဒိုနဂါးဖွတ်ကြီးများ ကျက်စားရာ ကျွန်းဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Komodo+National+Park" },
+            { name: "Mount Bromo", location: "East Java", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiocm1AYjmfjPNGB2Uix11Dt2dUgVboba9X793l9JwRw&s=10", badges: ["#Nature", "#Volcano"], details: "နေထွက်ချိန် အလွန်လှပသော သက်ဝင်လှုပ်ရှားနေသည့် မီးတောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Bromo" },
+            { name: "Prambanan Temple", location: "Yogyakarta", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDHzVnDe38kiUm_9yVj9eS-shzOvPxescFbXuyPSZklg&s=10", badges: ["#UNESCO", "#History"], details: "ထွန်ထက်ဆန်းပြားလှသော ရှေးဟောင်း ဟိန္ဒူ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Prambanan+Temple" }
+        ]
+    },
+    "14": {
+        country: "Philippines", lat: 12.8797, lng: 121.7740,
+        landmarks: [
+            { name: "Chocolate Hills", location: "Bohol", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXyDtFH-H2IJPSZ6KT9VnwA07UQdbAHnYToJk4I-o5Pg&s=10", badges: ["#Nature", "#Unique"], details: "သဘာဝအတိုင်း ဖြစ်ပေါ်နေသော ထူးခြားသည့် တောင်ကုန်းငယ် ၁၇၀၀ ကျော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Chocolate+Hills" },
+            { name: "Boracay White Beach", location: "Aklan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQISZYNhYpB0ceLcKzGLmqqtlXPN6v30hImTp60kFGCcA&s=10", badges: ["#Beach", "#Nature"], details: "ကမ္ဘာကျော် သဲသောင်ဖြူ ပင်လယ်ကမ်းခြေ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Boracay+White+Beach" },
+            { name: "Puerto Princesa Underground River", location: "Palawan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGzUMMcEAKmHCzKMVtNMgkTiJdcOUedtADYgGoej9d1Q&s=10", badges: ["#UNESCO", "#Cave"], details: "လှေဖြင့် သွားရောက်နိုင်သော သဘာဝ မြေအောက်မြစ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Puerto+Princesa+Underground+River" },
+            { name: "Banaue Rice Terraces", location: "Ifugao", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4vL8jZzVnU21KFZidK6Yfs8bEKwn0yfMc3qv2adB6VQ&s=10", badges: ["#UNESCO", "#History"], details: "နှစ်ပေါင်း ၂၀၀၀ ကျော်ကတည်းက တောင်စောင်းတွင် ထွင်းထုထားသော စပါးခင်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Banaue+Rice+Terraces" },
+            { name: "Intramuros", location: "Manila", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkNapfRcPBeQ_PoYYrOwMJoC7_ImiXEb9cRBQHsXPsJg&s=10", badges: ["#History", "#City"], details: "မနီလာမြို့ရှိ စပိန်ကိုလိုနီခေတ် သမိုင်းဝင် တံတိုင်းခတ် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Intramuros+Manila" }
+        ]
+    },
+    "15": {
+        country: "Brunei", lat: 4.5353, lng: 114.7277,
+        landmarks: [
+            { name: "Sultan Omar Ali Saifuddien Mosque", location: "Bandar Seri Begawan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb52t0lp4Wxe95j3d8ZkiqJc85-3uSxOTJP7EbCB5PjA&s=10", badges: ["#Mosque", "#Iconic"], details: "အာရှတွင် အလှပဆုံး အစ္စလာမ် ဗလီကျောင်းတော်များထဲမှ တစ်ခု ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sultan+Omar+Ali+Saifuddien+Mosque" },
+            { name: "Kampong Ayer", location: "Bandar Seri Begawan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQq873CoRM4sLAAsIv109dWlMI4GC1pZLQeyWv9x4Rg&s=10", badges: ["#Culture", "#Village"], details: "ကမ္ဘာ့အကြီးဆုံး သမိုင်းဝင် ရေပေါ်ရွာကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kampong+Ayer" },
+            { name: "Istana Nurul Iman", location: "Bandar Seri Begawan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREBZ2b-GJfAQUz6HOILQd98CkjXdlyLmDfNjEdxYp5QQ&s=10", badges: ["#Palace", "#Architecture"], details: "ဘရူနိုင်း ဆူလတန် ဘုရင်၏ ခန်းနားလှသော နန်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Istana+Nurul+Iman" },
+            { name: "Ulu Temburong National Park", location: "Temburong", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcULM5q2AD812sNvD37TGlp6ewBYTMF-30FPQ9kKYX4Q&s", badges: ["#Nature", "#Park"], details: "ထိန်းသိမ်းထားသော အမေဇုန်တောကဲ့သို့ သဘာဝ သစ်တောအုပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ulu+Temburong+National+Park" },
+            { name: "Jame' Asr Hassanil Bolkiah Mosque", location: "Bandar Seri Begawan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhHRiTtknT-5bz2Ay0Oa71z5_lw02I1bnVvoUt6mFlbw&s=10", badges: ["#Mosque", "#Gold"], details: "ရွှေအမိုးခုံး ၂၉ ခုပါဝင်သော ဘရူနိုင်း၏ အကြီးဆုံး ဗလီ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jame+Asr+Hassanil+Bolkiah+Mosque" }
+        ]
+    },
+    "16": {
+        country: "East Timor", lat: -8.8742, lng: 125.7275,
+        landmarks: [
+            { name: "Cristo Rei of Dili", location: "Dili", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWkF7V-lA3vejaanFByILdW5qm9_4W7emJbYjvvTKQjg&s=10", badges: ["#Statue", "#Scenic"], details: "ဒီလီမြို့ ပင်လယ်ကမ်းစပ် ကျောက်တောင်ပေါ်ရှိ ရေစပ်တွင် တည်ရှိသော ခရစ်တော် ရုပ်တုကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cristo+Rei+of+Dili" },
+            { name: "Atauro Island", location: "Dili", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8PzlDuZ_uJ9RfR5G_bMKDtmlBczkVYHOOFCuvZiTadg&s=10", badges: ["#Nature", "#Diving"], details: "ကမ္ဘာပေါ်တွင် ဇီဝမျိုးစုံမျိုးကွဲ အကြွယ်ဝဆုံး ရေအောက် ကမ်းခြေကျွန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Atauro+Island" },
+            { name: "Mount Ramelau", location: "Ainaro", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRYk4k6Oxg1m4YoEHc6jDB12Jv8I4hlHkPu1U-Pl7BHQ&s=10", badges: ["#Mountain", "#Nature"], details: "အရှေ့တီမော၏ အမြင့်ဆုံး တောင်ထိပ်ဖြစ်ပြီး ရှုခင်း အလွန်လှပပါသည်။", mapUrl: "https://maps.google.com/?q=Mount+Ramelau" },
+            { name: "Jaco Island", location: "Lautém", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRBJbnf7S0qg1Wps2oDfxtJuA47WV0tN2iSHyQczD1jw&s=10", badges: ["#Beach", "#Nature"], details: "လူသူမသေချာသေးသည့် သန့်ရှင်းကြည်လင်သော သဘာဝ ကျွန်းကလေး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jaco+Island" },
+            { name: "Resistance Museum", location: "Dili", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBlIukPKREP67PsagdTITUUHjdtWEcKMiviI3qMyTrew&s=10", badges: ["#History", "#Museum"], details: "အရှေ့တီမော၏ လွတ်လပ်ရေး တိုက်ပွဲ သမိုင်းများကို ပြသထားသော ပြတိုက်ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Timorese+Resistance+Archive+and+Museum" }
+        ]
+    },
+
+    // --- South Asia (8) ---
+    "17": {
+        country: "India", lat: 20.5937, lng: 78.9629,
+        landmarks: [
+            { name: "Taj Mahal", location: "Agra", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAT3giq7Afbau18i9ADt-lLKyFephPrv3vkIM5evsm7A&s=10", badges: ["#UNESCO", "#Iconic"], details: "စက်ဖြူကျောက် မာဘယ်ဖြင့် ဆောက်လုပ်ထားသော ကမ္ဘာ့အံ့ဖွယ် ဂူဗိမာန် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Taj+Mahal" },
+            { name: "Varanasi Ghats", location: "Varanasi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkjj5jWyaDTeTZTzH2eR69ptwpjPDhbnRqbroEeInAnw&s=10", badges: ["#Culture", "#Holy"], details: "ဂင်္ဂါမြစ်ဘေးရှိ ဟိန္ဒူတို့၏ အဓိက ဘာသာရေးနှင့် သမိုင်းဝင် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Varanasi+Ghats" },
+            { name: "Amber Palace", location: "Jaipur", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS92mLW3CfNq-CzcAMoqdGmArPgkzip95oMaW4jEO8IzA&s=10", badges: ["#Fortress", "#History"], details: "ဂျိုင်ပူရှိ တောင်ကုန်းပေါ်မှ ခန်းနားလှသော ရာဇဌာန် ခံတပ်နန်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Amber+Palace" },
+            { name: "Gateway of India", location: "Mumbai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf2OnNGGI2W-u7b4afd83rd5NYY763CGe_L6_DntPf7g&s=10", badges: ["#Monument", "#City"], details: "မွန်ဘိုင်း ပင်လယ်ကွေ့တွင် တည်ရှိသော သမိုင်းဝင် အဝင်တံခါးကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gateway+of+India" },
+            { name: "Kerala Backwaters", location: "Kerala", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNkcnREgiwqnpKh08K1fGoyboW12CxSAyiHw2PGrPDVQ&s=10", badges: ["#Nature", "#Boat"], details: "ရေကြောင်းလမ်းများနှင့် အိမ်လှေများဖြင့် အပန်းဖြေနိုင်သော သဘာဝဒေသ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kerala+Backwaters" }
+        ]
+    },
+    "18": {
+        country: "Pakistan", lat: 30.3753, lng: 69.3451,
+        landmarks: [
+            { name: "Badshahi Mosque", location: "Lahore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEHOypBnKdhmiFbeJB-lPo2Db3uFkNy9xKOi42EQJIzA&s=10", badges: ["#Mosque", "#History"], details: "မဂိုအင်ပါယာခေတ် ခန်းနားထည်ဝါသော ကြက်သွန်းနီရောင် ဗလီကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Badshahi+Mosque" },
+            { name: "Faisal Mosque", location: "Islamabad", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThqCw4EIcRaXFHdbG4Pye43QTeKxJ0SaujqcxPWIy5zw&s=10", badges: ["#Modern", "#Architecture"], details: "တဲစခန်းပုံစံ ဆန်းသစ်စွာ ဆောက်လုပ်ထားသော ကမ္ဘာ့အကြီးဆုံး ဗလီများထဲမှ တစ်ခုဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Faisal+Mosque" },
+            { name: "Hunza Valley", location: "Gilgit-Baltistan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThSRY572C28Z7zAuxZ0xOx5YxD9AHAca6FBYhUXAf7XA&s=10", badges: ["#Nature", "#Mountain"], details: "ဟိမဝန္တာ တောင်တန်းများကြားရှိ အလွန်လှပသော တောင်ကြားဒေသ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Hunza+Valley" },
+            { name: "Lahore Fort", location: "Lahore", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCW4I8YcxI9WLG2eEYmdqYj-mo4LfG3rjj_qT9r5utPw&s=10", badges: ["#UNESCO", "#Fortress"], details: "မဂိုခေတ် ရှေးဟောင်း သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lahore+Fort" },
+            { name: "Mohenjo-daro", location: "Sindh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAbuw4dCPPPzTw85A0KB2XT9ubJjaO83PFkKy5HkXZWA&s=10", badges: ["#Ancient", "#UNESCO"], details: "B.C ၂၅၀၀ ခေတ် အိန္ဒုမြစ်ဝှမ်း ယဉ်ကျေးမှု၏ ရှေးဟောင်း မြို့ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mohenjo-daro" }
+        ]
+    },
+    "19": {
+        country: "Bangladesh", lat: 23.6850, lng: 90.3563,
+        landmarks: [
+            { name: "Sundarbans Mangrove Forest", location: "Khulna", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_lQvDkJss0LtSVw3x1AlXP0pyfaecp0bv5TNITBtbag&s=10", badges: ["#UNESCO", "#Nature"], details: "ကမ္ဘာ့အကြီးဆုံး ဒီရေတောနှင့် ဘင်္ဂလားကျားများ ကျက်စားရာနေရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sundarbans" },
+            { name: "Cox's Bazar Beach", location: "Cox's Bazar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWqKqmf2xRgh39sonkUeWC91eaBzIMcVgOQfYM9QVYKw&s=10", badges: ["#Beach", "#Nature"], details: "ကမ္ဘာ့အရှည်ဆုံး သဘာဝ သဲသောင်ပြင် ကမ်းခြေကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cox%27s+Bazar" },
+            { name: "Lalbagh Fort", location: "Dhaka", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqNQ-k8xopAOmUDhz7M2ibZNhEw9JirPSEQmAqyHPdHg&s=10", badges: ["#History", "#Fortress"], details: "၁၇ ရာစု မဂိုမင်းဆက်တို့၏ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lalbagh+Fort" },
+            { name: "Sitemurating / Sixty Dome Mosque", location: "Bagerhat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSldJrou7FsaCE41VNwX1m-7BJ9SJsDDq4FWCr0ddoA7Q&s=10", badges: ["#UNESCO", "#Architecture"], details: "၁၅ ရာစုက ဆောက်လုပ်ခဲ့သော သမိုင်းဝင် အမိုးခုံး ၆၀ ပါ ဗလီကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sixty+Dome+Mosque" },
+            { name: "Srimangal Tea Gardens", location: "Sylhet", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnljDkvpvdJnkf5SitswRzF1rzi6Dwl6BvD5uIFFU5Kw&s=10", badges: ["#Nature", "#Scenic"], details: "ဘင်္ဂလားဒေ့ရှ်၏ လက်ဖက်မြို့တော်ဟု ခေါ်ဆိုကြသော သာယာလှပသည့် လက်ဖက်စိုက်ခင်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Srimangal" }
+        ]
+    },
+    "20": {
+        country: "Sri Lanka", lat: 7.8731, lng: 80.7718,
+        landmarks: [
+            { name: "Sigiriya Rock Fortress", location: "Dambulla", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4FQRrF5cYpqetVqGi_f2jFyTtkCSarBLulczQsBEHmA&s=10", badges: ["#UNESCO", "#History"], details: "ကျောက်တောင်ကြီးပေါ်တွင် တည်ဆောက်ထားသည့် သမိုင်းဝင် ရှေးဟောင်းခံတပ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sigiriya" },
+            { name: "Temple of the Sacred Tooth Relic", location: "Kandy", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_q2FIbDolb0PCqiVJVdhmSAgV123ES4onxUxH9jlglA&s=10", badges: ["#Holy", "#Temple"], details: "မြတ်စွာဘုရား၏ စွယ်တော်ဓာတ် ကိန်းဝပ်စခေတ်တည်ရှိရာ ကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Temple+of+the+Sacred+Tooth+Relic" },
+            { name: "Nine Arches Bridge", location: "Ella", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2I9N5qPpG_YHu70rcHupSrVob1fOCzBjbcvk-5qsx1g&s=10", badges: ["#Bridge", "#Scenic"], details: "သစ်တောများကြား ဖြတ်သန်းသွားသော ကိုလိုနီခေတ် မီးရထား တံတားကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Nine+Arches+Bridge+Ella" },
+            { name: "Galle Fort", location: "Galle", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUjThibinv8cqHTzr0vO0gfzKQ3dCiulrBB_In5CejNw&s=10", badges: ["#UNESCO", "#Coast"], details: "ဒတ်ချ် ကိုလိုနီခေတ် ပင်လယ်ကမ်းစပ် ခံတပ်မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Galle+Fort" },
+            { name: "Yala National Park", location: "Southern Province", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXGEEJU6vnOTIqK5uzm0jmpPSJURs-EISG34mlggPfbA&s=10", badges: ["#Safari", "#Nature"], details: "သစ်ကုလားအုတ်၊ ဆင်နှင့် သားရဲတိရစ္ဆာန်များ ကျက်စားရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Yala+National+Park" }
+        ]
+    },
+    "21": {
+        country: "Nepal", lat: 28.3949, lng: 84.1240,
+        landmarks: [
+            { name: "Mount Everest Base Camp", location: "Solukhumbu", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSURMWrpZSa7R0-6TqKuhadZTXAORQ2ZncAdFUtZWPkQg&s=10", badges: ["#Adventure", "#Mountain"], details: "ကမ္ဘာ့အမြင့်ဆုံး ဧဝရတ်တောင်သို့ တက်ရောက်ရာ စခန်းဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Everest+Base+Camp" },
+            { name: "Kathmandu Durbar Square", location: "Kathmandu", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSg3pBYoR-37lHOnZve2_sT3njLZXR5SdM9wyv95I6Dw&s=10", badges: ["#UNESCO", "#Culture"], details: "နီပေါ ဘုရင်များ၏ ရှေးဟောင်း နန်းတော်နှင့် ကျောင်းတော်များ တည်ရှိရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kathmandu+Durbar+Square" },
+            { name: "Boudhanath Stupa", location: "Kathmandu", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqn0uo3Jb_aLqa35LuFQ5VUWDffUQLRn4hQU2gTQiZ4w&s=10", badges: ["#Holy", "#Pagoda"], details: "ကမ္ဘာ့အကြီးဆုံး တိဘက် ဗုဒ္ဓဘာသာ စေတီတော်ကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Boudhanath+Stupa" },
+            { name: "Phewa Lake", location: "Pokhara", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOfB_QAA4wBHPlk6hnMF2LBZUIlC7AL9iN3OKbb9kRtA&s=10", badges: ["#Nature", "#Lake"], details: "အန်နပူရဏ တောင်တန်းကြီးများကို ရေပြင်တွင် ရောင်ပြန်တွေ့ရသည့် ရေအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Phewa+Lake" },
+            { name: "Lumbini", location: "Rupandehi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPj9wyGHJqNSRks3Bo8Qsfje2ITPhbKcTYF3bCbhO0dw&s=10", badges: ["#UNESCO", "#Holy"], details: "ဂေါတမ ဗုဒ္ဓမြတ်စွာဘုရား အလောင်းတော် သိဒ္ဓတ္ထမင်းသား ဖွားမြင်တော်မူရာ သမိုင်းဝင် နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lumbini" }
+        ]
+    },
+    "22": {
+        country: "Bhutan", lat: 27.5142, lng: 90.4336,
+        landmarks: [
+            { name: "Paro Taktsang (Tiger's Nest)", location: "Paro", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTorxJfa58fCQd20D5AXOT23aPQi2MjE8lc0pzDA6XScw&s=10", badges: ["#Iconic", "#Monastery"], details: "ဂျောက်ကမ်းပါးယံတွင် ဆန်းကြယ်စွာ တည်ရှိသော ဘူတန်၏ အဓိက ကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Paro+Taktsang" },
+            { name: "Punakha Dzong", location: "Punakha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI_J8SMjvCnyB5Chie0P2ZFI4XfFnhagyRozTTCRB0lA&s=10", badges: ["#History", "#Architecture"], details: "မြစ်နှစ်သွယ် ဆုံရာတွင် ဆောက်လုပ်ထားသော သမိုင်းဝင် ခံတပ်ကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Punakha+Dzong" },
+            { name: "Buddha Dordenma Statue", location: "Thimphu", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgSkubbua_RTu4Um0fIfUjbGqbLzXDzTtGhgSTPcQDUg&s=10", badges: ["#Statue", "#Holy"], details: "မြို့တော် သင်းဖူးကို အထက်စီးမှ မိုးမျှော်ကြည့်ရှုနေသော ဧရာမ ကြေးဝါ ရုပ်ပွားတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Buddha+Dordenma" },
+            { name: "Dochula Pass", location: "Thimphu to Punakha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLUfCju7_5gimKoya12epOLYkcxRp5o1rtLw4vGcipcQ&s=10", badges: ["#Scenic", "#Mountain"], details: "စေတီ ၁၀၈ ဆူနှင့် ဟိမဝန္တာ တောင်တန်း ရှုခင်းများကို ကြည့်ရှုနိုင်သော တောင်ကြားလမ်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Dochula+Pass" },
+            { name: "Rinpung Dzong", location: "Paro", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAhjAAzvKJunp-UXfOVzsbtjsPFVQFzzC-SY0tdw_AwQ&s=10", badges: ["#Culture", "#History"], details: "ပါရိုတောင်ကြားရှိ အလွန်လှပသော ဘူတန်ရိုးရာ ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Rinpung+Dzong" }
+        ]
+    },
+    "23": {
+        country: "Maldives", lat: 3.2028, lng: 73.2207,
+        landmarks: [
+            { name: "Overwater Bungalows", location: "Male Atoll", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1xw-UwV_36XB75jl_-6sbZEdKT99mPjJXY-CIzvt13w&s=10", badges: ["#Resort", "#Luxury"], details: "ပင်လယ်ရေပြာပေါ်တွင် တည်ဆောက်ထားသော ကမ္ဘာကျော် ရေပေါ် အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Maldives+Resorts" },
+            { name: "Male Friday Mosque", location: "Malé", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAU_G98O8ArWj3Em8DZ7kF7CTVpt-3hBR3F3IUi92Nrw&s=10", badges: ["#History", "#Architecture"], details: "သန္တာကျောက်များဖြင့် ၁၆၅၈ ခုနှစ်ကတည်းက တည်ဆောက်ခဲ့သော ရှေးဟောင်း ဗလီ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Male+Friday+Mosque" },
+            { name: "Maafushi Island", location: "Kaafu Atoll", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKil5sy7rpEBQiIQsi9I5cXeHhcds1CC-p0PAoWOw6CQ&s=10", badges: ["#Beach", "#Budget"], details: "ခေတ်မှီ ပြည်သူများနေထိုင်ပြီး ခရီးသွားများ အလွန်ကြိုက်နှစ်သက်သော ကျွန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Maafushi" },
+            { name: "Banana Reef", location: "North Malé Atoll", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNkxV70dhO16dN38N98p3Cd03-vKTkxgfN6mun95mPLA&s=10", badges: ["#Diving", "#Nature"], details: "ရေအောက်သန္တာကျောက်တန်းများနှင့် ငါးမျိုးစုံကို ငုပ်ကြည့်နိုင်သော နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Banana+Reef" },
+            { name: "Baa Atoll Biosphere Reserve", location: "Baa Atoll", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShrqcA-eaR7wAJsImz72IyFha7KjRxChCGU0gCDCWk4w&s=10", badges: ["#UNESCO", "#Nature"], details: "မန္တာငါးလိပ်ကျောက်များနှင့် ငါးမန်းများကို တွေ့နိုင်သော ယူနက်စကို နယ်မြေဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Baa+Atoll" }
+        ]
+    },
+    "24": {
+        country: "Afghanistan", lat: 33.9391, lng: 67.7100,
+        landmarks: [
+            { name: "Buddhas of Bamiyan Site", location: "Bamiyan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWLV10Rh5KB41eNEo2c-eDJWpBnpFbehHKhQTy5vm1bg&s=10", badges: ["#History", "#UNESCO"], details: "၆ ရာစုခေတ်ကတည်းက ကျောက်တောင်နံရံတွင် ထွင်းထုခဲ့သော သမိုင်းဝင် ဗုဒ္ဓရုပ်ပွားတော်ကြီးများ တည်ရှိခဲ့သည့် ယူနက်စကို စာရင်းဝင် သမိုင်းဝင် နယ်မြေဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bamiyan" },
+            { name: "Band-e Amir National Park", location: "Bamiyan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQlypDJez0HWGNtTmMg2hU_qUVxqtviBVESDYE2q4A7Q&s=10", badges: ["#Nature", "#NationalPark"], details: "ဟိန္ဒူကုရှ် တောင်တန်းများကြား သဘာဝအတိုင်း ဖြစ်ပေါ်နေသော ပြာလွင်တောက်ပသည့် မီးတောင်ကန်အိုင်ကြီးများ စုစည်းရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Band-e+Amir" },
+            { name: "Blue Mosque", location: "Mazar-i-Sharif", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQvOpJQAR9U_Goe4dS229Qge4w-rnle-flJLPaUtoaxQ&s=10", badges: ["#Mosque", "#Architecture"], details: "လက်ရာမြောက် အပြာရောင် ကြွေပြားများဖြင့် စီခြယ်ထားပြီး အာဖဂန်နိစ္စတန်နိုင်ငံ၏ အလှပဆုံး အစ္စလာမ် ဘာသာရေး အဆောက်အအုံများထဲမှ တစ်ခုဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Blue+Mosque+Mazar-i-Sharif" },
+            { name: "Citadel of Herat", location: "Herat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRow6ZnpLduoIJFg6xCWTKLPzHwBe15e9WcVUGlOVVv8A&s=10", badges: ["#History", "#Fortress"], details: "မဟာအလက်ဇန္ဒား ဘုရင်ခေတ် B.C ၃၃၀ ကတည်းက စတင် တည်ဆောက်ခဲ့သော ခန်းနားထည်ဝါသည့် ရှေးဟောင်း စစ်ဘက်ဆိုင်ရာ ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Citadel+of+Herat" },
+            { name: "Babur Gardens", location: "Kabul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsAkXAS_w0897iWIrh-GOeqb6o5wIwlGyzS8LP9CAJIA&s=10", badges: ["#Park", "#Heritage"], details: "မဂိုအင်ပါယာကို စတင်တည်ထောင်သူ ဧကရာဇ် ဘာဘူရ်၏ ဂူဗိမာန် တည်ရှိပြီး ပျော်ပွဲစားထွက်ရန် သာယာလှပသည့် သမိုင်းဝင် ပန်းခြံဥယျာဉ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Babur+Gardens" }
+        ]
+    },
+
+    // --- Central Asia (5) ---
+    "25": {
+        country: "Kazakhstan", lat: 48.0196, lng: 66.9237,
+        landmarks: [
+            { name: "Charyn Canyon", location: "Almaty", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbnEGd37acXiaR7A_iabV3HjL5KVnQ96QFo75FMPU-_w&s=10", badges: ["#Nature", "#Canyon"], details: "အမေရိကန် Grand Canyon နှင့် ဆင်တူသော သဘာဝ ကျောက်ချောက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Charyn+Canyon" },
+            { name: "Big Almaty Lake", location: "Almaty", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRThSZjVVK9OrZWaibgzBr3EGqWoG5ox1xP6ChIHaWbmw&s=10", badges: ["#Nature", "#Lake"], details: "တောင်တန်းများကြားတွင် တည်ရှိသော စိမ်းပြာရောင် တောင်ပေါ် ရေအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Big+Almaty+Lake" },
+            { name: "Baiterek Tower", location: "Astana", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzCc_387eN7kGCS0BcwTuRfgrFdMXVW_g5U5pB9j3VPw&s=10", badges: ["#Modern", "#Tower"], details: "မြို့တော် အာစတာနာ၏ ခေတ်မီဆန်းသစ်သော အနာဂတ်အသွင် တာဝါကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Baiterek+Tower" },
+            { name: "Mausoleum of Khoja Ahmed Yasawi", location: "Turkestan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9gP76L9bgeaPs1QnH_hJN3nUps-HiNnjvS69UtoYS_A&s=10", badges: ["#UNESCO", "#History"], details: "၁၄ ရာစု မူဆလင် သူတော်စင်၏ သမိုင်းဝင် ဂူဗိမာန်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mausoleum+of+Khoja+Ahmed+Yasawi" },
+            { name: "Medeo Ice Rink", location: "Almaty", img: "hhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxUYc73mwxeUG3ovVhQb08wS6-hFU3K-B7cD7-8eUfnA&s=10", badges: ["#Sports", "#Mountain"], details: "ပင်လယ်ရေမျက်နှာပြင်ထက် အမြင့်ဆုံးတွင် တည်ရှိသော ကမ္ဘာကျော် ရေခဲပြင် စကိတ်ကွင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Medeo" }
+        ]
+    },
+    "26": {
+        country: "Uzbekistan", lat: 41.3775, lng: 64.5853,
+        landmarks: [
+            { name: "Registan", location: "Samarkand", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgDGlApwasIRzCerq-dAZxJvvrCN295NLHi3AFhjEj_A&s=10", badges: ["#UNESCO", "#History"], details: "အပြာရောင် ကြွေပြားများဖြင့် တန်ဆာဆင်ထားသော ပိုးလမ်းမပေါ်ရှိ သမိုင်းဝင် ကွင်းပြင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Registan+Samarkand" },
+            { name: "Ichan Kala", location: "Khiva", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMnuppZU16B9kgFEVtNH1-YfIDoKCJk8Jp_-oRfX2F_Q&s=10", badges: ["#UNESCO", "#Ancient"], details: "ရွှံ့အုတ်တံတိုင်းကြီးများ ဝန်းရံထားသည့် ရှေးဟောင်း သဲကန္တာရ မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ichan+Kala" },
+            { name: "Ark of Bukhara", location: "Bukhara", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1FsCLB2Z01uvF9N6QjfecnvV5LY986jPlKGdm-Jlw0w&s", badges: ["#Fortress", "#History"], details: "၅ ရာစုခေတ်ကတည်းက တည်ရှိခဲ့သော ဧရာမ မြို့ရိုးခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ark+of+Bukhara" },
+            { name: "Shah-i-Zinda", location: "Samarkand", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlnn_mtnFXpJoad43t1BmZMiOyMr3JO9qdJxaYQeDSVw&s=10", badges: ["#Architecture", "#Holy"], details: "အပြာရောင် လက်ရာမြောက် ကြွေပြား ဂူဗိမာန်စု စုစည်းရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Shah-i-Zinda" },
+            { name: "Chorsu Bazaar", location: "Tashkent", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0IauICRnqBSsy-bN-iJMlRoAJBafIshzYHT9oqZpGog&s=10", badges: ["#Culture", "#Market"], details: "အပြာရောင် အမိုးခုံးကြီးအောက်ရှိ ရိုးရာ ဈေးကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Chorsu+Bazaar" }
+        ]
+    },
+    "27": {
+        country: "Turkmenistan", lat: 38.9697, lng: 59.5563,
+        landmarks: [
+            { name: "Darvaza Gas Crater (Door to Hell)", location: "Derweze", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShJqzkZQ-gz9ENSr9aeNAdx_-_PHRdEg917QA2w6lWaw&s=10", badges: ["#Unique", "#Nature"], details: "သဲကန္တာရထဲတွင် နှစ်ပေါင်း ၅၀ ကျော်တိုင် မီးတောက်လောင်နေသော သဘာဝဓာတ်ငွေ့တွင်းကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Darvaza+Gas+Crater" },
+            { name: "Ashgabat Marble City", location: "Ashgabat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfD2FilEoe-BkheIAPENsRdLe4gN4SrNcQrZXcEW6vBQ&s=10", badges: ["#Architecture", "#Unique"], details: "စက်ဖြူကျောက်များဖြင့်သာ ဆောက်လုပ်ထားသော စံချိန်တင် မြို့တော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ashgabat" },
+            { name: "Ancient Merv", location: "Mary", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYwvhIafe4UDvi5lJ5hjXpGOxC_W4Daa06Y62ZDShRJw&s=10", badges: ["#UNESCO", "#History"], details: "ရှေးဟောင်း ပိုးလမ်းမပေါ်ရှိ အဓိက မြို့တော်ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ancient+Merv" },
+            { name: "Nisa Fortress", location: "Bagtyyarlyk", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9DurKukKoyNIOwM7cFId6MWAqMjImEpHIUM9HpdFjZg&s=10", badges: ["#UNESCO", "#Ancient"], details: "ပါသီယန် အင်ပါယာ၏ ပထမဆုံး မြို့တော်ဟောင်း ခံတပ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Nisa+Turkmenistan" },
+            { name: "Kow Ata Underground Lake", location: "Bäherden", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp55q6kaK-1s_EtyVwOJ0EGaPQMFr6ExSopUXyz_rTWw&s=10", badges: ["#Cave", "#Nature"], details: "သဘာဝ ရေပူစမ်း တည်ရှိရာ မြေအောက် ဂူအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kow+Ata" }
+        ]
+    },
+    "28": {
+        country: "Kyrgyzstan", lat: 41.2044, lng: 74.7661,
+        landmarks: [
+            { name: "Issyk-Kul Lake", location: "Ysyk-Kol", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToommS_uJY78nYF24eH9aAcxlZMw_lk6iALNK-5jCNZw&s=10", badges: ["#Nature", "#Lake"], details: "ကမ္ဘာ့ဒုတိယအကြီးဆုံး တောင်ပေါ် ရေငန်အိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Issyk-Kul" },
+            { name: "Ala Archa National Park", location: "Chüy", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSShJPQ5E5U97e2N1dTmB8gblJsJcLh34On952qAP6r_Q&s=10", badges: ["#Nature", "#Park"], details: "နှင်းဖုံးတောင်တန်းများနှင့် သဘာဝတောင်တက် လမ်းကြောင်းများ ရှိရာနေရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ala+Archa" },
+            { name: "Tash Rabat", location: "Naryn", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp6x-nrBfo6_14PY1eMgMFkTHpXKzcHZfzwEv1eP9UBw&s=10", badges: ["#History", "#Stone"], details: "၁၅ ရာစုက ကျောက်တုံးများဖြင့် ဆောက်လုပ်ခဲ့သော ပိုးလမ်းမပေါ်ရှိ တည်းခိုစခန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tash+Rabat" },
+            { name: "Song-Kol Lake", location: "Naryn", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTusLwYsZW5AyWqoB-LbTc97yTfVHd9yojJuJUYL9R4bA&s=10", badges: ["#Nature", "#Nomad"], details: "ခြေသလုံးအိမ်တိုင် နွားကျောင်းသူများ၏ ယဉ်ကျေးမှုကို လေ့လာနိုင်သော တောင်ပေါ်အိုင် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Song-Kol" },
+            { name: "Burana Tower", location: "Chüy", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH4plfMSP_pr5RsMqm6GN56L2WEwDDYzMa9vxCZFz7RA&s=10", badges: ["#History", "#Tower"], details: "၉ ရာစုခေတ် မြို့တော်ဟောင်းမှ ကျန်ရှိခဲ့သော သမိုင်းဝင် တာဝါကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Burana+Tower" }
+        ]
+    },
+    "29": {
+        country: "Tajikistan", lat: 38.8610, lng: 71.2761,
+        landmarks: [
+            { name: "Pamir Highway", location: "Pamir Mountains", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhvmf3Qn_AlHtDExkqdx82AEZVnUZgaYw7cf31fZ4bag&s=10", badges: ["#Road", "#Adventure"], details: "ပင်လယ်ရေမျက်နှာပြင်ထက် အမြင့် ၄၆၅၅ မီတာအထိ ဖြတ်သန်းသွားသော ကမ္ဘာ့ဒုတိယအမြင့်ဆုံး ကားလမ်းမကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Pamir+Highway" },
+            { name: "Iskanderkul Lake", location: "Sughd", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Vp0QCJ33ICyOZyanXbTG9wxySDxthZQrQkeWmF36hA&s=10", badges: ["#Nature", "#Lake"], details: "ဖန်းတောင်တန်းများကြားရှိ သတ္တုဓာတ်ကြောင့် စိမ်းပြာရောင်တောက်ပနေသော သဘာဝ တောင်ပေါ်အိုင် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Iskanderkul" },
+            { name: "Rudaki Park", location: "Dushanbe", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6kwGiclQxM0eyiMivdp4pP8vKffTkoGh7J131l94H9Q&s=10", badges: ["#Park", "#City"], details: "မြို့တော် ဒူရှန်ဘေး၏ ဗဟိုတွင် တည်ရှိပြီး ပန်းရေပန်းများနှင့် အမြင့်ဆုံး အလံတိုင်ကြီး တည်ရှိရာ ပန်းခြံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Rudaki+Park" },
+            { name: "Hisor Fortress", location: "Hisor", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe2W9KxSZ0iMW6ESFnvvyllA_5Wuoo697FaCWIPYqHyA&s=10", badges: ["#History", "#Fortress"], details: "နှစ်ပေါင်း ၂၅၀၀ ကျော် သက်တမ်းရှိပြီး ရှေးဟောင်း ပိုးလမ်းမပေါ်ရှိ အရေးပါသော ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Hisor+Fortress" },
+            { name: "Nurek Dam", location: "Nurek", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv9pC_VajX8r1-DtMfaQ4E8VGTqTXo-psjgqnFqst6bg&s=10", badges: ["#Engineering", "#Lake"], details: "အမြင့် မီတာ ၃၀၀ ရှိသော ကမ္ဘာ့အမြင့်ဆုံး မြေသားတမံကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Nurek+Dam" }
+        ]
+    },
+
+    // --- West Asia / Middle East (18) ---
+    "30": {
+        country: "Saudi Arabia", lat: 23.8859, lng: 45.0792,
+        landmarks: [
+            { name: "Al-Ula (Hegra / Madain Salih)", location: "Al-Ula", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7G0DcZVZ9Im0z4r4C_IzX4ANlhg5EPRL5JpmmSIHM9Q&s=10", badges: ["#UNESCO", "#Ancient"], details: "သဲကန္တာရ ကျောက်တောင်ကြီးများကို ထွင်းထုထားသည့် ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Al-Ula" },
+            { name: "Masjid al-Haram", location: "Mecca", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSJ3X31y39vEwvLA8nXObdtwYXWEvtSldle_yIdn-vTQ&s", badges: ["#Holy", "#Mosque"], details: "အစ္စလာမ် ဘာသာတူတို့၏ အقدမြတ်ဆုံး ကာဗာကျောင်းတော်ကြီး တည်ရှိရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Masjid+al-Haram" },
+            { name: "Edge of the World", location: "Riyadh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZEJDgr_QOx3yc6mLUX9LyD3XCBBeei4dI_9TFYXnI6Q&s=10", badges: ["#Nature", "#Cliff"], details: "ကျယ်ပြောလှသော သဲကန္တာရပြင်ကြီးကို မြင်တွေ့ရသည့် သဘာဝ ကျောက်ကမ်းပါးကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Edge+of+the+World+Riyadh" },
+            { name: "Al Balad", location: "Jeddah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS26rgbS7AWuIect4KcHT2iAuU66SUs5HE-gQmaOqCwaw&s=10", badges: ["#UNESCO", "#History"], details: "ဂျက်ဒါမြို့ရှိ သမိုင်းဝင် သန္တာကျောက်ဖြင့် ဆောက်လုပ်ထားသော ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Al+Balad+Jeddah" },
+            { name: "Kingdom Centre Tower", location: "Riyadh", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM6rZ76-4M8CYe9KopoS-nR30MqHanSywkxSbjAbFyVQ&s=10", badges: ["#Modern", "#Tower"], details: "ရီယဒ်မြို့၏ ထူးခြားသော ဗိသုကာလက်ရာပါ မိုးမျှော်တိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kingdom+Centre" }
+        ]
+    },
+    "31": {
+        country: "United Arab Emirates(UAE)", lat: 23.4241, lng: 53.8478,
+        landmarks: [
+            { name: "Burj Khalifa", location: "Dubai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv1xUp03CqYmO7ruCvipm3gRN1P7kszhmEY8UIT1lxBQ&s=10", badges: ["#Modern", "#Iconic"], details: "အမြင့် ၈၂၈ မီတာရှိ ကမ္ဘာ့အမြင့်ဆုံး မိုးမျှော်တိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Burj+Khalifa" },
+            { name: "Sheikh Zayed Grand Mosque", location: "Abu Dhabi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxYqV_iHu_XS3-ugCJU-MsVXfBLtbOVwNufZczcJ7uXQ&s=10", badges: ["#Mosque", "#Architecture"], details: "စက်ဖြူကျောက်များဖြင့် ဆောက်လုပ်ထားသော ခန်းနားထည်ဝါလှသည့် ဗလီကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sheikh+Zayed+Grand+Mosque" },
+            { name: "Museum of the Future", location: "Dubai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-2-w3h8vNsKK5yjJL-XV9J5458zQ2LpmF1d12fmkCnQ&s=10", badges: ["#Modern", "#Design"], details: "အနာဂတ်နည်းပညာများ ခင်းကျင်းထားသည့် ဆန်းသစ်လှသော ပြတိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Museum+of+the+Future" },
+            { name: "Louvre Abu Dhabi", location: "Abu Dhabi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Jf43xcdB11dT6DVx2-1ZOqFKL7BF44xMF-LKwxT9Xg&s=10", badges: ["#Museum", "#Art"], details: "ရေပေါ်တွင် တည်ဆောက်ထားသည့် အနုပညာနှင့် သမိုင်းဝင် ပြတိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Louvre+Abu+Dhabi" },
+            { name: "Palm Jumeirah", location: "Dubai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcjErnpbGUjfCMljKfWBoz5hV3-UHT6vK2JA3Xvld_6w&s=10", badges: ["#Island", "#Luxury"], details: "ထန်းပင်ပုံစံ လူလုပ် ကျွန်းတုကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Palm+Jumeirah" }
+        ]
+    },
+    "32": {
+        country: "Turkey", lat: 38.9637, lng: 35.2433,
+        landmarks: [
+            { name: "Hagia Sophia", location: "Istanbul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyj6YfaXQUyU5t0HMKpCXUK28UYph06QrE_oiq-XPy2w&s=10", badges: ["#UNESCO", "#History"], details: "ဘိုင်ဇန်တိုင်း ခေတ်ကတည်းက တည်ရှိခဲ့သော သမိုင်းဝင် ဘုရားကျောင်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Hagia+Sophia" },
+            { name: "Cappadocia", location: "Nevsehir", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxOUyrstVLNXOjx4oOSWgXwmupzirrJ9OTyMU6_lPG8g&s=10", badges: ["#Balloon", "#Scenic"], details: "မီးပူဖောင်းများ ပျံသန်းရာ သဘာဝ ကျောက်တောင်တန်းကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cappadocia" },
+            { name: "Pamukkale", location: "Denizli", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRslct2WmDeDQbmpi7bw7RUM0iNZHlUnGCeMSkhnQemoQ&s=10", badges: ["#Nature", "#Thermal"], details: "ထုံးကျောက်ဖြူဖြူ ကမ်းပါးများပေါ်ရှိ သဘာဝ ရေပူစမ်း ကန်များ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Pamukkale" },
+            { name: "Ephesus", location: "Izmir", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSaQs2SbHFS4VSrvPM73R5vtzfBHnr_X1nOXAZwFs4Hg&s=10", badges: ["#Ancient", "#UNESCO"], details: "ဂရိနှင့် ရောမခေတ် သမိုင်းဝင် မြို့ဟောင်း အပျက်အစီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ephesus" },
+            { name: "Topkapi Palace", location: "Istanbul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjJDybliXawLZftU7VLu3DopXgN7zRC3L_Ao1o9qSM0g&s=10", badges: ["#Palace", "#History"], details: "အော့သိုမန် ဧကရာဇ်တို့ စီးစံခဲ့ရာ သမိုင်းဝင် နန်းတော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Topkapi+Palace" }
+        ]
+    },
+    "33": {
+        country: "Iran", lat: 32.4279, lng: 53.6880,
+        landmarks: [
+            { name: "Persepolis", location: "Shiraz", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRymgF2w2AvNLgte4A6TYIHOfJbi1BREbuZnKmiG5tTnw&s=10", badges: ["#UNESCO", "#Ancient"], details: "ရှေးဟောင်း ပါရှန်းအင်ပါယာ၏ ခန်းနားလှသော မြို့တော်ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Persepolis" },
+            { name: "Naqsh-e Jahan Square", location: "Isfahan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05yoKhwTFQqf3_fNQnxFE-b8n4jQ-GRxA5LFSXnDMcg&s=10", badges: ["#UNESCO", "#Architecture"], details: "ကမ္ဘာ့အကြီးဆုံး ကွင်းပြင်ကြီးများထဲမှ တစ်ခုဖြစ်ပြီး အပြာရောင် ဗလီများ ရှိပါသည်။", mapUrl: "https://maps.google.com/?q=Naqsh-e+Jahan+Square" },
+            { name: "Nasir al-Mulk Mosque (Pink Mosque)", location: "Shiraz", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo60uRjKbOiD6QNTVT8LAozgQqKx92KP0fbl-2GeUK5Q&s=10", badges: ["#Mosque", "#Art"], details: "ရောင်စုံမှန်ပြတင်းများကြောင့် အလင်းရောင်ကျချိန် အလွန်လှပသော ဗလီ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Nasir+al-Mulk+Mosque" },
+            { name: "Golestan Palace", location: "Tehran", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJO4PFr9RjQyb8duC1cJsJ2qTz7HxUNlbhmLpBuiCuyQ&s=10", badges: ["#UNESCO", "#Palace"], details: "ကာဂျာမင်းဆက်တို့၏ ကြွေပြားလက်ရာမြောက် သမိုင်းဝင် နန်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Golestan+Palace" },
+            { name: "Yazd Old Town", location: "Yazd", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0ebYEeAjKTjmtxjPRvIIsNkgmzfWeZ5SVd9yzQT_OHA&s=10", badges: ["#UNESCO", "#Desert"], details: "သဲကန္တာရအလယ်ရှိ လေအေးပေးစနစ်ပါ ရွှံ့အုတ် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Yazd+Old+Town" }
+        ]
+    },
+    "34": {
+        country: "Iraq", lat: 33.2232, lng: 43.6793,
+        landmarks: [
+            { name: "Babylon Ruins", location: "Hillah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkpXMt8VZrt-v95cFIT3yNWh53O0SGMh-NbOFAmn9lxQ&s=10", badges: ["#UNESCO", "#Ancient"], details: "ရှေးဟောင်း မက်ဆိုပိုတေးမီးယား ယဉ်ကျေးမှု ထွန်းကားခဲ့ရာ ဗာဗုလုန် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Babylon+Ruins" },
+            { name: "Ziggurat of Ur", location: "Dhi Qar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ7Dcy5pzOYzlnDl6ToCbQMztjiyAgfbm1AUhnfssmyw&s=10", badges: ["#Ancient", "#History"], details: "B.C ၂၁ ရာစု စူမေးရီးယန်းတို့ ဆောက်လုပ်ခဲ့သော ဧရာမ ကျောက်စင်မြင့်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ziggurat+of+Ur" },
+            { name: "Great Mosque of Samarra", location: "Samarra", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8c_paRgOTHiezatDznxFH_1_tKgmbTVATBvYg4G-nyA&s=10", badges: ["#UNESCO", "#Architecture"], details: "ခရုပတ်ပုံစံ မာလာဝီယျာ တာဝါကြောင့် ထို့ထူးခြားလှသော ၉ ရာစု ဗလီ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Great+Mosque+of+Samarra" },
+            { name: "Erbil Citadel", location: "Erbil", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIzB6wesXu3oQ9usYmijhqrsRak8HTY-_bpt3MH4ZJGg&s=10", badges: ["#UNESCO", "#History"], details: "နှစ်ပေါင်း ၆၀၀၀ ကျော် တောက်လျှောက် လူနေထိုင်ခဲ့သည့် တောင်ကုန်းပေါ်မှ ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Erbil+Citadel" },
+            { name: "Imam Ali Mosque", location: "Najaf", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnhqbNWF7smEpK99vTllfLIHVPLSRFPH0fsp0_3eljsA&s=10", badges: ["#Holy", "#Mosque"], details: "ရှီအာ မူဆလင်တို့၏ အရေးပါဆုံး ဘာသာရေး ဗဟိုဌာန ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Imam+Ali+Mosque" }
+        ]
+    },
+    "35": {
+        country: "Israel", lat: 31.0461, lng: 34.8516,
+        landmarks: [
+            { name: "Western Wall", location: "Jerusalem", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDnee95D_rjlJyYXfaJuTJlQi3c2wdBhPfxJwzegwOOA&s=10", badges: ["#Holy", "#History"], details: "ဂျူးဘာသာဝင်တို့၏ အقدမြတ်ဆုံး သမိုင်းဝင် တံတိုင်းဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Western+Wall" },
+            { name: "Dome of the Rock", location: "Jerusalem", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKxvrDiA5sQYW-gABFcAwES1VUStuMmJ_29tvqRmIJbw&s=10", badges: ["#Holy", "#Architecture"], details: "ရွှေအမိုးခုံးဖြင့် ထင်ရှားသော သမိုင်းဝင် အစ္စလာမ် အဆောက်အအုံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Dome+of+the+Rock" },
+            { name: "Dead Sea", location: "Ein Gedi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_Z8voD5VTqWPJ58J81WbBrxpp4FLk9WOKLGrpOs2IWw&s=10", badges: ["#Nature", "#Lake"], details: "ဆားဓာတ် အလွန်များပြားသဖြင့် ရေကူးစရာမလိုဘဲ ပေါလောပေါ်နေသော ပင်လယ်သေ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Dead+Sea" },
+            { name: "Masada National Park", location: "Judean Desert", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRLVFR2XL0DbDZI2Bt-0tegcF-egERDXc-e0J44ANMyA&s=10", badges: ["#UNESCO", "#History"], details: "သဲကန္တာရ ကျောက်တောင်ထိပ်ပေါ်ရှိ ရှေးဟောင်း ရောမခေတ် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Masada" },
+            { name: "Bahá'í Gardens", location: "Haifa", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqvbJNvH3xU0MH9BdtNsJb5iEIDUhfgVnCYF8aXGmlAA&s=10", badges: ["#UNESCO", "#Garden"], details: "တောင်စောင်းတွင် အဆင့်ဆင့် သပ်ရပ်စွာ ပုံဖော်ထားသော ပန်းခြံကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bahai+Gardens+Haifa" }
+        ]
+    },
+    "36": {
+        country: "Jordan", lat: 30.5852, lng: 36.2384,
+        landmarks: [
+            { name: "Petra", location: "Ma'an", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnbN5OdHWl731d8kUpSqjqCrkIiWHZO-nrKQ7P64E6xg&s=10", badges: ["#UNESCO", "#Iconic"], details: "ကျောက်တောင်နီကြီးများကို ထွင်းထုထားသည့် ကမ္ဘာ့အံ့ဖွယ် ပတ္တရာမြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Petra" },
+            { name: "Wadi Rum", location: "Aqaba", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrLq__4J6DdAh9SCrFzsj_zZzu3oUnRHjOIgjF0DBqLw&s=10", badges: ["#UNESCO", "#Desert"], details: "အင်္ဂါဂြိုဟ်မျက်နှာပြင်နှင့် တူသော သဲကန္တာရ ကျောက်တောင်တန်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Wadi+Rum" },
+            { name: "Jerash Ruins", location: "Jerash", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1YWZEXSc5s1sgU45vH-4guwsYck-RMYWSOOWLmiGeSA&s=10", badges: ["#Ancient", "#History"], details: "အကောင်းအတိုင်း ကျန်ရှိနေသော ရောမခေတ် ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jerash" },
+            { name: "Dead Sea Jordan", location: "Balqa", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-gsSO_en9ClwQmtGLPZM9kvzRr62AU6e3JpmWUCgR5g&s=10", badges: ["#Nature", "#Spa"], details: "ကမ္ဘာ့အနိမ့်ဆုံး ကုန်းမြေတွင် တည်ရှိသော ဆားရေအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Dead+Sea+Jordan" },
+            { name: "Amman Citadel", location: "Amman", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSACiS3OVD-vtCFaIS4PIiW3LH5pbBkAtqiHAFazJBCfg&s=10", badges: ["#History", "#City"], details: "မြို့တော် အာမန်ကို အထက်စီးမှ မြင်ရသော ရှေးဟောင်း ခံတပ်ကုန်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Amman+Citadel" }
+        ]
+    },
+    "37": {
+        country: "Lebanon", lat: 33.8547, lng: 35.8623,
+        landmarks: [
+            { name: "Jeita Grotto", location: "Nahr al-Kalb", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNT40ZhAyF4Gt-Rw5VPqk9fI-18wt3acnrzsIvb_GiHg&s=10", badges: ["#Nature", "#Cave"], details: "ထုံးကျောက်ဂူကြီးများ ထွင်းဖောက်တည်ရှိသော အံ့ဖွယ် သဘာဝဂူကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Jeita+Grotto" },
+            { name: "Baalbek Temple Complex", location: "Baalbek", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIT9vaJvUqt3kP770La6BYZ6QSFXdJEEWRZ_yjYzVC8A&s=10", badges: ["#UNESCO", "#Ancient"], details: "ဧရာမ ကျောက်တိုင်ကြီးများ ပါဝင်သော ရောမ နတ်ကျောင်း အပျက်အစီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Baalbek" },
+            { name: "Byblos Ancient City", location: "Mount Lebanon", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaq0WBBfiXyJ6gf11sBuIwwtDQ-6Tpr448E3u4qiAUvw&s=10", badges: ["#UNESCO", "#History"], details: "ကမ္ဘာပေါ်တွင် သက်တမ်းအရှည်ဆုံး တောက်လျှောက် လူနေထိုင်ခဲ့သည့် ပင်လယ်ကမ်းစပ် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Byblos" },
+            { name: "Cedars of God", location: "Bsharri", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSw7CTaygEpj_DQyCQNgh-hlEnjWoPgCejSvnyR9_PaBA&s=10", badges: ["#Nature", "#UNESCO"], details: "လိဘနွန်နိုင်ငံ၏ သင်္ကေတဖြစ်သော ရှေးဟောင်း ဆီးဒါး သစ်တောအုပ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cedars+of+God" },
+            { name: "Mohammad Al-Amin Mosque", location: "Beirut", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmaRbsyP1Fi7VhJDU_Ua2kvGRXR22FeQRPBtmV2mT6WA&s=10", badges: ["#Mosque", "#City"], details: "ဘေရုတ္တမြို့လယ်ရှိ အပြာရောင် အမိုးခုံးပါ ခန်းနားသော ဗလီ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Mohammad+Al-Amin+Mosque" }
+        ]
+    },
+    "38": {
+        country: "Syria", lat: 34.8021, lng: 38.9968,
+        landmarks: [
+            { name: "Umayyad Mosque", location: "Damascus", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0bpunvMTCOIM7dINEW0a0Dj0tnqnLa52q46B8tRiYXQ&s=10", badges: ["#UNESCO", "#History"], details: "ကမ္ဘာ့အရှေးကျဆုံးနှင့် အကြီးဆုံး အစ္စလာမ် ဗလီကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Umayyad+Mosque" },
+            { name: "Ancient City of Palmyra", location: "Homs", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReIF7P7WNiHP1KSqvNy7DQ8VUgYOolECE18dCNPCoQ5g&s=10", badges: ["#UNESCO", "#Ancient"], details: "သဲကန္တာရအလယ်ရှိ သမိုင်းဝင် ရောမခေတ် မြို့တော်ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Palmyra" },
+            { name: "Krak des Chevaliers", location: "Homs", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBC_OfiGlge7E1G75CNrLmBJrViDJaLs9Lnzpdd16-Vg&s=10", badges: ["#UNESCO", "#Fortress"], details: "ကမ္ဘာပေါ်တွင် အကင်းဆုံး ထိန်းသိမ်းထားနိုင်ခဲ့သော ခရူးဆိတ်ခေတ် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Krak+des+Chevaliers" },
+            { name: "Ancient City of Aleppo", location: "Aleppo", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLML5Spaietyzho10HivAamqlJhfg-IzUZSCORORQMAA&s=10", badges: ["#UNESCO", "#History"], details: "သမိုင်းဝင် ခံတပ်နှင့် ရှေးဟောင်း ဈေးတန်းကြီးများ တည်ရှိရာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Citadel+of+Aleppo" },
+            { name: "Norias of Hama", location: "Hama", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR66QkkB06YorQA-Ust0SXtjfMiPJ4K4syqgM--5gbnOA&s=10", badges: ["#History", "#Unique"], details: "၁၄ ရာစုကတည်းက တည်ရှိခဲ့သော ဧရာမ သစ်သား ရေရာထိုင်ဘီးကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Norias+of+Hama" }
+        ]
+    },
+    "39": {
+        country: "Yemen", lat: 15.5527, lng: 48.5164,
+        landmarks: [
+            { name: "Old City of Sana'a", location: "Sana'a", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzmvVRghUN2zi4sggCAc7w1sjT1oJ4-qxBtAzO7aTqwA&s=10", badges: ["#UNESCO", "#Architecture"], details: "ထူးခြားသော အဖြူရောင် ပန်းခက်များပါ ရွှံ့အုတ် တိုက်အမြင့်ကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Old+City+of+Sana'a" },
+            { name: "Socotra Island", location: "Socotra", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98MpCXij24PB1x7_biQh7zyMdzI3pdNdGtP8ola4XUQ&s=10", badges: ["#UNESCO", "#Nature"], details: "နဂါးသွေးပင်ကဲ့သို့ ကမ္ဘာပေါ်တွင် အခြားဘက်၌ မရှိသော သဘာဝ သစ်ပင်ဆန်းများ တည်ရှိရာ ကျွန်းဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Socotra" },
+            { name: "Shibam Hadramawt", location: "Hadhramaut", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3-J5m-S0wSBuZ_d1DBK444OFV-2__DvaHsfng3iKdHg&s=10", badges: ["#UNESCO", "#Unique"], details: "သဲကန္တာရ၏ မိုးမျှော်တိုက်များဟု ခေါ်ဆိုကြသော သမိုင်းဝင် ရွှံ့အုတ်တိုက်များ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Shibam" },
+            { name: "Dar al-Hajar (Rock Palace)", location: "Sana'a", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvXa18FcSVsPe6xNXGhLMBBH2jgkYc-lcs55v8q8Z4rg&s=10", badges: ["#Palace", "#Unique"], details: "ကျောက်တောင်ကြီးပေါ်တွင် ဆန်းကြယ်စွာ တည်ဆောက်ထားသော နန်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Dar+al-Hajar" },
+            { name: "Shaharah Bridge", location: "Amran", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB8IS0el_uvaoVzNY3Ns41Kf-WPPyq-4_Hnwk106zk8w&s=10", badges: ["#Bridge", "#History"], details: "၁၇ ရာစုက တောင်စောက်ကြီးနှစ်ခုကြား ဆက်သွယ်ဆောက်လုပ်ခဲ့သော ကျောက်တံတား ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Shaharah+Bridge" }
+        ]
+    },
+    "40": {
+        country: "Oman", lat: 21.5126, lng: 55.9233,
+        landmarks: [
+            { name: "Sultan Qaboos Grand Mosque", location: "Muscat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgGWZCtzyvYmj1TwTCFp03AS7IjzlkX7JEsvoAmCKE1g&s=10", badges: ["#Mosque", "#Architecture"], details: "မန္တလတ် ရောစပ်ထားသည့် ခန်းနားလှသော မူစကတ်မြို့၏ ပင်မ ဗလီကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sultan+Qaboos+Grand+Mosque" },
+            { name: "Wadi Shab", location: "Al Sharqiyah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTEY2HPIHq_yel2D3z4SaNy4ekjzVubRiB2N0zPvSMHw&s=10", badges: ["#Nature", "#Adventure"], details: "ကျောက်တောင်စောက်များကြား လှပသော စိမ်းပြာရောင် သဘာဝ ရေအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Wadi+Shab" },
+            { name: "Nizwa Fort", location: "Nizwa", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWhaWau3l2FI8z-2dKsi17lnRMkUOfek59o_6DUKtXOw&s=10", badges: ["#History", "#Fortress"], details: "၁၇ ရာစုက တည်ဆောက်ခဲ့သော အိုမန်၏ အထင်ကရ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Nizwa+Fort" },
+            { name: "Wahiba Sands", location: "Sharqiyah", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsurORHquHMYVhppd21NxmV4_3KLWipKGRI9t9MEo50A&s=10", badges: ["#Desert", "#Nature"], details: "လှိုင်းလုံး ပုံစံ သဲသောင်ပြင်ကြီးများနှင့် သဲကန္တာရ အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Wahiba+Sands" },
+            { name: "Bimmah Sinkhole", location: "Muscat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStmawxKht1k5ynoE6ffm81uWvrgFfGzag3cPE4JiZhWQ&s=10", badges: ["#Nature", "#Unique"], details: "မြေပြိုကျမှုကြောင့် ဖြစ်ပေါ်လာသော သဘာဝ စိမ်းပြာရောင် ရေကန်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bimmah+Sinkhole" }
+        ]
+    },
+    "41": {
+        country: "Kuwait", lat: 29.3117, lng: 47.4818,
+        landmarks: [
+            { name: "Kuwait Towers", location: "Kuwait City", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi4GMLP5_ypOfIb_xTNFv0JqKAg_84cvh8n5421fBTKQ&s=10", badges: ["#Iconic", "#Modern"], details: "ကူဝိတ်မြို့၏ စတိုင်ကျဆန်းသစ်သော အပြာရောင် ဘောလုံးပုံစံ တာဝါကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kuwait+Towers" },
+            { name: "Grand Mosque of Kuwait", location: "Kuwait City", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrqEevL1Fpc7y3W7or77xjo3huMF-vaLrJxX2CConeeg&s=10", badges: ["#Mosque", "#Architecture"], details: "ကူဝိတ်နိုင်ငံ၏ အကြီးဆုံးနှင့် ခန်းနားလှသော ဗလီကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Grand+Mosque+Kuwait" },
+            { name: "Al Shaheed Park", location: "Kuwait City", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtCZ8pz82fIvnco7yxRrN-Gndaahzzwmg5KFgJC769Ig&s=10", badges: ["#Park", "#Nature"], details: "ပြတိုက်များနှင့် ရေပန်းများ ပါဝင်သော မြို့တော်၏ အကြီးဆုံး အမျိုးသား ပန်းခြံ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Al+Shaheed+Park" },
+            { name: "Souq Al-Mubarakiya", location: "Kuwait City", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHOXyUBNmeM5Clsu2Gok8nvF_kMeuVncBgAOButwCJhg&s=10", badges: ["#Culture", "#Market"], details: "နှစ်ပေါင်း ၁၀၀ ကျော် သက်တမ်းရှိပြီဖြစ်သော ရိုးရာ ဈေးကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Souq+Al-Mubarakiya" },
+            { name: "The Avenues Mall", location: "Rai", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbJA-gG-0ZiTBng_klIEMFVohiGRz9Y3qCWnbgSWt1Dg&s=10", badges: ["#Shopping", "#Modern"], details: "ကူဝိတ်နိုင်ငံ၏ အကြီးဆုံးနှင့် ခေတ်မှီလှသော ဈေးဝယ်စင်တာကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=The+Avenues+Kuwait" }
+        ]
+    },
+    "42": {
+        country: "Qatar", lat: 25.3548, lng: 51.1839,
+        landmarks: [
+            { name: "Souq Waqif", location: "Doha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwh-3_KTp-zWJ1vXHlmgMWVq7iD6-DqalE3PTOEzijUA&s=10", badges: ["#Culture", "#Market"], details: "ကာတာရိုးရာ အဆောက်အအုံများ၊ အမွှေးနံ့သာများနှင့် စားသောက်ဆိုင်များရှိရာ ဈေးဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Souq+Waqif" },
+            { name: "Museum of Islamic Art", location: "Doha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrWoU7OX1TqKaI2n1sS4idt2hLdqwwXJzC8cuJASIQPg&s=10", badges: ["#Museum", "#Art"], details: "ပင်လယ်ပြင်ပေါ်တွင် တည်ဆောက်ထားသည့် အစ္စလာမ် အနုပညာ ပြတိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Museum+of+Islamic+Art+Doha" },
+            { name: "The Pearl-Qatar", location: "Doha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQElnylcm_ak5HLmrbyFfAE8oOd_qwmT7HFGtGWFMWhiA&s=10", badges: ["#Island", "#Luxury"], details: "ဗင်းနစ်ပုံစံ ရေကြောင်းလမ်းများ ပါရှိသော လူလုပ် ကျွန်းတုကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=The+Pearl-Qatar" },
+            { name: "Katara Cultural Village", location: "Doha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7PG1U3TbeKU50gw0vUtw4BDyxPyA-oECZou9oDmKX2Q&s=10a", badges: ["#Culture", "#Art"], details: "ကဇာတ်ရုံများ၊ ပြခန်းများနှင့် ယဉ်ကျေးမှု စင်တာများ တည်ရှိရာ နေရာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Katara+Cultural+Village" },
+            { name: "National Museum of Qatar", location: "Doha", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlMtkBxU8NtnhkUc4oqhZorBDgjlcHb1gNhTLZrezZcA&s=10", badges: ["#Museum", "#Architecture"], details: "သဲကန္တာရ နှင်းဆီပန်း ပုံစံဖြင့် ထူးဆန်းစွာ ဆောက်လုပ်ထားသော အမျိုးသားပြတိုက် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=National+Museum+of+Qatar" }
+        ]
+    },
+    "43": {
+        country: "Bahrain", lat: 26.0667, lng: 50.5577,
+        landmarks: [
+            { name: "Tree of Life", location: "Manama", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3Josa9UnlNZ1OV8ax2gGbvsaFryKFgyNB3QIRPY4S2w&s=10", badges: ["#Nature", "#Mystery"], details: "သဲကန္တာရ အလယ်တွင် ရေမရှိဘဲ နှစ် ၄၀၀ ကျော် ရှင်သန်နေသည့် အံ့ဖွယ် သစ်ပင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tree+of+Life+Bahrain" },
+            { name: "Bahrain Fort (Qal'at al-Bahrain)", location: "Manama", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZu-gxflXUccDQXO5Ysx1-HkRA7r1pFMy1HLrqYBcQnQ&s", badges: ["#UNESCO", "#History"], details: "ရှေးဟောင်း ဒီလ်မွန် အင်ပါယာ၏ ယူနက်စကို စာရင်းဝင် ပင်လယ်ကမ်းစပ် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bahrain+Fort" },
+            { name: "Al Fateh Grand Mosque", location: "Manama", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-B4AITCu_ptMxlaswPEV8-OdivOs-CtCcynF3wjdASw&s=10", badges: ["#Mosque", "#Architecture"], details: "ဖိုင်ဘာမှန် အမိုးခုံးကြီး ပါဝင်သော ဘာရိန်း၏ အကြီးဆုံး ဗလီကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Al+Fateh+Grand+Mosque" },
+            { name: "Bahrain International Circuit", location: "Sakhir", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA4aHIros58uMz8AFj1n6-obPJlDpCkXE3ZDr4cHr94w&s=10", badges: ["#Sports", "#F1"], details: "အရှေ့အလယ်ပိုင်း၏ နာမည်ကြီး Formula 1 မော်တော်ကား ပြိုင်ပွဲကွင်းကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bahrain+International+Circuit" },
+            { name: "Bahrain National Museum", location: "Manama", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qLMY9X-ImxNGVMsXJI0gSHEycm6BqORkBOJl-FeHhg&s", badges: ["#Museum", "#History"], details: "နှစ်ပေါင်း ၆၀၀၀ ကျော် သမိုင်းကြောင်းများကို ခင်းကျင်းပြသထားသည့် ပြတိုက်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Bahrain+National+Museum" }
+        ]
+    },
+    "44": {
+        country: "Cyprus", lat: 35.1264, lng: 33.4299,
+        landmarks: [
+            { name: "Tombs of the Kings", location: "Paphos", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_YnIbPANNtjtvNr6sJcVBTckAcDza5EpSvmvXvdVs0Q&s=10", badges: ["#UNESCO", "#Ancient"], details: "ကျောက်တောင်အတွင်း ထွင်းထုထားသော B.C ၄ ရာစု ရှေးဟောင်း ဂူသင်္ချိုင်းများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tombs+of+the+Kings+Paphos" },
+            { name: "Rock of Aphrodite (Petra tou Romiou)", location: "Paphos", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLJVwuljN6g-tzIf3vvfRjDvPYJa6Al4KpN9lVOD3fdg&s=10", badges: ["#Nature", "#Mythology"], details: "ဂရိ ဒဏ္ဍာရီလာ အဖရိုဒေးတီ နတ်သမီး မွေးဖွားရာ ပင်လယ်ကျောက်ဆောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Rock+of+Aphrodite" },
+            { name: "Kyrenia Castle", location: "Kyrenia", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqgTHVyeRaAnWwU5YKNzDIIDkvKoOSS393UTWKwSOtbQ&s=10", badges: ["#History", "#Fortress"], details: "၁၆ ရာစု ပင်လယ်ဆိပ်ကမ်းဘေးရှိ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kyrenia+Castle" },
+            { name: "Cape Greco", location: "Ayia Napa", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5G6P3UyHL7aZslGLUKTy1KWuSijMpplev2WHEIeuzIw&s=10", badges: ["#Nature", "#Scenic"], details: "စိမ်းပြာရောင် ပင်လယ်နှင့် သဘာဝ ကျောက်တံတားများ ရှိရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Cape+Greco" },
+            { name: "Kourion Archaeological Site", location: "Limassol", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjjiKL7eRWkdC3nPkvXtwiPMh7f5YcMT4KLF060MtSeA&s=10", badges: ["#Ancient", "#History"], details: "ပင်လယ်ကို မိုးမျှော်ကြည့်နိုင်သော ရှေးဟောင်း ဂရိ-ရောမ ကဇာတ်ရုံကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Kourion" }
+        ]
+    },
+    "45": {
+        country: "Armenia", lat: 40.0691, lng: 45.0382,
+        landmarks: [
+            { name: "Khor Virap Monastery", location: "Ararat", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfY1qG9itYQv5ArtZCAdpYFeWD-gTRzjbk-d5GrW-rIw&s=10", badges: ["#Monastery", "#Scenic"], details: "အာရရတ်တောင်ကြီးကို နောက်ခံထားလျက် တွေ့ရသည့် ရှေးဟောင်း ခရစ်ယာန် ဘုရားကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Khor+Virap" },
+            { name: "Lake Sevan", location: "Gegharkunik", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZd8XxDeNnKvaY2olNcIDat5BIFDYbIle2iolHm9Ym7A&s=10", badges: ["#Nature", "#Lake"], details: "ကော့ကေးဆပ်ဒေသ၏ အကြီးဆုံး တောင်ပေါ် ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lake+Sevan" },
+            { name: "Tatev Monastery", location: "Syunik", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK1TH4Aq8cuElgGzoRlyWVPxDjGSwxUHnusEWuF4l9DQ&s=10", badges: ["#History", "#CableCar"], details: "ကမ္ဘာ့အရှည်ဆုံး ကေဘယ်ကားဖြင့် သွားရောက်ရသော ကျောက်တောင်စောက်ပေါ်မှ ကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Tatev+Monastery" },
+            { name: "Garni Temple", location: "Kotayk", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrT4BrRRslYYiTqf5w9MBYW-kbSdQA-K57iBZ3GPmkYQ&s=10", badges: ["#Ancient", "#History"], details: "အာမေးနီးယားတွင် တစ်ခုတည်း ကျန်ရှိတော့သည့် B.C ၁ ရာစု ဂရိ-ရောမ နတ်ကျောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Garni+Temple" },
+            { name: "Geghard Monastery", location: "Kotayk", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_Tq_kJ2WdeBmi1ty1pXDmiCmOoTvyKy23Fc9lNQVqpg&s=10", badges: ["#UNESCO", "#History"], details: "ကျောက်တောင်ကြီးများကို တိုက်ရိုက် ထွင်းထုဆောက်လုပ်ထားသည့် ယူနက်စကို ကျောင်းတော်ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Geghard+Monastery" }
+        ]
+    },
+    "46": {
+        country: "Azerbaijan", lat: 40.1431, lng: 47.5769,
+        landmarks: [
+            { name: "Flame Towers", location: "Baku", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHORTJzGadnvZ1L46XSJUbZXnVOMmBIEE3_ZJ8yXAOAA&s=10", badges: ["#Modern", "#Iconic"], details: "မီးတောက်ပုံစံ ပုံဖော်ထားသည့် ဘာကူမြို့၏ အဓိက မိုးမျှော်တိုက်ကြီး ၃ ခု ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Flame+Towers" },
+            { name: "Gobustan Mud Volcanoes", location: "Gobustan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAZ5igrntR-K2DR8kRoXkuvb9bEMKmweIsLzehGIpjNA&s=10", badges: ["#Nature", "#Geology"], details: "ကမ္ဘာ့ရွှံ့မီးတောင် အများစု တည်ရှိရာ ထူးဆန်းသော သဘာဝ မြေမျက်နှာသွင်ပြင် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gobustan+Mud+Volcanoes" },
+            { name: "Heydar Aliyev Center", location: "Baku", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTymeIQGZn85UJB5cZsCMoaG31_v49B58A1ms5EoPOHCQ&s", badges: ["#Architecture", "#Design"], details: "Zaha Hadid ပုံစံထုတ်ထားပြီး ထောင့်မှန်မရှိ အကွေးအကောက်လှသည့် ယဉ်ကျေးမှုစင်တာ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Heydar+Aliyev+Center" },
+            { name: "Sheki Khan's Palace", location: "Sheki", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmOK4NXKe-h0lQqbyOp_5Mwuitxmz2VBrE9iN_MU5Ckg&s=10", badges: ["#UNESCO", "#History"], details: "သံမှို သို့မဟုတ် ကော် မသုံးဘဲ မှန်ရောင်စုံများဖြင့် ဆောက်လုပ်ထားသည့် နန်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sheki+Khans+Palace" },
+            { name: "Icherisheher (Old City)", location: "Baku", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYhHbzyxBZpJoIyyLEowSfvo71ZrFHFTmEhZisVoMZSA&s=10", badges: ["#UNESCO", "#History"], details: "မေဒင်တာဝါ တည်ရှိရာ ဘာကူမြို့၏ သမိုင်းဝင် မြို့ရိုးခတ် မြို့ဟောင်း ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Icherisheher" }
+        ]
+    },
+    "47": {
+        country: "Georgia", lat: 42.3154, lng: 43.3569,
+        landmarks: [
+            { name: "Gergeti Trinity Church", location: "Kazbegi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpLjcQOGBMV3ySSPm-d4UcLY9JPrAWlPE4JXTA4baYaw&s=10", badges: ["#Iconic", "#Mountain"], details: "နှင်းဖုံး ကက်ဇဘတ်တောင်ကြီးကို နောက်ခံထားလျက် တည်ရှိသော ကျောင်းတော် ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Gergeti+Trinity+Church" },
+            { name: "Narikala Fortress", location: "Tbilisi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSphLDoXOhF2vN_FvnUqjZRasrTMb_9Hd9MY6G-R6Tr1A&s=10", badges: ["#History", "#City"], details: "မြို့တော် တဘီလီစီကို အထက်စီးမှ မိုးမျှော်ကြည့်နိုင်သော ၄ ရာစု ခံတပ်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Narikala+Fortress" },
+            { name: "Vardzia Cave Monastery", location: "Javakheti", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlwcr6PA9Mh30RoMnLwpkQwLzma1AKrQs2ycLhao3Ag&s=10", badges: ["#History", "#Cave"], details: "၁၂ ရာစုက ကျောက်တောင်ကြီးကို ထွင်းထုဆောက်လုပ်ခဲ့သော ဂူမြို့တော်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Vardzia" },
+            { name: "Sighnaghi (City of Love)", location: "Kakheti", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVvrsGA5l3zkBK3AunoBzR4IaMu2VdBzxBRY4gW1Ol6w&s=10", badges: ["#Wine", "#Scenic"], details: "ဝိုင်ထွက်ရှိရာ ဒေသတွင် တည်ရှိပြီး အုတ်နီအမိုးများဖြင့် လှပသော မြို့ကလေး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Sighnaghi" },
+            { name: "Ushguli Village", location: "Svaneti", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT47rezdu41iBCrc9lWh_CCytsRDTgbO8vgd6vxQv6Q5g&s=10", badges: ["#UNESCO", "#Village"], details: "ဥရောပတွင် အမြင့်ဆုံး၌ တည်ရှိသော သမိုင်းဝင် တာဝါအိမ်များပါ ကျေးရွာဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Ushguli" }
+        ]
+    },
+
+    // --- North Asia (1) ---
+    "48": {
+        country: "Russia ", lat: 60.0000, lng: 105.0000,
+        landmarks: [
+            { name: "Lake Baikal", location: "Siberia", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC6h_8gy7tkUIAMh3bD_YLXde_x2WJEI3q32zJGmhZaA&s=10", badges: ["#UNESCO", "#Nature"], details: "ကမ္ဘာ့အနက်ဆုံး၊ အကြီးဆုံးနှင့် ရှေးအကျဆုံး ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lake+Baikal" },
+            { name: "Valley of Geysers", location: "Kamchatka", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdF-T3w4LNJsG2u8se6XN1lzuZKhN4N99uuWptxlZ8ZA&s=10", badges: ["#UNESCO", "#Nature"], details: "ကမ္ဘာ့ဒုတိယအကြီးဆုံး ရေပူစမ်း ပန်းထွက်ရာ မီးတောင်ကြား နယ်မြေဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Valley+of+Geysers" },
+            { name: "Altai Mountains", location: "Altai Republic", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpx-T7yyQX14ILTPnXxHFCWPQ_RxMYInT0AbWfPpYdJw&s=10", badges: ["#UNESCO", "#Nature"], details: "သဘာဝအတိုင်း ထိန်းသိမ်းထားသော သစ်တောများနှင့် တောင်တန်းကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Altai+Mountains" },
+            { name: "Lena Pillars", location: "Yakutia", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRbA3ocdyP1hvKwes5iRBb4u2sOxz9KbiG1P5h_XgYMg&s=10", badges: ["#UNESCO", "#Rock"], details: "မြစ်ဘေးတွင် ဒေါင်လိုက် ထောင်မတ်နေသော သဘာဝ ဧရာမ ကျောက်တိုင်ကြီးများ ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Lena+Pillars" },
+            { name: "Klyuchevskaya Sopka Volcano", location: "Kamchatka", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRimPwzAmDm2DkyThIzDfKZY5o26ib1f3YCD7qGZxx9Ew&s=10", badges: ["#Volcano", "#Nature"], details: "ယူရေးရှားတိုက်တွင် အမြင့်ဆုံး သက်ဝင်လှုပ်ရှားနေသော မီးတောင်ကြီး ဖြစ်ပါသည်။", mapUrl: "https://maps.google.com/?q=Klyuchevskaya+Sopka" }
+        ]
+    }
+};
+        
+
+        // Render Country Markers
+        Object.keys(asiaLandmarksData).forEach(code => {
+            const countryData = asiaLandmarksData[code];
+            
+            const customIcon = L.divIcon({
+                className: 'custom-pin',
+                html: `
+                    <div class="landmark-pin-container" onclick="openModal('${code}')">
+                        <div class="landmark-badge-pin">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div class="country-label">${countryData.country.split(' ')[0]}</div>
+                    </div>
+                `,
+                iconSize: [60, 50],
+                iconAnchor: [30, 25]
+            });
+
+            L.marker([countryData.lat, countryData.lng], { icon: customIcon }).addTo(map);
+        });
+
+        // လက်ရှိဖွင့်ထားတဲ့ နိုင်ငံ
+        let currentCountry = "";
+
+        // Open Modal Function
+        function openModal(countryCode) {
+            const data = asiaLandmarksData[countryCode];
+            if (!data) return;
+
+            currentCountry = data.country;
+            document.getElementById('modalCountryTitle').innerText = data.country;
+
+            const astrologyBtn = document.getElementById('astrologyBtn');
+            const astrologyBtnText = document.getElementById('astrologyBtnText');
+            astrologyBtn.classList.remove('chinese','myanmar');
+
+            if (data.country === 'China') {
+                astrologyBtn.style.display = 'flex';
+                astrologyBtn.classList.add('chinese');
+                astrologyBtnText.innerText = 'တရုတ်ဗေဒင်မေးရန်';
+            } else if (data.country === 'Myanmar') {
+                astrologyBtn.style.display = 'flex';
+                astrologyBtn.classList.add('myanmar');
+                astrologyBtnText.innerText = 'မြန်မာဗေဒင်မေးရန်';
+            } else {
+                astrologyBtn.style.display = 'none';
+            }
+
+            const container = document.getElementById('landmarksList');
+            container.innerHTML = '';
+
+            data.landmarks.forEach(item => {
+                const badgeHTML = item.badges.map(b => `<span class="badge">${b}</span>`).join(' ');
+                const card = `
+                    <div class="landmark-card-item">
+                        <img src="${item.img}" class="landmark-img" alt="${item.name}">
+                        <div class="landmark-name">${item.name}</div>
+                        <div class="landmark-loc"><i class="fa-solid fa-location-dot"></i> ${item.location}</div>
+                        <div class="badge-container">${badgeHTML}</div>
+                        <div class="landmark-desc">${item.details}</div>
+                        <div class="action-btns">
+                            <a href="${item.mapUrl}" target="_blank" class="btn-act btn-map-link">
+                                <i class="fa-solid fa-map-location-dot"></i> Google Maps တွင်ကြည့်ရန်
+                            </a>
+                        </div>
+                    </div>`;
+                container.innerHTML += card;
+            });
+
+            document.getElementById('landmarkModal').classList.add('active');
+        }
+
+        function openCountryAstrology() {
+            if (currentCountry === 'China') {
+                window.location.href = 'ChineseHome5.html';
+            } else if (currentCountry === 'Myanmar') {
+                window.location.href = 'MyanmarHome5.html';
+            }
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('landmarkModal').classList.remove('active');
+        }
+
+        function checkOuterClick(e) {
+            if (e.target.id === 'landmarkModal') {
+                closeModal();
+            }
+        }
+    </script>
+
+<style id="globalInfoBotStyles">
+#globalInfoBot{position:fixed;right:24px;bottom:24px;z-index:99999;font-family:Arial,'Noto Sans Myanmar',sans-serif}
+#globalInfoBot .gib-toggle{width:58px;height:58px;border:0;border-radius:50%;background:linear-gradient(135deg,#1b65d4,#0d2a58);color:#fff;box-shadow:0 12px 30px rgba(13,42,88,.28);cursor:pointer;font-size:23px;display:flex;align-items:center;justify-content:center}
+#globalInfoBot .gib-window{position:absolute;right:0;bottom:72px;width:390px;height:560px;background:#fff;border:1px solid #dbe5f0;border-radius:20px;box-shadow:0 24px 70px rgba(15,23,42,.22);overflow:hidden;display:none;flex-direction:column}
+#globalInfoBot.open .gib-window{display:flex}
+#globalInfoBot .gib-head{background:linear-gradient(135deg,#1e40af,#1d4ed8);color:#fff;padding:15px 16px;display:flex;align-items:center;justify-content:space-between}
+#globalInfoBot .gib-title{font-size:15px;font-weight:800}
+#globalInfoBot .gib-sub{font-size:10px;opacity:.85;margin-top:3px}
+#globalInfoBot .gib-close{border:0;background:rgba(255,255,255,.12);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px}
+#globalInfoBot .gib-messages{flex:1;overflow:auto;padding:14px;background:#f7fafc}
+#globalInfoBot .gib-msg{max-width:88%;padding:10px 12px;border-radius:13px;margin:0 0 10px;font-size:12px;line-height:1.65;white-space:normal;word-break:break-word}
+#globalInfoBot .gib-bot{background:#fff;border:1px solid #e2e8f0;color:#1e293b;margin-right:auto}
+#globalInfoBot .gib-user{background:#1b65d4;color:#fff;margin-left:auto}
+#globalInfoBot .gib-msg h4{font-size:13px;margin:0 0 5px;color:#0f3b83}
+#globalInfoBot .gib-msg strong{font-weight:800}
+#globalInfoBot .gib-section{margin-top:9px;padding-top:8px;border-top:1px solid #edf2f7}
+#globalInfoBot .gib-landmark{padding:7px 0;border-bottom:1px solid #edf2f7}
+#globalInfoBot .gib-landmark:last-child{border-bottom:0}
+#globalInfoBot .gib-landmark-name{font-weight:800;color:#0f3b83}
+#globalInfoBot .gib-small{font-size:10px;color:#64748b}
+#globalInfoBot .gib-input{display:flex;gap:8px;padding:10px;border-top:1px solid #e2e8f0;background:#fff}
+#globalInfoBot .gib-input input{flex:1;min-width:0;border:1px solid #d7e0ea;border-radius:12px;padding:10px 12px;outline:none;font-size:12px}
+#globalInfoBot .gib-input input:focus{border-color:#1b65d4;box-shadow:0 0 0 3px rgba(27,101,212,.08)}
+#globalInfoBot .gib-send{border:0;border-radius:12px;background:#1b65d4;color:#fff;width:42px;cursor:pointer;font-size:16px}
+#globalInfoBot .gib-suggest{display:flex;gap:6px;overflow:auto;padding:0 0 10px}
+#globalInfoBot .gib-chip{border:1px solid #dbe5f0;background:#fff;border-radius:999px;padding:6px 9px;white-space:nowrap;font-size:10px;color:#1e40af;cursor:pointer}
+@media(max-width:600px){
+ #globalInfoBot{right:14px;bottom:14px}
+ #globalInfoBot .gib-window{width:min(390px,calc(100vw - 28px));height:min(600px,calc(100vh - 100px))}
+}
+</style>
+
+<div id="globalInfoBot">
+  <div class="gib-window">
+    <div class="gib-head">
+      <div><div class="gib-title">Travel Information Chatbot</div><div class="gib-sub">TravelSafety + Emergency + Landmark အချက်အလက်များ</div></div>
+      <button class="gib-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="gib-messages" id="gibMessages">
+      <div class="gib-msg gib-bot">မင်္ဂလာပါ 👋<br>ဒီ website ရဲ့ <strong>TravelSafety, Emergency, Landmark</strong> file ၃ ခုထဲက အချက်အလက်တွေကို တိုက်ရိုက်မေးနိုင်ပါတယ်။<br><br>ဥပမာ — <strong>“မြန်မာနိုင်ငံ အရေးပေါ်ဖုန်းနံပါတ်တွေ ပြောပါ”</strong>၊ <strong>“Japan မှာ ဘယ်နေရာတွေ လည်ပတ်လို့ကောင်းလဲ”</strong></div>
+      <div class="gib-suggest">
+        <button class="gib-chip">မြန်မာ အရေးပေါ်ဖုန်း</button>
+        <button class="gib-chip">Japan landmarks</button>
+        <button class="gib-chip">Thailand safety</button>
+      </div>
+    </div>
+    <div class="gib-input">
+      <input id="gibInput" type="text" placeholder="မေးချင်တာကို ရိုက်ပါ..." autocomplete="off">
+      <button class="gib-send" type="button">➤</button>
+    </div>
+  </div>
+  <button class="gib-toggle" type="button" aria-label="Open chatbot"><i class="fa-solid fa-comments"></i></button>
+</div>
+
+<script id="globalInfoBotScript">
+(function(){
+  const KB = {"overview":{"title":"နိုင်ငံတကာ ခရီးသွား ဘေးကင်းလုံခြုံရေး","highlights":[{"name":"Taj Mahal","description":"ခရီးစဉ်များ၊ နိုင်ငံတကာ ရေပန်းစားနေရာများ"},{"name":"Eiffel Tower","description":"နိုင်ငံတကာ ခရီးစဉ်များ ကိုယ်တိုင် အဆင်ပြေကမ္ဘာ့အဆင့်မီ လမ်းညွှန်ချက်များ"},{"name":"Shwedagon Pagoda","description":"စိတ်အေးချမ်းစွာ လည်ပတ်နိုင်သည့် အထင်ကရနေရာ"}],"emergency_preview":{"ရဲ":"0970-800-8286","လူနာတင်ယာဉ်":"0970-868-6382","မီးသတ်":"0970-868-0530"}},"records":[{"country":"China","aliases":["တရုတ်","တရုတ်နိုင်ငံ"],"emergency":{"ရဲ":"110","လူနာတင်ယာဉ်":"120","မီးသတ်":"119","အရေးပေါ်ကူညီရန်":"救命! (Jiùmìng!)","လူနာတင်ယာဉ်ခေါ်ရန်":"请叫救护车! (Qǐng jiào jiùhùchē!)","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 12301","လုံခြုံရေးအကြံပြုချက်":"Carry passport at all times.","မြန်မာဘာသာ":"နိုင်ငံကူးလက်မှတ် အမြဲဆောင်ထားပါ။"},"landmarks":[{"name":"Great Wall of China","location":"Beijing","details":"ကမ္ဘာ့အံ့ဖွယ်တစ်ခုဖြစ်သော သမိုင်းဝင် တရုတ်တံတိုင်းကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Great+Wall+of+China"},{"name":"Forbidden City","location":"Beijing","details":"မင်နှင့် ချင်မင်းဆက်တို့၏ ရှေးဟောင်း နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Palace","#Culture"],"mapUrl":"https://maps.google.com/?q=Forbidden+City"},{"name":"Terracotta Army","location":"Xi'an","details":"ချင်ရှီဟွမ် ဧကရာဇ်၏ မြေစိုင်မြေထု စစ်သည်တော် ရုပ်တုများ ဖြစ်ပါသည်။","badges":["#Ancient","#History"],"mapUrl":"https://maps.google.com/?q=Terracotta+Army"},{"name":"The Bund","location":"Shanghai","details":"ရှန်ဟိုင်းမြို့၏ ခေတ်ပြိုင် ဗိသုကာနှင့် ရှုခင်းများကို ကြည့်ရှုနိုင်သော ကမ်းနားလမ်း ဖြစ်ပါသည်။","badges":["#City","#Scenic"],"mapUrl":"https://maps.google.com/?q=The+Bund+Shanghai"},{"name":"Zhangjiajie National Forest Park","location":"Hunan","details":"Avatar ရုပ်ရှင်ထဲမှ ကျောက်တောင်ကြီးများ၏ စိတ်ကူးပုံရိပ်များ ရယူခဲ့ရာ နေရာဖြစ်ပါသည်။","badges":["#Nature","#Scenic"],"mapUrl":"https://maps.google.com/?q=Zhangjiajie"}]},{"country":"Japan","aliases":["ဂျပန်","ဂျပန်နိုင်ငံ"],"emergency":{"ရဲ":"110","လူနာတင်ယာဉ်":"119","မီးသတ်":"119","အရေးပေါ်ကူညီရန်":"助けて! (Tasukete!)","လူနာတင်ယာဉ်ခေါ်ရန်":"救急車を呼んでください! (Kyūkyūsha o yonde kudasai!)","အထူးဖုန်း/အကြံပြုချက်":"Japan Helpline: 0570-000-911","လုံခြုံရေးအကြံပြုချက်":"Disaster warning app: Safety Tips.","မြန်မာဘာသာ":"Safety Tips App ကို ဆွဲထားပါ။"},"landmarks":[{"name":"Mount Fuji","location":"Shizuoka","details":"ဂျပန်နိုင်ငံ၏ အမြင့်ဆုံးနှင့် သင်္ကေတဖြစ်သော ဖူဂျီတောင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Iconic"],"mapUrl":"https://maps.google.com/?q=Mount+Fuji"},{"name":"Fushimi Inari Shrine","location":"Kyoto","details":"ထောင်ပေါင်းများစွာသော တိုရီအီ တံခါးနီများ တည်ရှိရာ နတ်ကျောင်း ဖြစ်ပါသည်။","badges":["#Culture","#Shrine"],"mapUrl":"https://maps.google.com/?q=Fushimi+Inari+Shrine"},{"name":"Tokyo Skytree","location":"Tokyo","details":"တိုကျိုမြို့၏ အလှကို ၃၆၀ ဒီဂရီ ကြည့်ရှုနိုင်သော ကမ္ဘာ့အမြင့်ဆုံး တာဝါတစ်ခု ဖြစ်ပါသည်။","badges":["#Modern","#Tower"],"mapUrl":"https://maps.google.com/?q=Tokyo+Skytree"},{"name":"Universal Studios Japan","location":"Osaka","details":"Super Nintendo World အပါအဝင် စိတ္တဇဥယျာဉ်ကြီး ဖြစ်ပါသည်။","badges":["#Park","#Fun"],"mapUrl":"https://maps.google.com/?q=Universal+Studios+Japan"},{"name":"Hiroshima Peace Memorial","location":"Hiroshima","details":"ငြိမ်းချမ်းရေး အထိမ်းအမှတ် သမိုင်းဝင် အဆောက်အအုံ ဖြစ်ပါသည်။","badges":["#History","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Hiroshima+Peace+Memorial"}]},{"country":"South Korea","aliases":["တောင်ကိုရီးယား","ကိုရီးယား"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"119","မီးသတ်":"119","အရေးပေါ်ကူညီရန်":"도와주세요! (Dowajuseyo!)","လူနာတင်ယာဉ်ခေါ်ရန်":"구급차를 불러주세요! (Gugeupchareul bulleojuseyo!)","အထူးဖုန်း/အကြံပြုချက်":"Tourist Interpretation: 1330","လုံခြုံရေးအကြံပြုချက်":"Emergency translation via 1330.","မြန်မာဘာသာ":"1330 သို့ ခေါ်ဆို၍ ဘာသာပြန်စကားပြောဆိုနိုင်သည်။"},"landmarks":[{"name":"Gyeongbokgung Palace","location":"Seoul","details":"ဂျိုဆွန်းမင်းဆက်၏ သမိုင်းဝင် ပင်မ နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Palace"],"mapUrl":"https://maps.google.com/?q=Gyeongbokgung+Palace"},{"name":"N Seoul Tower","location":"Seoul","details":"ဆိုးလ်မြို့၏ ရှုခင်းအလှကို အထက်စီးမှ ကြည့်ရှုနိုင်သော နာမည်ကြီး တာဝါဖြစ်ပါသည်။","badges":["#City","#Tower"],"mapUrl":"https://maps.google.com/?q=N+Seoul+Tower"},{"name":"Jeju Island","location":"Jeju","details":"မီးတောင်ကျောက်တောင်များနှင့် သဘာဝအလှတရားများ ပြည့်နှက်နေသော အပန်းဖြေကျွန်း ဖြစ်ပါသည်။","badges":["#Nature","#Island"],"mapUrl":"https://maps.google.com/?q=Jeju+Island"},{"name":"Bukchon Hanok Village","location":"Seoul","details":"ကိုရီးယား ရိုးရာအိမ်ခြေများကို လေ့လာနိုင်သော သမိုင်းဝင် ကျေးရွာဖြစ်ပါသည်။","badges":["#Culture","#Traditional"],"mapUrl":"https://maps.google.com/?q=Bukchon+Hanok+Village"},{"name":"Gamcheon Culture Village","location":"Busan","details":"အရောင်စုံ အိမ်ကလေးများနှင့် ပန်းချီနံရံများကြောင့် လူသိများသော ဆူဆန်မြို့၏ နေရာဖြစ်ပါသည်။","badges":["#Art","#Scenic"],"mapUrl":"https://maps.google.com/?q=Gamcheon+Culture+Village"}]},{"country":"North Korea","aliases":["မြောက်ကိုရီးယား"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"119","မီးသတ်":"119","အရေးပေါ်ကူညီရန်":"도와주세요!","လူနာတင်ယာဉ်ခေါ်ရန်":"구급차를 불러주세요!","အထူးဖုန်း/အကြံပြုချက်":"Always follow tour guide instructions.","လုံခြုံရေးအကြံပြုချက်":"Strict travel regulations apply.","မြန်မာဘာသာ":"ဧည့်လမ်းညွှန်၏ ညွှန်ကြားချက်အတိုင်း တိကျစွာ လိုက်နာပါ။"},"landmarks":[{"name":"Juche Tower","location":"Pyongyang","details":"ဂျူချဲအတွေးအခေါ်ကို ဂုဏ်ပြုဆောက်လုပ်ထားသော တာဝါကြီး ဖြစ်ပါသည်။","badges":["#Monument","#City"],"mapUrl":"https://maps.google.com/?q=Juche+Tower"},{"name":"Kumsusan Palace of the Sun","location":"Pyongyang","details":"ခေါင်းဆောင်ကြီးများ၏ ဂူဗိမာန်နှင့် အထိမ်းအမှတ် နန်းတော်ဖြစ်ပါသည်။","badges":["#History","#Memorial"],"mapUrl":"https://maps.google.com/?q=Kumsusan+Palace"},{"name":"Arch of Triumph","location":"Pyongyang","details":"ပါရီမြို့ရှိ အောင်ပွဲခံတံခါးထက် ပိုမိုကြီးမားစွာ ဆောက်လုပ်ထားသော အောင်ပွဲခံတံခါး ဖြစ်ပါသည်။","badges":["#Monument","#History"],"mapUrl":"https://maps.google.com/?q=Arch+of+Triumph+Pyongyang"},{"name":"Mount Paektu","location":"Samjiyon","details":"ကိုရီးယားလူမျိုးတို့၏ အဓိက သမိုင်းဝင် သဘာဝ မီးတောင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Volcano"],"mapUrl":"https://maps.google.com/?q=Mount+Paektu"},{"name":"Myohyang-san","location":"Pyongan","details":"သာယာလှပသော တောင်တန်းကြီးနှင့် ပြတိုက်များ တည်ရှိရာ နေရာဖြစ်ပါသည်။","badges":["#Nature","#Scenic"],"mapUrl":"https://maps.google.com/?q=Mount+Myohyang"}]},{"country":"Mongolia","aliases":["မွန်ဂိုးလီးယား"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Туслаарай! (Tuslaarai!)","လူနာတင်ယာဉ်ခေါ်ရန်":"Түргэн тусламж дуудаарай!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Center: 105","လုံခြုံရေးအကြံပြုချက်":"Prepare for extreme weather changes.","မြန်မာဘာသာ":"ရာသီဥတု ရုတ်တရက် ပြောင်းလဲမှုအတွက် ပြင်ဆင်ပါ။"},"landmarks":[{"name":"Genghis Khan Statue Complex","location":"Tsonjin Boldog","details":"ကမ္ဘာ့အကြီးဆုံး ဂျင်းဂစ်ခန် မြင်းစီးစတီးရုပ်တုကြီး ဖြစ်ပါသည်။","badges":["#Statue","#Iconic"],"mapUrl":"https://maps.google.com/?q=Genghis+Khan+Statue"},{"name":"Gobi Desert","location":"Omnogovi","details":"ကျယ်ပြောလှသော သဲကန္တာရနှင့် ဒိုင်နိုဆောရုပ်ကြွင်းများ ထွက်ရှိရာ နေရာဖြစ်ပါသည်။","badges":["#Nature","#Desert"],"mapUrl":"https://maps.google.com/?q=Gobi+Desert"},{"name":"Khuvsgul Lake","location":"Khuvsgul","details":"မွန်ဂိုးလီးယား၏ အကြီးဆုံး ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Khuvsgul+Lake"},{"name":"Erdene Zuu Monastery","location":"Kharakhorum","details":"မွန်ဂိုးလီးယား၏ ရှေးအတိုင်း ကျန်ရှိနေသော ဗုဒ္ဓဘာသာ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Monastery"],"mapUrl":"https://maps.google.com/?q=Erdene+Zuu+Monastery"},{"name":"Terelj National Park","location":"Tuv","details":"လိပ်ကျောက်တောင်နှင့် သဘာဝ တောင်တန်း အလှတရားများ တည်ရှိရာ ပန်းခြံဖြစ်ပါသည်။","badges":["#Nature","#Park"],"mapUrl":"https://maps.google.com/?q=Terelj+National+Park"}]},{"country":"Myanmar","aliases":["မြန်မာ","မြန်မာနိုင်ငံ","ဗမာ"],"emergency":{"ရဲ":"199","လူနာတင်ယာဉ်":"192","မီးသတ်":"191","အရေးပေါ်ကူညီရန်":"အရေးပေါ် ကူညီပါဦး!","လူနာတင်ယာဉ်ခေါ်ရန်":"လူနာတင်ယာဉ် အမြန်ခေါ်ပေးပါ!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police Hotline: 1420","လုံခြုံရေးအကြံပြုချက်":"Keep digital copies of passport.","မြန်မာဘာသာ":"Passport နှင့် Visa မိတ္တူများကို ဖုန်းထဲတွင် ဆောင်ထားပါ။"},"landmarks":[{"name":"shwedagon pagoda(ရွှေတိဂုံစေတီတော်)","location":"Yangon(ရန်ကုန်)","details":"နှစ်ပေါင်း ၂၅၀၀ ကျော် သက်တမ်းရှိပြီး မြတ်စွာဘုရား၏ ဆံတော်ဓာတ်များ ကိန်းဝပ်စခေတ်တည်ရှိရာ ကမ္ဘာကျော် ရွှေတိဂုံစေတီတော်မြတ်ကြီး ဖြစ်ပါသည်။","badges":["#Pagoda","#Iconic"],"mapUrl":"https://maps.google.com/?q=Shwedagon+Pagoda"},{"name":"Bagan(ပုဂံ ရှေးဟောင်းနယ်မြေ)","location":"Magway/Yangon(မကွေး/မန္တလေး)","details":"၁၁ ရာစုမှ ၁၃ ရာစုအတွင်း တည်ဆောက်ခဲ့သော စေတီပုထိုးပေါင်း ၃၅၀၀ ကျော် တည်ရှိရာ ယူနက်စကို ကမ္ဘာ့အမွေအနှစ်ဝင် သမိုင်းဝင် နယ်မြေ ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Bagan"},{"name":"အင်းလေးကန်","location":"ရှမ်းပြည်နယ်","details":"ခြေထောက်ဖြင့် လှေလှော်သည့် အင်းသားတို့၏ ထူးခြားသော ရိုးရာ၊ ရေပေါ်စိုက်ခင်းများနှင့် ရေပေါ်ရွာများ တည်ရှိရာ သဘာဝ အင်းအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Culture"],"mapUrl":"https://maps.google.com/?q=Inle+Lake"},{"name":"ကျိုက်ထီးရိုးစေတီတော်","location":"မွန်ပြည်နယ်","details":"တောင်စောက်ကမ်းပါးယံတွင် အဟုန်မပျက် တည်ရှိနေသော ဆန်းကြယ်သည့် ရွှေကျောက်တုံးပေါ်မှ စေတီတော်မြတ်ကြီး ဖြစ်ပါသည်။","badges":["#Pagoda","#Holy"],"mapUrl":"https://maps.google.com/?q=Kyaiktiyo+Pagoda"},{"name":"ငပလီကမ်းခြေ","location":"ရခိုင်ပြည်နယ်","details":"ရေပြာလွင်လွင်၊ သဲသောင်ဖြူဖြူနှင့် အုန်းတောများ ဝန်းရံထားသော မြန်မာနိုင်ငံ၏ အလှပဆုံး ပင်လယ်ကမ်းခြေ အပန်းဖြေစခန်း ဖြစ်ပါသည်။","badges":["#Beach","#Nature"],"mapUrl":"https://maps.google.com/?q=Ngapali+Beach"}]},{"country":"Thailand","aliases":["ထိုင်း","ထိုင်းနိုင်ငံ"],"emergency":{"ရဲ":"191","လူနာတင်ယာဉ်":"1669","မီးသတ်":"199","အရေးပေါ်ကူညီရန်":"ช่วยด้วย! (Chūay dūay!)","လူနာတင်ယာဉ်ခေါ်ရန်":"เรียกรถพยาบาลให้หน่อย!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police Thailand: 1155","လုံခြုံရေးအကြံပြုချက်":"Carry cash for emergencies.","မြန်မာဘာသာ":"အရေးပေါ် သွားလာရန် ငွေသား အမြဲဆောင်ထားပါ။"},"landmarks":[{"name":"Grand Palace","location":"Bangkok","details":"ဘန်ကောက်မြို့ရှိ ခန်းနားလှသော သမိုင်းဝင် ရာမဘုရင်များ၏ နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Palace","#Culture"],"mapUrl":"https://maps.google.com/?q=Grand+Palace+Bangkok"},{"name":"Wat Arun","location":"Bangkok","details":"ကျောက်ဖရားမြစ်ကမ်းဘေးရှိ အရုဏ်ဦး ကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Temple","#Scenic"],"mapUrl":"https://maps.google.com/?q=Wat+Arun"},{"name":"Phi Phi Islands","location":"Krabi","details":"ကမ္ဘာကျော် ပင်လယ်ကမ်းခြေနှင့် ရေအောက်သဘာဝ အလှတရားများ တည်ရှိရာ ဖြစ်ပါသည်။","badges":["#Nature","#Beach"],"mapUrl":"https://maps.google.com/?q=Phi+Phi+Islands"},{"name":"Sukhothai Historical Park","location":"Sukhothai","details":"ထိုင်းနိုင်ငံ၏ ပထမဆုံး မင်းဆက်တည်ခဲ့ရာ ရှေးဟောင်း မြို့တော်ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Sukhothai+Historical+Park"},{"name":"Chiang Mai Old City","location":"Chiang Mai","details":"ရှေးဟောင်း ကျောင်းတော်ပေါင်းများစွာနှင့် မြောက်ပိုင်း ယဉ်ကျေးမှု တည်ရှိရာ ဖြစ်ပါသည်။","badges":["#Culture","#City"],"mapUrl":"https://maps.google.com/?q=Chiang+Mai+Old+City"}]},{"country":"Singapore","aliases":["စင်ကာပူ"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"995","မီးသတ်":"995","အရေးပေါ်ကူညီရန်":"I need immediate help!","လူနာတင်ယာဉ်ခေါ်ရန်":"Please call an ambulance now!","အထူးဖုန်း/အကြံပြုချက်":"Non-Emergency Ambulance: 1777","လုံခြုံရေးအကြံပြုချက်":"Download MyENV App for alerts.","မြန်မာဘာသာ":"သဘာဝဘေးအန္တရာယ် သတိပေးချက်အတွက် MyENV App ဆွဲထားပါ။"},"landmarks":[{"name":"Marina Bay Sands","location":"Singapore","details":"စင်ကာပူနိုင်ငံ၏ ခေတ်မီဆန်းသစ်သော သင်္ကေတ အဆောက်အအုံ ဖြစ်ပါသည်။","badges":["#Modern","#Iconic"],"mapUrl":"https://maps.google.com/?q=Marina+Bay+Sands"},{"name":"Gardens by the Bay","location":"Singapore","details":"Supertree သစ်ပင်တုကြီးများနှင့် ဖန်လုံအိမ် ဥယျာဉ်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Design"],"mapUrl":"https://maps.google.com/?q=Gardens+by+the+Bay"},{"name":"Merlion Park","location":"Singapore","details":"ခြင်္သေ့ခေါင်း ငါးခန္ဓာကိုယ် ပုံစံ စင်ကာပူ၏ အဓိက ရုပ်တုကြီး ဖြစ်ပါသည်။","badges":["#Statue","#Iconic"],"mapUrl":"https://maps.google.com/?q=Merlion+Park"},{"name":"Sentosa Island","location":"Singapore","details":"ကမ်းခြေများ၊ Universal Studios ပါဝင်သော အပန်းဖြေကျွန်း ဖြစ်ပါသည်။","badges":["#Resort","#Beach"],"mapUrl":"https://maps.google.com/?q=Sentosa+Island"},{"name":"Jewel Changi Airport","location":"Singapore","details":"အဆောက်အအုံ အတွင်းရှိ ကမ္ဘာ့အကြီးဆုံး မိုးလုံလေလုံ ရေတံခွန်ကြီး ဖြစ်ပါသည်။","badges":["#Airport","#Waterfall"],"mapUrl":"https://maps.google.com/?q=Jewel+Changi+Airport"}]},{"country":"Vietnam","aliases":["ဗီယက်နမ်"],"emergency":{"ရဲ":"113","လူနာတင်ယာဉ်":"115","မီးသတ်":"114","အရေးပေါ်ကူညီရန်":"Cứu tôi với!","လူနာတင်ယာဉ်ခေါ်ရန်":"Làm ơn gọi xe cấp cứu!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Support: 1080","လုံခြုံရေးအကြံပြုချက်":"Be cautious when crossing roads.","မြန်မာဘာသာ":"လမ်းကူးစဉ် သတိထားပါ။"},"landmarks":[{"name":"Ha Long Bay","location":"Quang Ninh","details":"ကျောက်တောင်ပေါင်း ထောင်ဂဏန်း ဝန်းရံထားသည့် သဘာဝ အလှပဆုံး ပင်လယ်ကွေ့ ဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Ha+Long+Bay"},{"name":"Hoi An Ancient Town","location":"Quang Nam","details":"မီးအိမ်ရောင်စုံများဖြင့် လှပသော သမိုင်းဝင် ရှေးဟောင်း ကုန်သွယ်ရေး မြို့ကလေး ဖြစ်ပါသည်။","badges":["#Culture","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Hoi+An"},{"name":"Golden Bridge (Hands Bridge)","location":"Da Nang","details":"ဧရာမ ကျောက်လက်ဝါးကြီးနှစ်ခုက မထားသည့် ရွှေရောင် တံတားကြီး ဖြစ်ပါသည်။","badges":["#Iconic","#Bridge"],"mapUrl":"https://maps.google.com/?q=Golden+Bridge+Da+Nang"},{"name":"Cu Chi Tunnels","location":"Ho Chi Minh","details":"ဗီယက်နမ်စစ်ပွဲအတွင်း အသုံးပြုခဲ့သော မြေအောက် လှိုဏ်ဂူကွန်ရက်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Tunnel"],"mapUrl":"https://maps.google.com/?q=Cu+Chi+Tunnels"},{"name":"Sapa Terraced Rice Fields","location":"Lao Cai","details":"လှေကားထစ် စိုက်ခင်းများနှင့် တောင်ပေါ် တိုင်းရင်းသားရွာများ ဖြစ်ပါသည်။","badges":["#Nature","#Scenic"],"mapUrl":"https://maps.google.com/?q=Sapa"}]},{"country":"Laos","aliases":["လာအို"],"emergency":{"ရဲ":"191","လူနာတင်ယာဉ်":"195","မီးသတ်":"190","အရေးပေါ်ကူညီရန်":"ຊ່ວຍດ້ວຍ! (Suay duay!)","လူနာတင်ယာဉ်ခေါ်ရန်":"ໂທເຣັກຣົດໂຮງໝໍໃຫ້ແນ່!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 1192","လုံခြုံရေးအကြံပြုချက်":"Keep local currency (Kip) ready.","မြန်မာဘာသာ":"ဒေသတွင်းသုံး ငွေကြေး အဆင်သင့်ဆောင်ထားပါ။"},"landmarks":[{"name":"Luang Prabang Old Town","location":"Luang Prabang","details":"ပြင်သစ် ကိုလိုနီနှင့် ရိုးရာ ဗိသုကာ ပေါင်းစပ်ထားသော ရှေးဟောင်း မြို့တော်ဖြစ်ပါသည်။","badges":["#UNESCO","#Culture"],"mapUrl":"https://maps.google.com/?q=Luang+Prabang"},{"name":"Kuang Si Waterfall","location":"Luang Prabang","details":"စိမ်းပြာရောင် ရေအိုင်များနှင့် အလွန်လှပသော သဘာဝ ရေတံခွန် ဖြစ်ပါသည်။","badges":["#Nature","#Waterfall"],"mapUrl":"https://maps.google.com/?q=Kuang+Si+Waterfall"},{"name":"Pha That Luang","location":"Vientiane","details":"လာအိုနိုင်ငံ၏ အမျိုးသား သင်္ကေတ ရွှေစေတီတော်ကြီး ဖြစ်ပါသည်။","badges":["#Iconic","#Temple"],"mapUrl":"https://maps.google.com/?q=Pha+That+Luang"},{"name":"Vang Vieng","location":"Vientiane Province","details":"ထုံးကျောက်တောင်များနှင့် မြစ်တွင်း စွန့်စားခန်းများအတွက် လူသိများပါသည်။","badges":["#Nature","#Adventure"],"mapUrl":"https://maps.google.com/?q=Vang+Vieng"},{"name":"Plain of Jars","location":"Xiangkhoang","details":"ကျောက်အိုးကြီးများ ဆန်းကြယ်စွာ စိစေ့တည်ရှိရာ သမိုင်းဝင် နယ်မြေဖြစ်ပါသည်။","badges":["#History","#Mystery"],"mapUrl":"https://maps.google.com/?q=Plain+of+Jars"}]},{"country":"Cambodia","aliases":["ကမ္ဘောဒီးယား"],"emergency":{"ရဲ":"117","လူနာတင်ယာဉ်":"119","မီးသတ်":"118","အရေးပေါ်ကူညီရန်":"ជួយខ្ញុំផង! (Chuoy khnom phong!)","လူနာတင်ယာဉ်ခေါ်ရန်":"សូមហៅឡានពេទ្យ!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 012 942 484","လုံခြုံရေးအကြံပြုချက်":"USD is widely accepted.","မြန်မာဘာသာ":"အမေရိကန်ဒေါ်လာကို ကျယ်ပြန့်စွာ အသုံးပြုနိုင်ပါသည်။"},"landmarks":[{"name":"Angkor Wat","location":"Siem Reap","details":"ကမ္ဘာ့အကြီးဆုံး ရှေးဟောင်း ဘာသာရေး အဆောက်အအုံ ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Angkor+Wat"},{"name":"Bayon Temple","location":"Siem Reap","details":"ပြုံးနေသော ကျောက်မျက်နှာကြီးများ ထွင်းထုထားသည့် ကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Temple","#Ancient"],"mapUrl":"https://maps.google.com/?q=Bayon+Temple"},{"name":"Royal Palace","location":"Phnom Penh","details":"ဖနွမ်းပင်မြို့ရှိ ခမဲရ် ဘုရင်မင်းဆက်တို့၏ စီးစံရာ နန်းတော် ဖြစ်ပါသည်။","badges":["#Palace","#Culture"],"mapUrl":"https://maps.google.com/?q=Royal+Palace+Phnom+Penh"},{"name":"Koh Rong","location":"Sihanoukville","details":"ဖြူလွန်းသော သဲသောင်ပြင်များနှင့် ပင်လယ်ကမ်းခြေ အပန်းဖြေကျွန်း ဖြစ်ပါသည်။","badges":["#Nature","#Island"],"mapUrl":"https://maps.google.com/?q=Koh+Rong"},{"name":"Tonle Sap Lake","location":"Siem Reap","details":"အရှေ့တောင်အာရှ၏ အကြီးဆုံး ရေချိုအိုင်နှင့် ရေပေါ်ရွာများ ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Tonle+Sap"}]},{"country":"Malaysia","aliases":["မလေးရှား"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"999","မီးသတ်":"994","အရေးပေါ်ကူညီရန်":"Tolong saya!","လူနာတင်ယာဉ်ခေါ်ရန်":"Sila panggil ambulans!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Services: 999","လုံခြုံရေးအကြံပြုချက်":"Register with local consulate.","မြန်မာဘာသာ":"သံရုံးတွင် ဧည့်စာရင်း မှတ်ပုံတင်ထားပါ။"},"landmarks":[{"name":"Petronas Twin Towers","location":"Kuala Lumpur","details":"မလေးရှား၏ ကမ္ဘာကျော် မျှို့မျှော် ညီနောင်တာဝါကြီး ဖြစ်ပါသည်။","badges":["#Modern","#Iconic"],"mapUrl":"https://maps.google.com/?q=Petronas+Twin+Towers"},{"name":"Batu Caves","location":"Selangor","details":"ဆေးရောင်စုံ လှေကားများနှင့် ထိန်းသိမ်းထားသော ဟိန္ဒူ ဂူကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Culture","#Cave"],"mapUrl":"https://maps.google.com/?q=Batu+Caves"},{"name":"Mount Kinabalu","location":"Sabah","details":"ဘော်နီယိုကျွန်း၏ အမြင့်ဆုံးနှင့် စိန်ခေါ်မှုများသော တောင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Mountain"],"mapUrl":"https://maps.google.com/?q=Mount+Kinabalu"},{"name":"George Town","location":"Penang","details":"လမ်းဘေး ပန်းချီများ၊ အစားအသောက်နှင့် သမိုင်းဝင် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#StreetArt"],"mapUrl":"https://maps.google.com/?q=George+Town+Penang"},{"name":"Langkawi Cable Car","location":"Kedah","details":"တောင်တန်းများနှင့် ပင်လယ်ပြင်ကို ကြည့်ရှုနိုင်သော ကေဘယ်ကား ဖြစ်ပါသည်။","badges":["#Scenic","#Adventure"],"mapUrl":"https://maps.google.com/?q=Langkawi+Cable+Car"}]},{"country":"Indonesia","aliases":["အင်ဒိုနီးရှား"],"emergency":{"ရဲ":"110","လူနာတင်ယာဉ်":"118","မီးသတ်":"113","အရေးပေါ်ကူညီရန်":"Tolong saya!","လူနာတင်ယာဉ်ခေါ်ရန်":"Panggilkan ambulans!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Contact: 112","လုံခြုံရေးအကြံပြုချက်":"Be aware of volcanic activities.","မြန်မာဘာသာ":"မီးတောင် လှုပ်ရှားမှုများကို သတိပြုပါ။"},"landmarks":[{"name":"Borobudur Temple","location":"Magelang","details":"၉ ရာစုခေတ် ကမ္ဘာ့အကြီးဆုံး ဗုဒ္ဓဘာသာ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Borobudur"},{"name":"Ubud","location":"Bali","details":"ဘာလီကျွန်း၏ စပါးခင်းများ၊ ယဉ်ကျေးမှုနှင့် အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။","badges":["#Nature","#Culture"],"mapUrl":"https://maps.google.com/?q=Ubud+Bali"},{"name":"Komodo National Park","location":"East Nusa Tenggara","details":"ကမ္ဘာ့အကြီးဆုံး ကိုမိုဒိုနဂါးဖွတ်ကြီးများ ကျက်စားရာ ကျွန်းဖြစ်ပါသည်။","badges":["#Nature","#Wildlife"],"mapUrl":"https://maps.google.com/?q=Komodo+National+Park"},{"name":"Mount Bromo","location":"East Java","details":"နေထွက်ချိန် အလွန်လှပသော သက်ဝင်လှုပ်ရှားနေသည့် မီးတောင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Volcano"],"mapUrl":"https://maps.google.com/?q=Mount+Bromo"},{"name":"Prambanan Temple","location":"Yogyakarta","details":"ထွန်ထက်ဆန်းပြားလှသော ရှေးဟောင်း ဟိန္ဒူ ကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Prambanan+Temple"}]},{"country":"Philippines","aliases":["ဖိလစ်ပိုင်"],"emergency":{"ရဲ":"911","လူနာတင်ယာဉ်":"911","မီးသတ်":"911","အရေးပေါ်ကူညီရန်":"Tulong!","လူနာတင်ယာဉ်ခေါ်ရန်":"Tumawag ka ng ambulansya!","အထူးဖုန်း/အကြံပြုချက်":"National Emergency: 911","လုံခြုံရေးအကြံပြုချက်":"Monitor typhoon updates regularly.","မြန်မာဘာသာ":"မုန်တိုင်း သတင်းများကို အမြဲမပြတ် ကြည့်ပါ။"},"landmarks":[{"name":"Chocolate Hills","location":"Bohol","details":"သဘာဝအတိုင်း ဖြစ်ပေါ်နေသော ထူးခြားသည့် တောင်ကုန်းငယ် ၁၇၀၀ ကျော် ဖြစ်ပါသည်။","badges":["#Nature","#Unique"],"mapUrl":"https://maps.google.com/?q=Chocolate+Hills"},{"name":"Boracay White Beach","location":"Aklan","details":"ကမ္ဘာကျော် သဲသောင်ဖြူ ပင်လယ်ကမ်းခြေ ဖြစ်ပါသည်။","badges":["#Beach","#Nature"],"mapUrl":"https://maps.google.com/?q=Boracay+White+Beach"},{"name":"Puerto Princesa Underground River","location":"Palawan","details":"လှေဖြင့် သွားရောက်နိုင်သော သဘာဝ မြေအောက်မြစ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Cave"],"mapUrl":"https://maps.google.com/?q=Puerto+Princesa+Underground+River"},{"name":"Banaue Rice Terraces","location":"Ifugao","details":"နှစ်ပေါင်း ၂၀၀၀ ကျော်ကတည်းက တောင်စောင်းတွင် ထွင်းထုထားသော စပါးခင်းများ ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Banaue+Rice+Terraces"},{"name":"Intramuros","location":"Manila","details":"မနီလာမြို့ရှိ စပိန်ကိုလိုနီခေတ် သမိုင်းဝင် တံတိုင်းခတ် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#History","#City"],"mapUrl":"https://maps.google.com/?q=Intramuros+Manila"}]},{"country":"Brunei","aliases":["ဘရူနိုင်း"],"emergency":{"ရဲ":"993","လူနာတင်ယာဉ်":"991","မီးသတ်":"995","အရေးပေါ်ကူညီရန်":"Tolong saya!","လူနာတင်ယာဉ်ခေါ်ရန်":"Sila panggil ambulans!","အထူးဖုန်း/အကြံပြုချက်":"Search and Rescue: 998","လုံခြုံရေးအကြံပြုချက်":"Respect local customs and rules.","မြန်မာဘာသာ":"ဒေသတွင်း ဓလေ့ထုံးစံများကို လေးစားပါ။"},"landmarks":[{"name":"Sultan Omar Ali Saifuddien Mosque","location":"Bandar Seri Begawan","details":"အာရှတွင် အလှပဆုံး အစ္စလာမ် ဗလီကျောင်းတော်များထဲမှ တစ်ခု ဖြစ်ပါသည်။","badges":["#Mosque","#Iconic"],"mapUrl":"https://maps.google.com/?q=Sultan+Omar+Ali+Saifuddien+Mosque"},{"name":"Kampong Ayer","location":"Bandar Seri Begawan","details":"ကမ္ဘာ့အကြီးဆုံး သမိုင်းဝင် ရေပေါ်ရွာကြီး ဖြစ်ပါသည်။","badges":["#Culture","#Village"],"mapUrl":"https://maps.google.com/?q=Kampong+Ayer"},{"name":"Istana Nurul Iman","location":"Bandar Seri Begawan","details":"ဘရူနိုင်း ဆူလတန် ဘုရင်၏ ခန်းနားလှသော နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Palace","#Architecture"],"mapUrl":"https://maps.google.com/?q=Istana+Nurul+Iman"},{"name":"Ulu Temburong National Park","location":"Temburong","details":"ထိန်းသိမ်းထားသော အမေဇုန်တောကဲ့သို့ သဘာဝ သစ်တောအုပ်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Park"],"mapUrl":"https://maps.google.com/?q=Ulu+Temburong+National+Park"},{"name":"Jame' Asr Hassanil Bolkiah Mosque","location":"Bandar Seri Begawan","details":"ရွှေအမိုးခုံး ၂၉ ခုပါဝင်သော ဘရူနိုင်း၏ အကြီးဆုံး ဗလီ ဖြစ်ပါသည်။","badges":["#Mosque","#Gold"],"mapUrl":"https://maps.google.com/?q=Jame+Asr+Hassanil+Bolkiah+Mosque"}]},{"country":"Timor-Leste","aliases":["တီမော","အရှေ့တီမော"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"110","မီးသတ်":"115","အရေးပေါ်ကူညီရန်":"Ajuda hau!","လူနာတင်ယာဉ်ခေါ်ရန်":"Kama ambulánsia!","အထူးဖုန်း/အကြံပြုချက်":"National Police: 112","လုံခြုံရေးအကြံပြုချက်":"Travel during daylight hours.","မြန်မာဘာသာ":"နေ့ခင်းဘက်တွင်သာ သွားလာပါ။"},"landmarks":[]},{"country":"India","aliases":["အိန္ဒိယ"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"102","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"मदद कीजिए! (Madad kijiye!)","လူနာတင်ယာဉ်ခေါ်ရန်":"एम्बुलेंस बुलाइए!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Helpline: 1363","လုံခြုံရေးအကြံပြုချက်":"Use official taxi apps.","မြန်မာဘာသာ":"တရားဝင် တက္ကစီ App များကို သုံးပါ။"},"landmarks":[{"name":"Taj Mahal","location":"Agra","details":"စက်ဖြူကျောက် မာဘယ်ဖြင့် ဆောက်လုပ်ထားသော ကမ္ဘာ့အံ့ဖွယ် ဂူဗိမာန် ဖြစ်ပါသည်။","badges":["#UNESCO","#Iconic"],"mapUrl":"https://maps.google.com/?q=Taj+Mahal"},{"name":"Varanasi Ghats","location":"Varanasi","details":"ဂင်္ဂါမြစ်ဘေးရှိ ဟိန္ဒူတို့၏ အဓိက ဘာသာရေးနှင့် သမိုင်းဝင် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#Culture","#Holy"],"mapUrl":"https://maps.google.com/?q=Varanasi+Ghats"},{"name":"Amber Palace","location":"Jaipur","details":"ဂျိုင်ပူရှိ တောင်ကုန်းပေါ်မှ ခန်းနားလှသော ရာဇဌာန် ခံတပ်နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Fortress","#History"],"mapUrl":"https://maps.google.com/?q=Amber+Palace"},{"name":"Gateway of India","location":"Mumbai","details":"မွန်ဘိုင်း ပင်လယ်ကွေ့တွင် တည်ရှိသော သမိုင်းဝင် အဝင်တံခါးကြီး ဖြစ်ပါသည်။","badges":["#Monument","#City"],"mapUrl":"https://maps.google.com/?q=Gateway+of+India"},{"name":"Kerala Backwaters","location":"Kerala","details":"ရေကြောင်းလမ်းများနှင့် အိမ်လှေများဖြင့် အပန်းဖြေနိုင်သော သဘာဝဒေသ ဖြစ်ပါသည်။","badges":["#Nature","#Boat"],"mapUrl":"https://maps.google.com/?q=Kerala+Backwaters"}]},{"country":"Pakistan","aliases":["ပါကစ္စတန်"],"emergency":{"ရဲ":"15","လူနာတင်ယာဉ်":"1122","မီးသတ်":"16","အရေးပေါ်ကူညီရန်":"مدد کریں! (Madad karein!)","လူနာတင်ယာဉ်ခေါ်ရန်":"ایمبولینس کو بلائیں!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Rescue: 1122","လုံခြုံရေးအကြံပြုချက်":"Avoid unverified travel routes.","မြန်မာဘာသာ":"စိစစ်ထားခြင်းမရှိသော လမ်းကြောင်းများကို ရှောင်ပါ။"},"landmarks":[{"name":"Badshahi Mosque","location":"Lahore","details":"မဂိုအင်ပါယာခေတ် ခန်းနားထည်ဝါသော ကြက်သွန်းနီရောင် ဗလီကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Mosque","#History"],"mapUrl":"https://maps.google.com/?q=Badshahi+Mosque"},{"name":"Faisal Mosque","location":"Islamabad","details":"တဲစခန်းပုံစံ ဆန်းသစ်စွာ ဆောက်လုပ်ထားသော ကမ္ဘာ့အကြီးဆုံး ဗလီများထဲမှ တစ်ခုဖြစ်ပါသည်။","badges":["#Modern","#Architecture"],"mapUrl":"https://maps.google.com/?q=Faisal+Mosque"},{"name":"Hunza Valley","location":"Gilgit-Baltistan","details":"ဟိမဝန္တာ တောင်တန်းများကြားရှိ အလွန်လှပသော တောင်ကြားဒေသ ဖြစ်ပါသည်။","badges":["#Nature","#Mountain"],"mapUrl":"https://maps.google.com/?q=Hunza+Valley"},{"name":"Lahore Fort","location":"Lahore","details":"မဂိုခေတ် ရှေးဟောင်း သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Fortress"],"mapUrl":"https://maps.google.com/?q=Lahore+Fort"},{"name":"Mohenjo-daro","location":"Sindh","details":"B.C ၂၅၀၀ ခေတ် အိန္ဒုမြစ်ဝှမ်း ယဉ်ကျေးမှု၏ ရှေးဟောင်း မြို့ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။","badges":["#Ancient","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Mohenjo-daro"}]},{"country":"Bangladesh","aliases":["ဘင်္ဂလားဒေ့ရှ်"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"999","မီးသတ်":"999","အရေးပေါ်ကူညီရန်":"সাহায্য করুন! (Sahajjo korun!)","လူနာတင်ယာဉ်ခေါ်ရန်":"অ্যাম্বুলেন্স ডাকুন!","အထူးဖုန်း/အကြံပြုချက်":"National Helpline: 999","လုံခြုံရေးအကြံပြုချက်":"Keep bottled water available.","မြန်မာဘာသာ":"သန့်ရှင်းသော သောက်ရေသန့် ဆောင်ထားပါ။"},"landmarks":[{"name":"Sundarbans Mangrove Forest","location":"Khulna","details":"ကမ္ဘာ့အကြီးဆုံး ဒီရေတောနှင့် ဘင်္ဂလားကျားများ ကျက်စားရာနေရာ ဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Sundarbans"},{"name":"Cox's Bazar Beach","location":"Cox's Bazar","details":"ကမ္ဘာ့အရှည်ဆုံး သဘာဝ သဲသောင်ပြင် ကမ်းခြေကြီး ဖြစ်ပါသည်။","badges":["#Beach","#Nature"],"mapUrl":"https://maps.google.com/?q=Cox%27s+Bazar"},{"name":"Lalbagh Fort","location":"Dhaka","details":"၁၇ ရာစု မဂိုမင်းဆက်တို့၏ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Fortress"],"mapUrl":"https://maps.google.com/?q=Lalbagh+Fort"},{"name":"Sitemurating / Sixty Dome Mosque","location":"Bagerhat","details":"၁၅ ရာစုက ဆောက်လုပ်ခဲ့သော သမိုင်းဝင် အမိုးခုံး ၆၀ ပါ ဗလီကျောင်းတော် ဖြစ်ပါသည်။","badges":["#UNESCO","#Architecture"],"mapUrl":"https://maps.google.com/?q=Sixty+Dome+Mosque"},{"name":"Srimangal Tea Gardens","location":"Sylhet","details":"ဘင်္ဂလားဒေ့ရှ်၏ လက်ဖက်မြို့တော်ဟု ခေါ်ဆိုကြသော သာယာလှပသည့် လက်ဖက်စိုက်ခင်းများ ဖြစ်ပါသည်။","badges":["#Nature","#Scenic"],"mapUrl":"https://maps.google.com/?q=Srimangal"}]},{"country":"Sri Lanka","aliases":["သီရိလင်္ကာ"],"emergency":{"ရဲ":"119","လူနာတင်ယာဉ်":"1990","မီးသတ်":"110","အရေးပေါ်ကူညီရန်":"මට උදව් කරන්න!","လူနာတင်ယာဉ်ခေါ်ရန်":"ඇම්බියුලන්ස් එකක් අමතන්න!","အထူးဖုန်း/အကြံပြုချက်":"Suwa Seriya Ambulance: 1990","လုံခြုံရေးအကြံပြုချက်":"Tourist Police: 011-2421451","မြန်မာဘာသာ":"ကမ္ဘာ့လှည့်ခရီးသွား ရဲတပ်ဖွဲ့သို့ ဆက်သွယ်ပါ။"},"landmarks":[{"name":"Sigiriya Rock Fortress","location":"Dambulla","details":"ကျောက်တောင်ကြီးပေါ်တွင် တည်ဆောက်ထားသည့် သမိုင်းဝင် ရှေးဟောင်းခံတပ် ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Sigiriya"},{"name":"Temple of the Sacred Tooth Relic","location":"Kandy","details":"မြတ်စွာဘုရား၏ စွယ်တော်ဓာတ် ကိန်းဝပ်စခေတ်တည်ရှိရာ ကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Holy","#Temple"],"mapUrl":"https://maps.google.com/?q=Temple+of+the+Sacred+Tooth+Relic"},{"name":"Nine Arches Bridge","location":"Ella","details":"သစ်တောများကြား ဖြတ်သန်းသွားသော ကိုလိုနီခေတ် မီးရထား တံတားကြီး ဖြစ်ပါသည်။","badges":["#Bridge","#Scenic"],"mapUrl":"https://maps.google.com/?q=Nine+Arches+Bridge+Ella"},{"name":"Galle Fort","location":"Galle","details":"ဒတ်ချ် ကိုလိုနီခေတ် ပင်လယ်ကမ်းစပ် ခံတပ်မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Coast"],"mapUrl":"https://maps.google.com/?q=Galle+Fort"},{"name":"Yala National Park","location":"Southern Province","details":"သစ်ကုလားအုတ်၊ ဆင်နှင့် သားရဲတိရစ္ဆာန်များ ကျက်စားရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။","badges":["#Safari","#Nature"],"mapUrl":"https://maps.google.com/?q=Yala+National+Park"}]},{"country":"Nepal","aliases":["နီပေါ"],"emergency":{"ရဲ":"100","လူနာတင်ယာဉ်":"102","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"मद्दत गर्नुहोस्!","လူနာတင်ယာဉ်ခေါ်ရန်":"एम्बुलेंस बोलाउनुहोस्!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 1144","လုံခြုံရေးအကြံပြုချက်":"Register trekking permits.","မြန်မာဘာသာ":"တောင်တက်ခွင့်ပြုချက် မှတ်ပုံတင်ပါ။"},"landmarks":[{"name":"Mount Everest Base Camp","location":"Solukhumbu","details":"ကမ္ဘာ့အမြင့်ဆုံး ဧဝရတ်တောင်သို့ တက်ရောက်ရာ စခန်းဖြစ်ပါသည်။","badges":["#Adventure","#Mountain"],"mapUrl":"https://maps.google.com/?q=Everest+Base+Camp"},{"name":"Kathmandu Durbar Square","location":"Kathmandu","details":"နီပေါ ဘုရင်များ၏ ရှေးဟောင်း နန်းတော်နှင့် ကျောင်းတော်များ တည်ရှိရာ ဖြစ်ပါသည်။","badges":["#UNESCO","#Culture"],"mapUrl":"https://maps.google.com/?q=Kathmandu+Durbar+Square"},{"name":"Boudhanath Stupa","location":"Kathmandu","details":"ကမ္ဘာ့အကြီးဆုံး တိဘက် ဗုဒ္ဓဘာသာ စေတီတော်ကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။","badges":["#Holy","#Pagoda"],"mapUrl":"https://maps.google.com/?q=Boudhanath+Stupa"},{"name":"Phewa Lake","location":"Pokhara","details":"အန်နပူရဏ တောင်တန်းကြီးများကို ရေပြင်တွင် ရောင်ပြန်တွေ့ရသည့် ရေအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Phewa+Lake"},{"name":"Lumbini","location":"Rupandehi","details":"ဂေါတမ ဗုဒ္ဓမြတ်စွာဘုရား အလောင်းတော် သိဒ္ဓတ္ထမင်းသား ဖွားမြင်တော်မူရာ သမိုင်းဝင် နေရာဖြစ်ပါသည်။","badges":["#UNESCO","#Holy"],"mapUrl":"https://maps.google.com/?q=Lumbini"}]},{"country":"Bhutan","aliases":["ဘူတန်"],"emergency":{"ရဲ":"113","လူနာတင်ယာဉ်":"112","မီးသတ်":"110","အရေးပေါ်ကူညီရန်":"Help me!","လူနာတင်ယာဉ်ခေါ်ရန်":"Call ambulance!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Line: 112","လုံခြုံရေးအကြံပြုချက်":"Travel with licensed guide.","မြန်မာဘာသာ":"တရားဝင် လမ်းညွှန်နှင့်သာ သွားလာပါ။"},"landmarks":[{"name":"Paro Taktsang (Tiger's Nest)","location":"Paro","details":"ဂျောက်ကမ်းပါးယံတွင် ဆန်းကြယ်စွာ တည်ရှိသော ဘူတန်၏ အဓိက ကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Iconic","#Monastery"],"mapUrl":"https://maps.google.com/?q=Paro+Taktsang"},{"name":"Punakha Dzong","location":"Punakha","details":"မြစ်နှစ်သွယ် ဆုံရာတွင် ဆောက်လုပ်ထားသော သမိုင်းဝင် ခံတပ်ကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Architecture"],"mapUrl":"https://maps.google.com/?q=Punakha+Dzong"},{"name":"Buddha Dordenma Statue","location":"Thimphu","details":"မြို့တော် သင်းဖူးကို အထက်စီးမှ မိုးမျှော်ကြည့်ရှုနေသော ဧရာမ ကြေးဝါ ရုပ်ပွားတော်ကြီး ဖြစ်ပါသည်။","badges":["#Statue","#Holy"],"mapUrl":"https://maps.google.com/?q=Buddha+Dordenma"},{"name":"Dochula Pass","location":"Thimphu to Punakha","details":"စေတီ ၁၀၈ ဆူနှင့် ဟိမဝန္တာ တောင်တန်း ရှုခင်းများကို ကြည့်ရှုနိုင်သော တောင်ကြားလမ်း ဖြစ်ပါသည်။","badges":["#Scenic","#Mountain"],"mapUrl":"https://maps.google.com/?q=Dochula+Pass"},{"name":"Rinpung Dzong","location":"Paro","details":"ပါရိုတောင်ကြားရှိ အလွန်လှပသော ဘူတန်ရိုးရာ ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#Culture","#History"],"mapUrl":"https://maps.google.com/?q=Rinpung+Dzong"}]},{"country":"Maldives","aliases":["မော်လဒိုက်"],"emergency":{"ရဲ":"119","လူနာတင်ယာဉ်":"102","မီးသတ်":"118","အရေးပေါ်ကူညီရန်":"Eheevedheh!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ambulance ah govaabaa!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: +960 979 0070","လုံခြုံရေးအကြံပြုချက်":"Check inter-island ferry times.","မြန်မာဘာသာ":"ကျွန်းကူး သင်္ဘောအချိန်စာရင်း စစ်ဆေးပါ။"},"landmarks":[{"name":"Overwater Bungalows","location":"Male Atoll","details":"ပင်လယ်ရေပြာပေါ်တွင် တည်ဆောက်ထားသော ကမ္ဘာကျော် ရေပေါ် အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။","badges":["#Resort","#Luxury"],"mapUrl":"https://maps.google.com/?q=Maldives+Resorts"},{"name":"Male Friday Mosque","location":"Malé","details":"သန္တာကျောက်များဖြင့် ၁၆၅၈ ခုနှစ်ကတည်းက တည်ဆောက်ခဲ့သော ရှေးဟောင်း ဗလီ ဖြစ်ပါသည်။","badges":["#History","#Architecture"],"mapUrl":"https://maps.google.com/?q=Male+Friday+Mosque"},{"name":"Maafushi Island","location":"Kaafu Atoll","details":"ခေတ်မှီ ပြည်သူများနေထိုင်ပြီး ခရီးသွားများ အလွန်ကြိုက်နှစ်သက်သော ကျွန်း ဖြစ်ပါသည်။","badges":["#Beach","#Budget"],"mapUrl":"https://maps.google.com/?q=Maafushi"},{"name":"Banana Reef","location":"North Malé Atoll","details":"ရေအောက်သန္တာကျောက်တန်းများနှင့် ငါးမျိုးစုံကို ငုပ်ကြည့်နိုင်သော နေရာဖြစ်ပါသည်။","badges":["#Diving","#Nature"],"mapUrl":"https://maps.google.com/?q=Banana+Reef"},{"name":"Baa Atoll Biosphere Reserve","location":"Baa Atoll","details":"မန္တာငါးလိပ်ကျောက်များနှင့် ငါးမန်းများကို တွေ့နိုင်သော ယူနက်စကို နယ်မြေဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Baa+Atoll"}]},{"country":"Afghanistan","aliases":["အာဖဂန်နစ္စတန်"],"emergency":{"ရဲ":"119","လူနာတင်ယာဉ်":"102","မီးသတ်":"119","အရေးပေါ်ကူညီရန်":"کمک کنید! (Komak konid!)","လူနာတင်ယာဉ်ခေါ်ရန်":"آمبولانس بطلبید!","အထူးဖုန်း/အကြံပြုချက်":"Red Crescent: 115","လုံခြုံရေးအကြံပြုချက်":"Check diplomatic advisories.","မြန်မာဘာသာ":"သံရုံး၏ သတိပေးချက်များကို စစ်ဆေးပါ။"},"landmarks":[{"name":"Buddhas of Bamiyan Site","location":"Bamiyan","details":"၆ ရာစုခေတ်ကတည်းက ကျောက်တောင်နံရံတွင် ထွင်းထုခဲ့သော သမိုင်းဝင် ဗုဒ္ဓရုပ်ပွားတော်ကြီးများ တည်ရှိခဲ့သည့် ယူနက်စကို စာရင်းဝင် သမိုင်းဝင် နယ်မြေဖြစ်ပါသည်။","badges":["#History","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Bamiyan"},{"name":"Band-e Amir National Park","location":"Bamiyan","details":"ဟိန္ဒူကုရှ် တောင်တန်းများကြား သဘာဝအတိုင်း ဖြစ်ပေါ်နေသော ပြာလွင်တောက်ပသည့် မီးတောင်ကန်အိုင်ကြီးများ စုစည်းရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။","badges":["#Nature","#NationalPark"],"mapUrl":"https://maps.google.com/?q=Band-e+Amir"},{"name":"Blue Mosque","location":"Mazar-i-Sharif","details":"လက်ရာမြောက် အပြာရောင် ကြွေပြားများဖြင့် စီခြယ်ထားပြီး အာဖဂန်နိစ္စတန်နိုင်ငံ၏ အလှပဆုံး အစ္စလာမ် ဘာသာရေး အဆောက်အအုံများထဲမှ တစ်ခုဖြစ်ပါသည်။","badges":["#Mosque","#Architecture"],"mapUrl":"https://maps.google.com/?q=Blue+Mosque+Mazar-i-Sharif"},{"name":"Citadel of Herat","location":"Herat","details":"မဟာအလက်ဇန္ဒား ဘုရင်ခေတ် B.C ၃၃၀ ကတည်းက စတင် တည်ဆောက်ခဲ့သော ခန်းနားထည်ဝါသည့် ရှေးဟောင်း စစ်ဘက်ဆိုင်ရာ ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Fortress"],"mapUrl":"https://maps.google.com/?q=Citadel+of+Herat"},{"name":"Babur Gardens","location":"Kabul","details":"မဂိုအင်ပါယာကို စတင်တည်ထောင်သူ ဧကရာဇ် ဘာဘူရ်၏ ဂူဗိမာန် တည်ရှိပြီး ပျော်ပွဲစားထွက်ရန် သာယာလှပသည့် သမိုင်းဝင် ပန်းခြံဥယျာဉ် ဖြစ်ပါသည်။","badges":["#Park","#Heritage"],"mapUrl":"https://maps.google.com/?q=Babur+Gardens"}]},{"country":"Kazakhstan","aliases":["ကာဇက်စတန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Komektesinizder!","လူနာတင်ယာဉ်ခေါ်ရန်":"Jede'l jardem shaqyrynyz!","အထူးဖုန်း/အကြံပြုချက်":"Single Emergency: 112","လုံခြုံရေးအကြံပြုချက်":"Extreme temperature prep.","မြန်မာဘာသာ":"အလွန်အမင်း အေး/ပူသော ရာသီအတွက် ပြင်ဆင်ပါ။"},"landmarks":[{"name":"Charyn Canyon","location":"Almaty","details":"အမေရိကန် Grand Canyon နှင့် ဆင်တူသော သဘာဝ ကျောက်ချောက်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Canyon"],"mapUrl":"https://maps.google.com/?q=Charyn+Canyon"},{"name":"Big Almaty Lake","location":"Almaty","details":"တောင်တန်းများကြားတွင် တည်ရှိသော စိမ်းပြာရောင် တောင်ပေါ် ရေအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Big+Almaty+Lake"},{"name":"Baiterek Tower","location":"Astana","details":"မြို့တော် အာစတာနာ၏ ခေတ်မီဆန်းသစ်သော အနာဂတ်အသွင် တာဝါကြီး ဖြစ်ပါသည်။","badges":["#Modern","#Tower"],"mapUrl":"https://maps.google.com/?q=Baiterek+Tower"},{"name":"Mausoleum of Khoja Ahmed Yasawi","location":"Turkestan","details":"၁၄ ရာစု မူဆလင် သူတော်စင်၏ သမိုင်းဝင် ဂူဗိမာန်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Mausoleum+of+Khoja+Ahmed+Yasawi"},{"name":"Medeo Ice Rink","location":"Almaty","details":"ပင်လယ်ရေမျက်နှာပြင်ထက် အမြင့်ဆုံးတွင် တည်ရှိသော ကမ္ဘာကျော် ရေခဲပြင် စကိတ်ကွင်း ဖြစ်ပါသည်။","badges":["#Sports","#Mountain"],"mapUrl":"https://maps.google.com/?q=Medeo"}]},{"country":"Uzbekistan","aliases":["ဥဇဘက်ကစ္စတန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Yordam bering!","လူနာတင်ယာဉ်ခေါ်ရန်":"Tez yordam chaqiring!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 1173","လုံခြုံရေးအကြံပြုချက်":"Keep hotel registration slips.","မြန်မာဘာသာ":"ဟိုတယ် မှတ်ပုံတင် လက်မှတ်များ သိမ်းထားပါ။"},"landmarks":[{"name":"Registan","location":"Samarkand","details":"အပြာရောင် ကြွေပြားများဖြင့် တန်ဆာဆင်ထားသော ပိုးလမ်းမပေါ်ရှိ သမိုင်းဝင် ကွင်းပြင်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Registan+Samarkand"},{"name":"Ichan Kala","location":"Khiva","details":"ရွှံ့အုတ်တံတိုင်းကြီးများ ဝန်းရံထားသည့် ရှေးဟောင်း သဲကန္တာရ မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Ichan+Kala"},{"name":"Ark of Bukhara","location":"Bukhara","details":"၅ ရာစုခေတ်ကတည်းက တည်ရှိခဲ့သော ဧရာမ မြို့ရိုးခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#Fortress","#History"],"mapUrl":"https://maps.google.com/?q=Ark+of+Bukhara"},{"name":"Shah-i-Zinda","location":"Samarkand","details":"အပြာရောင် လက်ရာမြောက် ကြွေပြား ဂူဗိမာန်စု စုစည်းရာ ဖြစ်ပါသည်။","badges":["#Architecture","#Holy"],"mapUrl":"https://maps.google.com/?q=Shah-i-Zinda"},{"name":"Chorsu Bazaar","location":"Tashkent","details":"အပြာရောင် အမိုးခုံးကြီးအောက်ရှိ ရိုးရာ ဈေးကြီး ဖြစ်ပါသည်။","badges":["#Culture","#Market"],"mapUrl":"https://maps.google.com/?q=Chorsu+Bazaar"}]},{"country":"Turkmenistan","aliases":["တာ့ခ်မင်နစ္စတန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Komek edin!","လူနာတင်ယာဉ်ခေါ်ရန်":"Tiz komegi cagyryn!","အထူးဖုန်း/အကြံပြုချက်":"Emergency: 03","လုံခြုံရေးအကြံပြုချက်":"Follow travel itinerary strictly.","မြန်မာဘာသာ":"ခရီးစဉ် အစီအစဉ်အတိုင်း တိကျစွာ သွားပါ။"},"landmarks":[{"name":"Darvaza Gas Crater (Door to Hell)","location":"Derweze","details":"သဲကန္တာရထဲတွင် နှစ်ပေါင်း ၅၀ ကျော်တိုင် မီးတောက်လောင်နေသော သဘာဝဓာတ်ငွေ့တွင်းကြီး ဖြစ်ပါသည်။","badges":["#Unique","#Nature"],"mapUrl":"https://maps.google.com/?q=Darvaza+Gas+Crater"},{"name":"Ashgabat Marble City","location":"Ashgabat","details":"စက်ဖြူကျောက်များဖြင့်သာ ဆောက်လုပ်ထားသော စံချိန်တင် မြို့တော် ဖြစ်ပါသည်။","badges":["#Architecture","#Unique"],"mapUrl":"https://maps.google.com/?q=Ashgabat"},{"name":"Ancient Merv","location":"Mary","details":"ရှေးဟောင်း ပိုးလမ်းမပေါ်ရှိ အဓိက မြို့တော်ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Ancient+Merv"},{"name":"Nisa Fortress","location":"Bagtyyarlyk","details":"ပါသီယန် အင်ပါယာ၏ ပထမဆုံး မြို့တော်ဟောင်း ခံတပ် ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Nisa+Turkmenistan"},{"name":"Kow Ata Underground Lake","location":"Bäherden","details":"သဘာဝ ရေပူစမ်း တည်ရှိရာ မြေအောက် ဂူအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Cave","#Nature"],"mapUrl":"https://maps.google.com/?q=Kow+Ata"}]},{"country":"Kyrgyzstan","aliases":["ကာဂျစ္စတန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Jardam berinizder!","လူနာတင်ယာဉ်ခေါ်ရန်":"Tiz jardam chakyrynyz!","အထူးဖုန်း/အကြံပြုချက်":"Rescue Service: 112","လုံခြုံရေးအကြံပြုချက်":"Have insurance for mountain treks.","မြန်မာဘာသာ":"တောင်တက်ခရီးအတွက် အာမခံထားရှိပါ။"},"landmarks":[{"name":"Issyk-Kul Lake","location":"Ysyk-Kol","details":"ကမ္ဘာ့ဒုတိယအကြီးဆုံး တောင်ပေါ် ရေငန်အိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Issyk-Kul"},{"name":"Ala Archa National Park","location":"Chüy","details":"နှင်းဖုံးတောင်တန်းများနှင့် သဘာဝတောင်တက် လမ်းကြောင်းများ ရှိရာနေရာ ဖြစ်ပါသည်။","badges":["#Nature","#Park"],"mapUrl":"https://maps.google.com/?q=Ala+Archa"},{"name":"Tash Rabat","location":"Naryn","details":"၁၅ ရာစုက ကျောက်တုံးများဖြင့် ဆောက်လုပ်ခဲ့သော ပိုးလမ်းမပေါ်ရှိ တည်းခိုစခန်း ဖြစ်ပါသည်။","badges":["#History","#Stone"],"mapUrl":"https://maps.google.com/?q=Tash+Rabat"},{"name":"Song-Kol Lake","location":"Naryn","details":"ခြေသလုံးအိမ်တိုင် နွားကျောင်းသူများ၏ ယဉ်ကျေးမှုကို လေ့လာနိုင်သော တောင်ပေါ်အိုင် ဖြစ်ပါသည်။","badges":["#Nature","#Nomad"],"mapUrl":"https://maps.google.com/?q=Song-Kol"},{"name":"Burana Tower","location":"Chüy","details":"၉ ရာစုခေတ် မြို့တော်ဟောင်းမှ ကျန်ရှိခဲ့သော သမိုင်းဝင် တာဝါကြီး ဖြစ်ပါသည်။","badges":["#History","#Tower"],"mapUrl":"https://maps.google.com/?q=Burana+Tower"}]},{"country":"Tajikistan","aliases":["တာဂျစ်ကစ္စတန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Kumak kuned!","လူနာတင်ယာဉ်ခေါ်ရန်":"Yormaghhhoi tibbiro kalid!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Center: 112","လုံခြုံရေးအကြံပြုချက်":"Permits required for Pamir region.","မြန်မာဘာသာ":"Pamir ဒေသအတွက် ပါမစ် ရယူထားပါ။"},"landmarks":[{"name":"Pamir Highway","location":"Pamir Mountains","details":"ပင်လယ်ရေမျက်နှာပြင်ထက် အမြင့် ၄၆၅၅ မီတာအထိ ဖြတ်သန်းသွားသော ကမ္ဘာ့ဒုတိယအမြင့်ဆုံး ကားလမ်းမကြီး ဖြစ်ပါသည်။","badges":["#Road","#Adventure"],"mapUrl":"https://maps.google.com/?q=Pamir+Highway"},{"name":"Iskanderkul Lake","location":"Sughd","details":"ဖန်းတောင်တန်းများကြားရှိ သတ္တုဓာတ်ကြောင့် စိမ်းပြာရောင်တောက်ပနေသော သဘာဝ တောင်ပေါ်အိုင် ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Iskanderkul"},{"name":"Rudaki Park","location":"Dushanbe","details":"မြို့တော် ဒူရှန်ဘေး၏ ဗဟိုတွင် တည်ရှိပြီး ပန်းရေပန်းများနှင့် အမြင့်ဆုံး အလံတိုင်ကြီး တည်ရှိရာ ပန်းခြံ ဖြစ်ပါသည်။","badges":["#Park","#City"],"mapUrl":"https://maps.google.com/?q=Rudaki+Park"},{"name":"Hisor Fortress","location":"Hisor","details":"နှစ်ပေါင်း ၂၅၀၀ ကျော် သက်တမ်းရှိပြီး ရှေးဟောင်း ပိုးလမ်းမပေါ်ရှိ အရေးပါသော ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Fortress"],"mapUrl":"https://maps.google.com/?q=Hisor+Fortress"},{"name":"Nurek Dam","location":"Nurek","details":"အမြင့် မီတာ ၃၀၀ ရှိသော ကမ္ဘာ့အမြင့်ဆုံး မြေသားတမံကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။","badges":["#Engineering","#Lake"],"mapUrl":"https://maps.google.com/?q=Nurek+Dam"}]},{"country":"Saudi Arabia","aliases":["ဆော်ဒီ","ဆော်ဒီအာရေဗျ"],"emergency":{"ရဲ":"911","လူနာတင်ယာဉ်":"997","မီးသတ်":"998","အရေးပေါ်ကူညီရန်":"Sa'iduni! (ساعدوني)","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Unified Emergency: 911","လုံခြုံရေးအကြံပြုချက်":"Respect local dress codes.","မြန်မာဘာသာ":"ဒေသတွင်း ဝတ်စားဆင်ယင်မှုကို လေးစားပါ။"},"landmarks":[{"name":"Al-Ula (Hegra / Madain Salih)","location":"Al-Ula","details":"သဲကန္တာရ ကျောက်တောင်ကြီးများကို ထွင်းထုထားသည့် ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Al-Ula"},{"name":"Masjid al-Haram","location":"Mecca","details":"အစ္စလာမ် ဘာသာတူတို့၏ အقدမြတ်ဆုံး ကာဗာကျောင်းတော်ကြီး တည်ရှိရာ ဖြစ်ပါသည်။","badges":["#Holy","#Mosque"],"mapUrl":"https://maps.google.com/?q=Masjid+al-Haram"},{"name":"Edge of the World","location":"Riyadh","details":"ကျယ်ပြောလှသော သဲကန္တာရပြင်ကြီးကို မြင်တွေ့ရသည့် သဘာဝ ကျောက်ကမ်းပါးကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Cliff"],"mapUrl":"https://maps.google.com/?q=Edge+of+the+World+Riyadh"},{"name":"Al Balad","location":"Jeddah","details":"ဂျက်ဒါမြို့ရှိ သမိုင်းဝင် သန္တာကျောက်ဖြင့် ဆောက်လုပ်ထားသော ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Al+Balad+Jeddah"},{"name":"Kingdom Centre Tower","location":"Riyadh","details":"ရီယဒ်မြို့၏ ထူးခြားသော ဗိသုကာလက်ရာပါ မိုးမျှော်တိုက်ကြီး ဖြစ်ပါသည်။","badges":["#Modern","#Tower"],"mapUrl":"https://maps.google.com/?q=Kingdom+Centre"}]},{"country":"UAE","aliases":["ယူအေအီး","အာရပ်စော်ဘွားများ"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"998","မီးသတ်":"997","အရေးပေါ်ကူညီရန်":"Help me please!","လူနာတင်ယာဉ်ခေါ်ရန်":"Call an ambulance!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police Dubai: 901","လုံခြုံရေးအကြံပြုချက်":"Strict public conduct rules apply.","မြန်မာဘာသာ":"အများပြည်သူဆိုင်ရာ စည်းကမ်းများကို လိုက်နာပါ။"},"landmarks":[]},{"country":"Turkey","aliases":["တူရကီ"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"112","မီးသတ်":"112","အရေးပေါ်ကူညီရန်":"Yardım edin!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ambulans çağırın!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Line: 112","လုံခြုံရေးအကြံပြုချက်":"Beware of taxi scams in tourist spots.","မြန်မာဘာသာ":"တက္ကစီ ဂျင်းများ သတိပြုပါ။"},"landmarks":[{"name":"Hagia Sophia","location":"Istanbul","details":"ဘိုင်ဇန်တိုင်း ခေတ်ကတည်းက တည်ရှိခဲ့သော သမိုင်းဝင် ဘုရားကျောင်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Hagia+Sophia"},{"name":"Cappadocia","location":"Nevsehir","details":"မီးပူဖောင်းများ ပျံသန်းရာ သဘာဝ ကျောက်တောင်တန်းကြီးများ ဖြစ်ပါသည်။","badges":["#Balloon","#Scenic"],"mapUrl":"https://maps.google.com/?q=Cappadocia"},{"name":"Pamukkale","location":"Denizli","details":"ထုံးကျောက်ဖြူဖြူ ကမ်းပါးများပေါ်ရှိ သဘာဝ ရေပူစမ်း ကန်များ ဖြစ်ပါသည်။","badges":["#Nature","#Thermal"],"mapUrl":"https://maps.google.com/?q=Pamukkale"},{"name":"Ephesus","location":"Izmir","details":"ဂရိနှင့် ရောမခေတ် သမိုင်းဝင် မြို့ဟောင်း အပျက်အစီးများ ဖြစ်ပါသည်။","badges":["#Ancient","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Ephesus"},{"name":"Topkapi Palace","location":"Istanbul","details":"အော့သိုမန် ဧကရာဇ်တို့ စီးစံခဲ့ရာ သမိုင်းဝင် နန်းတော်ကြီး ဖြစ်ပါသည်။","badges":["#Palace","#History"],"mapUrl":"https://maps.google.com/?q=Topkapi+Palace"}]},{"country":"Iran","aliases":["အီရန်"],"emergency":{"ရဲ":"110","လူနာတင်ယာဉ်":"115","မီးသတ်":"125","အရေးပေါ်ကူညီရန်":"Komak konid!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ambulance khabar konid!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Hotline: 09629","လုံခြုံရေးအကြံပြုချက်":"Carry local currency cash.","မြန်မာဘာသာ":"ဒေသတွင်း သုံးငွေသား ဆောင်ထားပါ။"},"landmarks":[{"name":"Persepolis","location":"Shiraz","details":"ရှေးဟောင်း ပါရှန်းအင်ပါယာ၏ ခန်းနားလှသော မြို့တော်ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Persepolis"},{"name":"Naqsh-e Jahan Square","location":"Isfahan","details":"ကမ္ဘာ့အကြီးဆုံး ကွင်းပြင်ကြီးများထဲမှ တစ်ခုဖြစ်ပြီး အပြာရောင် ဗလီများ ရှိပါသည်။","badges":["#UNESCO","#Architecture"],"mapUrl":"https://maps.google.com/?q=Naqsh-e+Jahan+Square"},{"name":"Nasir al-Mulk Mosque (Pink Mosque)","location":"Shiraz","details":"ရောင်စုံမှန်ပြတင်းများကြောင့် အလင်းရောင်ကျချိန် အလွန်လှပသော ဗလီ ဖြစ်ပါသည်။","badges":["#Mosque","#Art"],"mapUrl":"https://maps.google.com/?q=Nasir+al-Mulk+Mosque"},{"name":"Golestan Palace","location":"Tehran","details":"ကာဂျာမင်းဆက်တို့၏ ကြွေပြားလက်ရာမြောက် သမိုင်းဝင် နန်းတော် ဖြစ်ပါသည်။","badges":["#UNESCO","#Palace"],"mapUrl":"https://maps.google.com/?q=Golestan+Palace"},{"name":"Yazd Old Town","location":"Yazd","details":"သဲကန္တာရအလယ်ရှိ လေအေးပေးစနစ်ပါ ရွှံ့အုတ် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Desert"],"mapUrl":"https://maps.google.com/?q=Yazd+Old+Town"}]},{"country":"Iraq","aliases":["အီရတ်"],"emergency":{"ရဲ":"104","လူနာတင်ယာဉ်":"122","မီးသတ်":"115","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Control: 130","လုံခြုံရေးအကြံပြုချက်":"Check advisory warnings.","မြန်မာဘာသာ":"ခရီးသွား သတိပေးချက်များကို စစ်ဆေးပါ။"},"landmarks":[{"name":"Babylon Ruins","location":"Hillah","details":"ရှေးဟောင်း မက်ဆိုပိုတေးမီးယား ယဉ်ကျေးမှု ထွန်းကားခဲ့ရာ ဗာဗုလုန် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Babylon+Ruins"},{"name":"Ziggurat of Ur","location":"Dhi Qar","details":"B.C ၂၁ ရာစု စူမေးရီးယန်းတို့ ဆောက်လုပ်ခဲ့သော ဧရာမ ကျောက်စင်မြင့်ကြီး ဖြစ်ပါသည်။","badges":["#Ancient","#History"],"mapUrl":"https://maps.google.com/?q=Ziggurat+of+Ur"},{"name":"Great Mosque of Samarra","location":"Samarra","details":"ခရုပတ်ပုံစံ မာလာဝီယျာ တာဝါကြောင့် ထို့ထူးခြားလှသော ၉ ရာစု ဗလီ ဖြစ်ပါသည်။","badges":["#UNESCO","#Architecture"],"mapUrl":"https://maps.google.com/?q=Great+Mosque+of+Samarra"},{"name":"Erbil Citadel","location":"Erbil","details":"နှစ်ပေါင်း ၆၀၀၀ ကျော် တောက်လျှောက် လူနေထိုင်ခဲ့သည့် တောင်ကုန်းပေါ်မှ ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Erbil+Citadel"},{"name":"Imam Ali Mosque","location":"Najaf","details":"ရှီအာ မူဆလင်တို့၏ အရေးပါဆုံး ဘာသာရေး ဗဟိုဌာန ဖြစ်ပါသည်။","badges":["#Holy","#Mosque"],"mapUrl":"https://maps.google.com/?q=Imam+Ali+Mosque"}]},{"country":"Israel","aliases":["အစ္စရေး"],"emergency":{"ရဲ":"100","လူနာတင်ယာဉ်":"101","မီးသတ်":"102","အရေးပေါ်ကူညီရန်":"Hatzilu!","လူနာတင်ယာဉ်ခေါ်ရန်":"Hazminu ambulans!","အထူးဖုန်း/အကြံပြုချက်":"Red Shield Ambulance: 101","လုံခြုံရေးအကြံပြုချက်":"Download Home Front Command app.","မြန်မာဘာသာ":"ဘေးအန္တရာယ် သတိပေး App ဆွဲထားပါ။"},"landmarks":[{"name":"Western Wall","location":"Jerusalem","details":"ဂျူးဘာသာဝင်တို့၏ အقدမြတ်ဆုံး သမိုင်းဝင် တံတိုင်းဟောင်း ဖြစ်ပါသည်။","badges":["#Holy","#History"],"mapUrl":"https://maps.google.com/?q=Western+Wall"},{"name":"Dome of the Rock","location":"Jerusalem","details":"ရွှေအမိုးခုံးဖြင့် ထင်ရှားသော သမိုင်းဝင် အစ္စလာမ် အဆောက်အအုံ ဖြစ်ပါသည်။","badges":["#Holy","#Architecture"],"mapUrl":"https://maps.google.com/?q=Dome+of+the+Rock"},{"name":"Dead Sea","location":"Ein Gedi","details":"ဆားဓာတ် အလွန်များပြားသဖြင့် ရေကူးစရာမလိုဘဲ ပေါလောပေါ်နေသော ပင်လယ်သေ ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Dead+Sea"},{"name":"Masada National Park","location":"Judean Desert","details":"သဲကန္တာရ ကျောက်တောင်ထိပ်ပေါ်ရှိ ရှေးဟောင်း ရောမခေတ် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Masada"},{"name":"Bahá'í Gardens","location":"Haifa","details":"တောင်စောင်းတွင် အဆင့်ဆင့် သပ်ရပ်စွာ ပုံဖော်ထားသော ပန်းခြံကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Garden"],"mapUrl":"https://maps.google.com/?q=Bahai+Gardens+Haifa"}]},{"country":"Jordan","aliases":["ဂျော်ဒန်"],"emergency":{"ရဲ":"911","လူနာတင်ယာဉ်":"911","မီးသတ်":"911","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Tourist Police: 117777","လုံခြုံရေးအကြံပြုချက်":"Keep Jordan Pass ready.","မြန်မာဘာသာ":"Jordan Pass ကို အဆင်သင့်ဆောင်ထားပါ။"},"landmarks":[{"name":"Petra","location":"Ma'an","details":"ကျောက်တောင်နီကြီးများကို ထွင်းထုထားသည့် ကမ္ဘာ့အံ့ဖွယ် ပတ္တရာမြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#Iconic"],"mapUrl":"https://maps.google.com/?q=Petra"},{"name":"Wadi Rum","location":"Aqaba","details":"အင်္ဂါဂြိုဟ်မျက်နှာပြင်နှင့် တူသော သဲကန္တာရ ကျောက်တောင်တန်းများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Desert"],"mapUrl":"https://maps.google.com/?q=Wadi+Rum"},{"name":"Jerash Ruins","location":"Jerash","details":"အကောင်းအတိုင်း ကျန်ရှိနေသော ရောမခေတ် ရှေးဟောင်း မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#Ancient","#History"],"mapUrl":"https://maps.google.com/?q=Jerash"},{"name":"Dead Sea Jordan","location":"Balqa","details":"ကမ္ဘာ့အနိမ့်ဆုံး ကုန်းမြေတွင် တည်ရှိသော ဆားရေအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Spa"],"mapUrl":"https://maps.google.com/?q=Dead+Sea+Jordan"},{"name":"Amman Citadel","location":"Amman","details":"မြို့တော် အာမန်ကို အထက်စီးမှ မြင်ရသော ရှေးဟောင်း ခံတပ်ကုန်း ဖြစ်ပါသည်။","badges":["#History","#City"],"mapUrl":"https://maps.google.com/?q=Amman+Citadel"}]},{"country":"Lebanon","aliases":["လက်ဘနွန်"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"140","မီးသတ်":"175","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-salib al-ahmar!","အထူးဖုန်း/အကြံပြုချက်":"Red Cross: 140","လုံခြုံရေးအကြံပြုချက်":"Keep US Dollars in cash.","မြန်မာဘာသာ":"အမေရိကန် ဒေါ်လာ ငွေသား ဆောင်ထားပါ။"},"landmarks":[{"name":"Jeita Grotto","location":"Nahr al-Kalb","details":"ထုံးကျောက်ဂူကြီးများ ထွင်းဖောက်တည်ရှိသော အံ့ဖွယ် သဘာဝဂူကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Cave"],"mapUrl":"https://maps.google.com/?q=Jeita+Grotto"},{"name":"Baalbek Temple Complex","location":"Baalbek","details":"ဧရာမ ကျောက်တိုင်ကြီးများ ပါဝင်သော ရောမ နတ်ကျောင်း အပျက်အစီးများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Baalbek"},{"name":"Byblos Ancient City","location":"Mount Lebanon","details":"ကမ္ဘာပေါ်တွင် သက်တမ်းအရှည်ဆုံး တောက်လျှောက် လူနေထိုင်ခဲ့သည့် ပင်လယ်ကမ်းစပ် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Byblos"},{"name":"Cedars of God","location":"Bsharri","details":"လိဘနွန်နိုင်ငံ၏ သင်္ကေတဖြစ်သော ရှေးဟောင်း ဆီးဒါး သစ်တောအုပ် ဖြစ်ပါသည်။","badges":["#Nature","#UNESCO"],"mapUrl":"https://maps.google.com/?q=Cedars+of+God"},{"name":"Mohammad Al-Amin Mosque","location":"Beirut","details":"ဘေရုတ္တမြို့လယ်ရှိ အပြာရောင် အမိုးခုံးပါ ခန်းနားသော ဗလီ ဖြစ်ပါသည်။","badges":["#Mosque","#City"],"mapUrl":"https://maps.google.com/?q=Mohammad+Al-Amin+Mosque"}]},{"country":"Syria","aliases":["ဆီးရီးယား"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"110","မီးသတ်":"113","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Red Crescent: 110","လုံခြုံရေးအကြံပြုချက်":"High-risk travel advisory.","မြန်မာဘာသာ":"အန္တရာယ်ရှိသော ခရီးစဉ် သတိပေးချက် စစ်ပါ။"},"landmarks":[{"name":"Umayyad Mosque","location":"Damascus","details":"ကမ္ဘာ့အရှေးကျဆုံးနှင့် အကြီးဆုံး အစ္စလာမ် ဗလီကြီးများထဲမှ တစ်ခုဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Umayyad+Mosque"},{"name":"Ancient City of Palmyra","location":"Homs","details":"သဲကန္တာရအလယ်ရှိ သမိုင်းဝင် ရောမခေတ် မြို့တော်ဟောင်း အပျက်အစီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Palmyra"},{"name":"Krak des Chevaliers","location":"Homs","details":"ကမ္ဘာပေါ်တွင် အကင်းဆုံး ထိန်းသိမ်းထားနိုင်ခဲ့သော ခရူးဆိတ်ခေတ် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Fortress"],"mapUrl":"https://maps.google.com/?q=Krak+des+Chevaliers"},{"name":"Ancient City of Aleppo","location":"Aleppo","details":"သမိုင်းဝင် ခံတပ်နှင့် ရှေးဟောင်း ဈေးတန်းကြီးများ တည်ရှိရာ ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Citadel+of+Aleppo"},{"name":"Norias of Hama","location":"Hama","details":"၁၄ ရာစုကတည်းက တည်ရှိခဲ့သော ဧရာမ သစ်သား ရေရာထိုင်ဘီးကြီးများ ဖြစ်ပါသည်။","badges":["#History","#Unique"],"mapUrl":"https://maps.google.com/?q=Norias+of+Hama"}]},{"country":"Yemen","aliases":["ယီမင်"],"emergency":{"ရဲ":"199","လူနာတင်ယာဉ်":"191","မီးသတ်":"191","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Emergency: 199","လုံခြုံရေးအကြံပြုချက်":"Avoid non-essential travel.","မြန်မာဘာသာ":"မလိုလားအပ်သော သွားလာမှုများ ရှောင်ပါ။"},"landmarks":[{"name":"Old City of Sana'a","location":"Sana'a","details":"ထူးခြားသော အဖြူရောင် ပန်းခက်များပါ ရွှံ့အုတ် တိုက်အမြင့်ကြီးများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Architecture"],"mapUrl":"https://maps.google.com/?q=Old+City+of+Sana'a"},{"name":"Socotra Island","location":"Socotra","details":"နဂါးသွေးပင်ကဲ့သို့ ကမ္ဘာပေါ်တွင် အခြားဘက်၌ မရှိသော သဘာဝ သစ်ပင်ဆန်းများ တည်ရှိရာ ကျွန်းဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Socotra"},{"name":"Shibam Hadramawt","location":"Hadhramaut","details":"သဲကန္တာရ၏ မိုးမျှော်တိုက်များဟု ခေါ်ဆိုကြသော သမိုင်းဝင် ရွှံ့အုတ်တိုက်များ ဖြစ်ပါသည်။","badges":["#UNESCO","#Unique"],"mapUrl":"https://maps.google.com/?q=Shibam"},{"name":"Dar al-Hajar (Rock Palace)","location":"Sana'a","details":"ကျောက်တောင်ကြီးပေါ်တွင် ဆန်းကြယ်စွာ တည်ဆောက်ထားသော နန်းတော် ဖြစ်ပါသည်။","badges":["#Palace","#Unique"],"mapUrl":"https://maps.google.com/?q=Dar+al-Hajar"},{"name":"Shaharah Bridge","location":"Amran","details":"၁၇ ရာစုက တောင်စောက်ကြီးနှစ်ခုကြား ဆက်သွယ်ဆောက်လုပ်ခဲ့သော ကျောက်တံတား ဖြစ်ပါသည်။","badges":["#Bridge","#History"],"mapUrl":"https://maps.google.com/?q=Shaharah+Bridge"}]},{"country":"Oman","aliases":["အိုမန်"],"emergency":{"ရဲ":"9999","လူနာတင်ယာဉ်":"9999","မီးသတ်":"9999","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Royal Oman Police: 9999","လုံခြုံရေးအကြံပြုချက်":"Hydrate during desert trips.","မြန်မာဘာသာ":"သဲကန္တာရအတွင်း သွားလာပါက ရေများများသောက်ပါ။"},"landmarks":[{"name":"Sultan Qaboos Grand Mosque","location":"Muscat","details":"မန္တလတ် ရောစပ်ထားသည့် ခန်းနားလှသော မူစကတ်မြို့၏ ပင်မ ဗလီကြီး ဖြစ်ပါသည်။","badges":["#Mosque","#Architecture"],"mapUrl":"https://maps.google.com/?q=Sultan+Qaboos+Grand+Mosque"},{"name":"Wadi Shab","location":"Al Sharqiyah","details":"ကျောက်တောင်စောက်များကြား လှပသော စိမ်းပြာရောင် သဘာဝ ရေအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Adventure"],"mapUrl":"https://maps.google.com/?q=Wadi+Shab"},{"name":"Nizwa Fort","location":"Nizwa","details":"၁၇ ရာစုက တည်ဆောက်ခဲ့သော အိုမန်၏ အထင်ကရ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Fortress"],"mapUrl":"https://maps.google.com/?q=Nizwa+Fort"},{"name":"Wahiba Sands","location":"Sharqiyah","details":"လှိုင်းလုံး ပုံစံ သဲသောင်ပြင်ကြီးများနှင့် သဲကန္တာရ အပန်းဖြေစခန်းများ ဖြစ်ပါသည်။","badges":["#Desert","#Nature"],"mapUrl":"https://maps.google.com/?q=Wahiba+Sands"},{"name":"Bimmah Sinkhole","location":"Muscat","details":"မြေပြိုကျမှုကြောင့် ဖြစ်ပေါ်လာသော သဘာဝ စိမ်းပြာရောင် ရေကန်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Unique"],"mapUrl":"https://maps.google.com/?q=Bimmah+Sinkhole"}]},{"country":"Kuwait","aliases":["ကူဝိတ်"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"112","မီးသတ်":"112","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Line: 112","လုံခြုံရေးအကြံပြုချက်":"Carry Civil ID or Passport.","မြန်မာဘာသာ":"Passport (သို့) ID အမြဲဆောင်ထားပါ။"},"landmarks":[{"name":"Kuwait Towers","location":"Kuwait City","details":"ကူဝိတ်မြို့၏ စတိုင်ကျဆန်းသစ်သော အပြာရောင် ဘောလုံးပုံစံ တာဝါကြီးများ ဖြစ်ပါသည်။","badges":["#Iconic","#Modern"],"mapUrl":"https://maps.google.com/?q=Kuwait+Towers"},{"name":"Grand Mosque of Kuwait","location":"Kuwait City","details":"ကူဝိတ်နိုင်ငံ၏ အကြီးဆုံးနှင့် ခန်းနားလှသော ဗလီကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Mosque","#Architecture"],"mapUrl":"https://maps.google.com/?q=Grand+Mosque+Kuwait"},{"name":"Al Shaheed Park","location":"Kuwait City","details":"ပြတိုက်များနှင့် ရေပန်းများ ပါဝင်သော မြို့တော်၏ အကြီးဆုံး အမျိုးသား ပန်းခြံ ဖြစ်ပါသည်။","badges":["#Park","#Nature"],"mapUrl":"https://maps.google.com/?q=Al+Shaheed+Park"},{"name":"Souq Al-Mubarakiya","location":"Kuwait City","details":"နှစ်ပေါင်း ၁၀၀ ကျော် သက်တမ်းရှိပြီဖြစ်သော ရိုးရာ ဈေးကြီး ဖြစ်ပါသည်။","badges":["#Culture","#Market"],"mapUrl":"https://maps.google.com/?q=Souq+Al-Mubarakiya"},{"name":"The Avenues Mall","location":"Rai","details":"ကူဝိတ်နိုင်ငံ၏ အကြီးဆုံးနှင့် ခေတ်မှီလှသော ဈေးဝယ်စင်တာကြီး ဖြစ်ပါသည်။","badges":["#Shopping","#Modern"],"mapUrl":"https://maps.google.com/?q=The+Avenues+Kuwait"}]},{"country":"Qatar","aliases":["ကာတာ"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"999","မီးသတ်":"999","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Hotline: 999","လုံခြုံရေးအကြံပြုချက်":"Strict digital media regulations.","မြန်မာဘာသာ":"ဆိုရှယ်မီဒီယာ သုံးစွဲမှု စည်းကမ်း လိုက်နာပါ။"},"landmarks":[{"name":"Souq Waqif","location":"Doha","details":"ကာတာရိုးရာ အဆောက်အအုံများ၊ အမွှေးနံ့သာများနှင့် စားသောက်ဆိုင်များရှိရာ ဈေးဟောင်း ဖြစ်ပါသည်။","badges":["#Culture","#Market"],"mapUrl":"https://maps.google.com/?q=Souq+Waqif"},{"name":"Museum of Islamic Art","location":"Doha","details":"ပင်လယ်ပြင်ပေါ်တွင် တည်ဆောက်ထားသည့် အစ္စလာမ် အနုပညာ ပြတိုက်ကြီး ဖြစ်ပါသည်။","badges":["#Museum","#Art"],"mapUrl":"https://maps.google.com/?q=Museum+of+Islamic+Art+Doha"},{"name":"The Pearl-Qatar","location":"Doha","details":"ဗင်းနစ်ပုံစံ ရေကြောင်းလမ်းများ ပါရှိသော လူလုပ် ကျွန်းတုကြီး ဖြစ်ပါသည်။","badges":["#Island","#Luxury"],"mapUrl":"https://maps.google.com/?q=The+Pearl-Qatar"},{"name":"Katara Cultural Village","location":"Doha","details":"ကဇာတ်ရုံများ၊ ပြခန်းများနှင့် ယဉ်ကျေးမှု စင်တာများ တည်ရှိရာ နေရာဖြစ်ပါသည်။","badges":["#Culture","#Art"],"mapUrl":"https://maps.google.com/?q=Katara+Cultural+Village"},{"name":"National Museum of Qatar","location":"Doha","details":"သဲကန္တာရ နှင်းဆီပန်း ပုံစံဖြင့် ထူးဆန်းစွာ ဆောက်လုပ်ထားသော အမျိုးသားပြတိုက် ဖြစ်ပါသည်။","badges":["#Museum","#Architecture"],"mapUrl":"https://maps.google.com/?q=National+Museum+of+Qatar"}]},{"country":"Bahrain","aliases":["ဘာရိန်း"],"emergency":{"ရဲ":"999","လူနာတင်ယာဉ်":"999","မီးသတ်":"999","အရေးပေါ်ကူညီရန်":"Sa'iduni!","လူနာတင်ယာဉ်ခေါ်ရန်":"Ittasil bil-is'af!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Line: 999","လုံခြုံရေးအကြံပြုချက်":"Carry local CPR ID/Passport.","မြန်မာဘာသာ":"Passport ကို အမြဲဆောင်ထားပါ။"},"landmarks":[{"name":"Tree of Life","location":"Manama","details":"သဲကန္တာရ အလယ်တွင် ရေမရှိဘဲ နှစ် ၄၀၀ ကျော် ရှင်သန်နေသည့် အံ့ဖွယ် သစ်ပင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Mystery"],"mapUrl":"https://maps.google.com/?q=Tree+of+Life+Bahrain"},{"name":"Bahrain Fort (Qal'at al-Bahrain)","location":"Manama","details":"ရှေးဟောင်း ဒီလ်မွန် အင်ပါယာ၏ ယူနက်စကို စာရင်းဝင် ပင်လယ်ကမ်းစပ် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Bahrain+Fort"},{"name":"Al Fateh Grand Mosque","location":"Manama","details":"ဖိုင်ဘာမှန် အမိုးခုံးကြီး ပါဝင်သော ဘာရိန်း၏ အကြီးဆုံး ဗလီကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Mosque","#Architecture"],"mapUrl":"https://maps.google.com/?q=Al+Fateh+Grand+Mosque"},{"name":"Bahrain International Circuit","location":"Sakhir","details":"အရှေ့အလယ်ပိုင်း၏ နာမည်ကြီး Formula 1 မော်တော်ကား ပြိုင်ပွဲကွင်းကြီး ဖြစ်ပါသည်။","badges":["#Sports","#F1"],"mapUrl":"https://maps.google.com/?q=Bahrain+International+Circuit"},{"name":"Bahrain National Museum","location":"Manama","details":"နှစ်ပေါင်း ၆၀၀၀ ကျော် သမိုင်းကြောင်းများကို ခင်းကျင်းပြသထားသည့် ပြတိုက်ကြီး ဖြစ်ပါသည်။","badges":["#Museum","#History"],"mapUrl":"https://maps.google.com/?q=Bahrain+National+Museum"}]},{"country":"Cyprus","aliases":["ဆိုက်ပရပ်စ်"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"112","မီးသတ်":"112","အရေးပေါ်ကူညီရန်":"Boítheia!","လူနာတင်ယာဉ်ခေါ်ရန်":"Kaléste éna asthenofóro!","အထူးဖုန်း/အကြံပြုချက်":"European Emergency: 112","လုံခြုံရေးအကြံပြုချက်":"Check border checkpoint rules.","မြန်မာဘာသာ":"နယ်စပ် စစ်ဆေးရေးဂိတ် စည်းကမ်းများ စစ်ပါ။"},"landmarks":[{"name":"Tombs of the Kings","location":"Paphos","details":"ကျောက်တောင်အတွင်း ထွင်းထုထားသော B.C ၄ ရာစု ရှေးဟောင်း ဂူသင်္ချိုင်းများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Ancient"],"mapUrl":"https://maps.google.com/?q=Tombs+of+the+Kings+Paphos"},{"name":"Rock of Aphrodite (Petra tou Romiou)","location":"Paphos","details":"ဂရိ ဒဏ္ဍာရီလာ အဖရိုဒေးတီ နတ်သမီး မွေးဖွားရာ ပင်လယ်ကျောက်ဆောင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Mythology"],"mapUrl":"https://maps.google.com/?q=Rock+of+Aphrodite"},{"name":"Kyrenia Castle","location":"Kyrenia","details":"၁၆ ရာစု ပင်လယ်ဆိပ်ကမ်းဘေးရှိ သမိုင်းဝင် ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Fortress"],"mapUrl":"https://maps.google.com/?q=Kyrenia+Castle"},{"name":"Cape Greco","location":"Ayia Napa","details":"စိမ်းပြာရောင် ပင်လယ်နှင့် သဘာဝ ကျောက်တံတားများ ရှိရာ အမျိုးသားဥယျာဉ် ဖြစ်ပါသည်။","badges":["#Nature","#Scenic"],"mapUrl":"https://maps.google.com/?q=Cape+Greco"},{"name":"Kourion Archaeological Site","location":"Limassol","details":"ပင်လယ်ကို မိုးမျှော်ကြည့်နိုင်သော ရှေးဟောင်း ဂရိ-ရောမ ကဇာတ်ရုံကြီး ဖြစ်ပါသည်။","badges":["#Ancient","#History"],"mapUrl":"https://maps.google.com/?q=Kourion"}]},{"country":"Armenia","aliases":["အာမေးနီးယား"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Ognut'yun!","လူနာတင်ယာဉ်ခေါ်ရန်":"Zangahareq shtap ognut'yun!","အထူးဖုန်း/အကြံပြုချက်":"Crisis Management: 911","လုံခြုံရေးအကြံပြုချက်":"Keep emergency contacts listed.","မြန်မာဘာသာ":"အရေးပေါ် ဖုန်းနံပါတ်များ စာရင်းလုပ်ထားပါ။"},"landmarks":[{"name":"Khor Virap Monastery","location":"Ararat","details":"အာရရတ်တောင်ကြီးကို နောက်ခံထားလျက် တွေ့ရသည့် ရှေးဟောင်း ခရစ်ယာန် ဘုရားကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Monastery","#Scenic"],"mapUrl":"https://maps.google.com/?q=Khor+Virap"},{"name":"Lake Sevan","location":"Gegharkunik","details":"ကော့ကေးဆပ်ဒေသ၏ အကြီးဆုံး တောင်ပေါ် ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#Nature","#Lake"],"mapUrl":"https://maps.google.com/?q=Lake+Sevan"},{"name":"Tatev Monastery","location":"Syunik","details":"ကမ္ဘာ့အရှည်ဆုံး ကေဘယ်ကားဖြင့် သွားရောက်ရသော ကျောက်တောင်စောက်ပေါ်မှ ကျောင်းတော် ဖြစ်ပါသည်။","badges":["#History","#CableCar"],"mapUrl":"https://maps.google.com/?q=Tatev+Monastery"},{"name":"Garni Temple","location":"Kotayk","details":"အာမေးနီးယားတွင် တစ်ခုတည်း ကျန်ရှိတော့သည့် B.C ၁ ရာစု ဂရိ-ရောမ နတ်ကျောင်း ဖြစ်ပါသည်။","badges":["#Ancient","#History"],"mapUrl":"https://maps.google.com/?q=Garni+Temple"},{"name":"Geghard Monastery","location":"Kotayk","details":"ကျောက်တောင်ကြီးများကို တိုက်ရိုက် ထွင်းထုဆောက်လုပ်ထားသည့် ယူနက်စကို ကျောင်းတော်ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Geghard+Monastery"}]},{"country":"Azerbaijan","aliases":["အဇာဘိုင်ဂျန်"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Komek edin!","လူနာတင်ယာဉ်ခေါ်ရန်":"Teci yardim cagirin!","အထူးဖုန်း/အကြံပြုချက်":"Emergency Center: 112","လုံခြုံရေးအကြံပြုချက်":"Register if staying > 15 days.","မြန်မာဘာသာ":"၁၅ ရက်ထက် ပိုကြာပါက မှတ်ပုံတင်ပါ။"},"landmarks":[{"name":"Flame Towers","location":"Baku","details":"မီးတောက်ပုံစံ ပုံဖော်ထားသည့် ဘာကူမြို့၏ အဓိက မိုးမျှော်တိုက်ကြီး ၃ ခု ဖြစ်ပါသည်။","badges":["#Modern","#Iconic"],"mapUrl":"https://maps.google.com/?q=Flame+Towers"},{"name":"Gobustan Mud Volcanoes","location":"Gobustan","details":"ကမ္ဘာ့ရွှံ့မီးတောင် အများစု တည်ရှိရာ ထူးဆန်းသော သဘာဝ မြေမျက်နှာသွင်ပြင် ဖြစ်ပါသည်။","badges":["#Nature","#Geology"],"mapUrl":"https://maps.google.com/?q=Gobustan+Mud+Volcanoes"},{"name":"Heydar Aliyev Center","location":"Baku","details":"Zaha Hadid ပုံစံထုတ်ထားပြီး ထောင့်မှန်မရှိ အကွေးအကောက်လှသည့် ယဉ်ကျေးမှုစင်တာ ဖြစ်ပါသည်။","badges":["#Architecture","#Design"],"mapUrl":"https://maps.google.com/?q=Heydar+Aliyev+Center"},{"name":"Sheki Khan's Palace","location":"Sheki","details":"သံမှို သို့မဟုတ် ကော် မသုံးဘဲ မှန်ရောင်စုံများဖြင့် ဆောက်လုပ်ထားသည့် နန်းတော် ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Sheki+Khans+Palace"},{"name":"Icherisheher (Old City)","location":"Baku","details":"မေဒင်တာဝါ တည်ရှိရာ ဘာကူမြို့၏ သမိုင်းဝင် မြို့ရိုးခတ် မြို့ဟောင်း ဖြစ်ပါသည်။","badges":["#UNESCO","#History"],"mapUrl":"https://maps.google.com/?q=Icherisheher"}]},{"country":"Georgia","aliases":["ဂျော်ဂျီယာ"],"emergency":{"ရဲ":"112","လူနာတင်ယာဉ်":"112","မီးသတ်":"112","အရေးပေါ်ကူညီရန်":"Mikatkhet!","လူနာတင်ယာဉ်ခေါ်ရန်":"Gaitkhovet saszprafo!","အထူးဖုန်း/အကြံပြုချက်":"Unified Emergency: 112","လုံခြုံရေးအကြံပြုချက်":"Mandatory travel insurance.","မြန်မာဘာသာ":"ခရီးသွား အာမခံ မဖြစ်မနေ ထားရှိပါ။"},"landmarks":[{"name":"Gergeti Trinity Church","location":"Kazbegi","details":"နှင်းဖုံး ကက်ဇဘတ်တောင်ကြီးကို နောက်ခံထားလျက် တည်ရှိသော ကျောင်းတော် ဖြစ်ပါသည်။","badges":["#Iconic","#Mountain"],"mapUrl":"https://maps.google.com/?q=Gergeti+Trinity+Church"},{"name":"Narikala Fortress","location":"Tbilisi","details":"မြို့တော် တဘီလီစီကို အထက်စီးမှ မိုးမျှော်ကြည့်နိုင်သော ၄ ရာစု ခံတပ်ကြီး ဖြစ်ပါသည်။","badges":["#History","#City"],"mapUrl":"https://maps.google.com/?q=Narikala+Fortress"},{"name":"Vardzia Cave Monastery","location":"Javakheti","details":"၁၂ ရာစုက ကျောက်တောင်ကြီးကို ထွင်းထုဆောက်လုပ်ခဲ့သော ဂူမြို့တော်ကြီး ဖြစ်ပါသည်။","badges":["#History","#Cave"],"mapUrl":"https://maps.google.com/?q=Vardzia"},{"name":"Sighnaghi (City of Love)","location":"Kakheti","details":"ဝိုင်ထွက်ရှိရာ ဒေသတွင် တည်ရှိပြီး အုတ်နီအမိုးများဖြင့် လှပသော မြို့ကလေး ဖြစ်ပါသည်။","badges":["#Wine","#Scenic"],"mapUrl":"https://maps.google.com/?q=Sighnaghi"},{"name":"Ushguli Village","location":"Svaneti","details":"ဥရောပတွင် အမြင့်ဆုံး၌ တည်ရှိသော သမိုင်းဝင် တာဝါအိမ်များပါ ကျေးရွာဖြစ်ပါသည်။","badges":["#UNESCO","#Village"],"mapUrl":"https://maps.google.com/?q=Ushguli"}]},{"country":"Russia","aliases":["ရုရှား"],"emergency":{"ရဲ":"102","လူနာတင်ယာဉ်":"103","မီးသတ်":"101","အရေးပေါ်ကူညီရန်":"Помогите! (Pomogite!)","လူနာတင်ယာဉ်ခေါ်ရန်":"Вызовите скорую помощь!","အထူးဖုန်း/အကြံပြုချက်":"Single Emergency: 112","လုံခြုံရေးအကြံပြုချက်":"Carry migration card always.","မြန်မာဘာသာ":"Migration Card ကို အမြဲဆောင်ထားပါ။"},"landmarks":[{"name":"Lake Baikal","location":"Siberia","details":"ကမ္ဘာ့အနက်ဆုံး၊ အကြီးဆုံးနှင့် ရှေးအကျဆုံး ရေချိုအိုင်ကြီး ဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Lake+Baikal"},{"name":"Valley of Geysers","location":"Kamchatka","details":"ကမ္ဘာ့ဒုတိယအကြီးဆုံး ရေပူစမ်း ပန်းထွက်ရာ မီးတောင်ကြား နယ်မြေဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Valley+of+Geysers"},{"name":"Altai Mountains","location":"Altai Republic","details":"သဘာဝအတိုင်း ထိန်းသိမ်းထားသော သစ်တောများနှင့် တောင်တန်းကြီးများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Nature"],"mapUrl":"https://maps.google.com/?q=Altai+Mountains"},{"name":"Lena Pillars","location":"Yakutia","details":"မြစ်ဘေးတွင် ဒေါင်လိုက် ထောင်မတ်နေသော သဘာဝ ဧရာမ ကျောက်တိုင်ကြီးများ ဖြစ်ပါသည်။","badges":["#UNESCO","#Rock"],"mapUrl":"https://maps.google.com/?q=Lena+Pillars"},{"name":"Klyuchevskaya Sopka Volcano","location":"Kamchatka","details":"ယူရေးရှားတိုက်တွင် အမြင့်ဆုံး သက်ဝင်လှုပ်ရှားနေသော မီးတောင်ကြီး ဖြစ်ပါသည်။","badges":["#Volcano","#Nature"],"mapUrl":"https://maps.google.com/?q=Klyuchevskaya+Sopka"}]}]};
+  const root=document.getElementById('globalInfoBot');
+  if(!root) return;
+  const msgs=document.getElementById('gibMessages'), input=document.getElementById('gibInput');
+  const toggle=root.querySelector('.gib-toggle'), close=root.querySelector('.gib-close'), send=root.querySelector('.gib-send');
+
+  const norm=s=>String(s||'').toLowerCase().replace(/[၊။,!?.:;(){}\[\]"']/g,' ').replace(/\s+/g,' ').trim();
+  const stop=new Set(['မှာ','ကို','က','ဟာ','သည်','သို့','နဲ့','နော်','ပြော','ပေး','ပါ','လဲ','လား','ဘာ','ဘယ်','များ','ရဲ့','အကြောင်း','အတွက်','the','what','where','is','are','about','please','tell','me','in','of','and','or','to']);
+  function tokens(s){
+    return norm(s).split(/\s+/).filter(x=>x.length>1 && !stop.has(x));
+  }
+  const countryIndex=[];
+  KB.records.forEach(r=>{
+    countryIndex.push({name:r.country, aliases:[r.country,...r.aliases], rec:r});
+  });
+
+  function findCountries(q){
+    const nq=norm(q);
+    const hits=[];
+    countryIndex.forEach(x=>{
+      const score=x.aliases.reduce((m,a)=>{
+        const na=norm(a);
+        if(!na) return m;
+        if(nq===na) return Math.max(m,100);
+        if(nq.includes(na)) return Math.max(m,80+Math.min(15,na.length/20));
+        return m;
+      },0);
+      if(score) hits.push({score,rec:x.rec});
+    });
+    return hits.sort((a,b)=>b.score-a.score).map(x=>x.rec);
+  }
+
+  function allText(r){
+    let s=r.country+' '+r.aliases.join(' ')+' ';
+    Object.values(r.emergency).forEach(v=>s+=' '+v);
+    r.landmarks.forEach(l=>s+=' '+l.name+' '+l.location+' '+l.details+' '+(l.badges||[]).join(' '));
+    return norm(s);
+  }
+
+  function isEmergency(q){return /(အရေးပေါ်|ဖုန်း|ရဲ|လူနာတင်|မီးသတ်|ambulance|police|fire|emergency|safety|လုံခြုံ)/i.test(q)}
+  function isLandmark(q){return /(အထင်ကရ|နေရာ|လည်ပတ်|landmark|tourist|ဘယ်နေရာ|သွား|ခရီး)/i.test(q)}
+
+  function scoreRecord(r,q){
+    const nq=norm(q), ts=tokens(q), text=allText(r);
+    let score=0;
+    if(nq.includes(norm(r.country))) score+=40;
+    r.aliases.forEach(a=>{if(a && nq.includes(norm(a))) score+=35});
+    ts.forEach(t=>{if(text.includes(t)) score+=2});
+    if(isEmergency(q) && Object.values(r.emergency).some(v=>norm(v).includes(nq))) score+=10;
+    return score;
+  }
+
+  function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+  function addMsg(text,who){
+    const d=document.createElement('div'); d.className='gib-msg gib-'+who; d.innerHTML=text; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+  }
+
+  function countryAnswer(r,q){
+    const emergencyIntent=isEmergency(q), landmarkIntent=isLandmark(q);
+    let out='<h4>'+esc(r.country)+'</h4>';
+    if(emergencyIntent || !landmarkIntent){
+      out+='<div class="gib-section"><strong>🚨 အရေးပေါ်အချက်အလက်</strong><br>';
+      out+='ရဲ: <strong>'+esc(r.emergency['ရဲ'])+'</strong><br>';
+      out+='လူနာတင်ယာဉ်: <strong>'+esc(r.emergency['လူနာတင်ယာဉ်'])+'</strong><br>';
+      out+='မီးသတ်: <strong>'+esc(r.emergency['မီးသတ်'])+'</strong><br>';
+      out+='အရေးပေါ်ကူညီရန်: '+esc(r.emergency['အရေးပေါ်ကူညီရန်'])+'<br>';
+      out+='လူနာတင်ယာဉ်ခေါ်ရန်: '+esc(r.emergency['လူနာတင်ယာဉ်ခေါ်ရန်'])+'<br>';
+      out+='အထူးဖုန်း/အကြံပြုချက်: '+esc(r.emergency['အထူးဖုန်း/အကြံပြုချက်'])+'<br>';
+      out+='လုံခြုံရေး: '+esc(r.emergency['လုံခြုံရေးအကြံပြုချက်'])+'<br>';
+      out+='မြန်မာဘာသာ: '+esc(r.emergency['မြန်မာဘာသာ'])+'</div>';
+    }
+    if((landmarkIntent || !emergencyIntent) && r.landmarks.length){
+      out+='<div class="gib-section"><strong>📍 အထင်ကရနေရာများ</strong>';
+      r.landmarks.forEach(l=>{
+        out+='<div class="gib-landmark"><div class="gib-landmark-name">'+esc(l.name)+'</div>';
+        if(l.location) out+='<div class="gib-small">📌 '+esc(l.location)+'</div>';
+        out+='<div>'+esc(l.details)+'</div>';
+        if(l.badges && l.badges.length) out+='<div class="gib-small">'+esc(l.badges.join(' '))+'</div>';
+        if(l.mapUrl) out+='<div class="gib-small"><a href="'+esc(l.mapUrl)+'" target="_blank" rel="noopener">Map ကြည့်ရန်</a></div>';
+        out+='</div>';
+      });
+      out+='</div>';
+    }
+    return out;
+  }
+
+  function answer(q){
+    const nq=norm(q);
+    if(!nq) return 'မေးချင်တဲ့အကြောင်းအရာကို ရိုက်ထည့်ပါ။';
+    const countries=findCountries(q);
+    if(countries.length) return countryAnswer(countries[0],q);
+
+    // Landmark-specific search across all countries
+    const ts=tokens(q);
+    const matches=[];
+    KB.records.forEach(r=>r.landmarks.forEach(l=>{
+      const text=norm(r.country+' '+l.name+' '+l.location+' '+l.details+' '+(l.badges||[]).join(' '));
+      let sc=0; ts.forEach(t=>{if(text.includes(t)) sc+=3});
+      if(norm(l.name) && nq.includes(norm(l.name))) sc+=50;
+      if(sc) matches.push({sc,r,l});
+    }));
+    matches.sort((a,b)=>b.sc-a.sc);
+    if(matches.length){
+      const best=matches.slice(0,5);
+      let out='<h4>🔎 မေးထားတဲ့အကြောင်းအရာနဲ့ ကိုက်ညီသော အချက်အလက်</h4>';
+      best.forEach(m=>{
+        out+='<div class="gib-section"><div class="gib-landmark-name">'+esc(m.l.name)+'</div><div class="gib-small">'+esc(m.r.country)+' • '+esc(m.l.location)+'</div><div>'+esc(m.l.details)+'</div>';
+        if(m.l.badges?.length) out+='<div class="gib-small">'+esc(m.l.badges.join(' '))+'</div>';
+        if(m.l.mapUrl) out+='<div class="gib-small"><a href="'+esc(m.l.mapUrl)+'" target="_blank" rel="noopener">Map ကြည့်ရန်</a></div>';
+        out+='</div>';
+      });
+      return out;
+    }
+
+    if(/တကယ်|အချက်အလက်|ဘာတွေပါ|ဘာအကြောင်း|overview|travel safety/i.test(q)){
+      return '<h4>🌏 Travel Information</h4>TravelSafety file မှာ '+esc(KB.overview.title)+' အကြောင်းအရာ၊ Taj Mahal၊ Eiffel Tower၊ Shwedagon Pagoda အပါအဝင် အချက်အလက်များနဲ့ Emergency / Landmark data တွေ ပါဝင်ပါတယ်။<div class="gib-section"><strong>TravelSafety ထဲက အရေးပေါ် preview</strong><br>ရဲ: '+KB.overview.emergency_preview['ရဲ']+'<br>လူနာတင်ယာဉ်: '+KB.overview.emergency_preview['လူနာတင်ယာဉ်']+'<br>မီးသတ်: '+KB.overview.emergency_preview['မီးသတ်']+'</div>';
+    }
+    return 'ဒီ file ၃ ခုထဲမှာပါတဲ့ အချက်အလက်အတိုင်း တိတိကျကျ ဖြေဖို့ နိုင်ငံအမည်၊ အရေးပေါ်ဖုန်းနံပါတ်၊ အထင်ကရနေရာ စတဲ့ အကြောင်းအရာကို နည်းနည်းပိုတိတိကျကျ မေးပါ။ ဥပမာ — “မြန်မာ အရေးပေါ်ဖုန်း”, “Japan landmarks”, “Myanmar Shwedagon Pagoda”။';
+  }
+
+  function sendMessage(){
+    const q=input.value.trim(); if(!q) return;
+    addMsg(esc(q),'user'); input.value='';
+    setTimeout(()=>addMsg(answer(q),'bot'),120);
+  }
+  toggle.addEventListener('click',()=>root.classList.toggle('open'));
+  close.addEventListener('click',()=>root.classList.remove('open'));
+  send.addEventListener('click',sendMessage);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter') sendMessage();});
+  root.querySelectorAll('.gib-chip').forEach(b=>b.addEventListener('click',()=>{input.value=b.textContent;sendMessage();}));
+})();
+</script>
+
+</body>
+</html>

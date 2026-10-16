@@ -1,0 +1,1657 @@
+ <!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Travel & Lifestyle - အစားအစာ ထောက်ခံချက်</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Myanmar & English -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --sidebar-bg: #0d2a58;
+            --primary-blue: #1b65d4;
+            --main-bg: #e2f1ee;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            
+            /* Card Color Themes */
+            --card-red-header: #b92b27;
+            --card-red-btn: #b92b27;
+            --card-red-bg: #ffffff;
+            
+            --card-green-header: #1e6b4d;
+            --card-green-btn: #1e6b4d;
+            --card-green-bg: #ffffff;
+            
+            --card-orange-header: #e67e22;
+            --card-orange-btn: #e67e22;
+            --card-orange-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family:'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+         /* Main Container Layout (Matches Global.html) */
+    .app-container {
+      display: flex;
+      width: 100%;
+      max-width: 1280px;
+      background: #eaf4fd;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(13, 42, 88, 0.15);
+    }
+
+      
+
+    /* Sidebar Styling (Exact same as Global.html) */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding: 0 8px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .brand-text h2 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      color: #a0aec0;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item a:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item.active a {
+      background-color: var(--primary-blue);
+      color: #ffffff;
+    }
+
+    .nav-item i {
+      font-size: 15px;
+      width: 18px;
+      text-align: center;
+    }
+        /* --- MAIN CONTAINER --- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 32px;
+            overflow-y: auto;
+        }
+
+      
+
+        /* Page Hero Header */
+        .hero-banner {
+            text-align: center;
+            margin-bottom: 14px;
+            padding: 4px 0;
+        }
+
+        .hero-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #0a192f;
+            margin-bottom: 3px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            color: black;
+        }
+
+        /* Categories 3-Column Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .category-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+            border: 1px solid #d1d5db;
+        }
+
+        /* Card Headers */
+        .card-header-banner {
+            color: #ffffff;
+            padding: 16px 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .card-header-red { background-color: var(--card-red-header); }
+        .card-header-green { background-color: var(--card-green-header); }
+        .card-header-orange { background-color: var(--card-orange-header); }
+
+        .card-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Card 1: International Foods Styling */
+        .food-grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .food-item {
+            text-align: center;
+        }
+
+        .food-item img {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .food-label {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+            color: var(--text-dark);
+        }
+
+        /* Card 2: History Styling */
+        .history-images {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .history-img-1 {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .history-img-2 {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Card 3: Myanmar Food Styling */
+        .myanmar-dishes-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .myanmar-dishes-row img {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .steps-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #fff;
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .step-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f97316;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Card Text & Action Buttons */
+        .card-title-desc {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .card-text-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            padding: 0 16px 16px 16px;
+        }
+
+        .btn-card-action {
+            display: block;
+            width: 100%;
+            padding: 9px 0;
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-card-action:hover {
+            opacity: 0.9;
+        }
+
+        .btn-red { background-color: var(--card-red-btn); }
+        .btn-green { background-color: var(--card-green-btn); }
+        .btn-orange { background-color: var(--card-orange-btn); }
+
+        /* Responsive UI */
+        @media (max-width: 1024px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+
+<style id="universal-chatbot-style">
+#uniChatToggle{position:fixed;right:24px;bottom:24px;width:58px;height:58px;border:0;border-radius:50%;background:#2563eb;color:#fff;font-size:25px;cursor:pointer;z-index:999999;box-shadow:0 10px 25px rgba(37,99,235,.35)}
+#uniChatBox{position:fixed;right:24px;bottom:94px;width:min(390px,calc(100vw - 32px));height:min(580px,calc(100vh - 120px));background:#fff;border-radius:22px;overflow:hidden;display:none;flex-direction:column;z-index:999999;box-shadow:0 20px 60px rgba(15,23,42,.25);border:1px solid #e5e7eb;font-family:system-ui,sans-serif}
+#uniChatBox.open{display:flex}.uc-head{padding:16px 18px;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;display:flex;align-items:center;justify-content:space-between}.uc-head b{font-size:15px}.uc-head small{display:block;opacity:.8;margin-top:3px;font-size:11px}.uc-close{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:9px;width:32px;height:32px;font-size:18px;cursor:pointer}.uc-messages{flex:1;overflow:auto;padding:16px;background:#f8fafc;display:flex;flex-direction:column;gap:10px}.uc-msg{max-width:88%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;white-space:pre-wrap}.uc-bot{align-self:flex-start;background:#fff;color:#1e293b;border:1px solid #e2e8f0;border-bottom-left-radius:4px}.uc-user{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px}.uc-form{padding:10px;border-top:1px solid #e5e7eb;display:flex;gap:8px;background:#fff}.uc-form input{flex:1;border:1px solid #cbd5e1;border-radius:12px;padding:11px 12px;outline:none;font-size:13px}.uc-form button{border:0;border-radius:12px;background:#2563eb;color:#fff;padding:0 15px;font-weight:700;cursor:pointer}
+@media(max-width:600px){#uniChatToggle{right:16px;bottom:16px}#uniChatBox{right:12px;bottom:84px}}
+</style>
+
+<style id="compact-page-height">
+/* ===== Compact page height: width unchanged ===== */
+.app-container{
+    height: 620px;
+    max-height: calc(100vh - 40px);
+}
+
+.main-container{
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Slightly tighter vertical spacing so the shorter page feels balanced */
+.hero-banner{
+    margin-bottom: 10px;
+    padding: 2px 0;
+}
+
+.categories-grid{
+    gap: 16px;
+}
+
+.category-card{
+    border-radius: 18px;
+}
+
+.card-header-banner{
+    padding: 12px 10px;
+}
+
+.card-body{
+    padding: 12px;
+}
+
+.food-grid-2x2,
+.myanmar-dishes-row{
+    gap: 7px;
+    margin-bottom: 9px;
+}
+
+.food-item img,
+.myanmar-dishes-row img{
+    height: 72px;
+}
+
+.history-images{
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.history-img-1{
+    height: 90px;
+}
+
+.history-img-2{
+    height: 82px;
+}
+
+.steps-flow{
+    padding: 6px;
+    margin-bottom: 9px;
+}
+
+.card-text-desc{
+    margin-bottom: 10px;
+}
+
+.card-footer{
+    padding: 0 12px 12px 12px;
+}
+
+.btn-card-action{
+    padding: 8px 0;
+}
+
+/* On small screens, don't force a fixed desktop height */
+@media (max-width: 1024px){
+    .app-container{
+        height: 620px;
+        max-height: calc(100vh - 30px);
+    }
+}
+
+@media (max-width: 640px){
+    .app-container{
+        height: auto;
+        max-height: none;
+    }
+
+    .main-container{
+        overflow-y: visible;
+    }
+}
+</style>
+
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>Asia Explorer System</h2>
+                    
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item ">
+                    <a href="Global.html"><i class="fa-solid fa-house"></i>ပင်မစာမျက်နှာ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="Culture_with _chatbot.html"><i class="fa-solid fa-utensils"></i> ယဉ်ကျေးမှုနှင့် လိုက်နာရန်ကျင့်ဝတ်များ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="Festival_tradition_with_chatbot.html"><i class="fa-solid fa-users"></i>ပွဲတော်များနှင့် ရိုးရာဓလေ့အခမ်းအနားများ</a>
+                </li>
+                <li class="nav-item active">
+                    <a href="FoodRecommendation_with_chatbot.html"><i class="fa-solid fa-masks-theater"></i>အစားအစာများ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="TravelSafety_with_chatbot.html"><i class="fa-solid fa-shield-halved"></i>အထင်ကရနေရာများ</a>
+                </li>
+            
+            
+            </ul>
+        </aside>
+
+       <!-- MAIN DASHBOARD CONTENT -->
+        <main class="main-container">
+            <!-- Page Header -->
+            <section class="hero-banner">
+                <h1 class="hero-title">အစားအစာများ</h1>
+                <p class="hero-subtitle">"အစားအစာဟာ လူတိုင်းကို ဆက်သွယ်ပေးတဲ့ ဘုံတူညီရာတစ်ခုပါ။"
+-James Beard</p>
+            </section>
+
+            <!-- Categories Grid -->
+            <section class="categories-grid">
+                
+                <!-- Category 1: International Popular Dishes -->
+                <div class="category-card">
+                    <div class="card-header-banner card-header-red">
+                        အစားအစာများ
+                    </div>
+                    <div class="card-body">
+                        <div class="food-grid-2x2">
+                            <div class="food-item">
+                                <img src="images/Bibimbap_SKorea.jpg" alt="Bibimbap">
+                                <div class="food-label">Bibimbap(South Korea)</div>
+                            </div>
+                            <div class="food-item">
+                                <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=300&q=80" alt="Sushi">
+                                <div class="food-label">Sushi (Japan)</div>
+                            </div>
+                            <div class="food-item">
+                                <img src="images/Mohinga_Myanmar.jpg" alt="Mohinga">
+                                <div class="food-label">Mohinga(Myanmar)</div>
+                            </div>
+                            <div class="food-item">
+                                <img src="images/Pad_Thai.jpg" alt="Pad Thai">
+                                <div class="food-label">Pad Thai(Thailand)</div>
+                            </div>
+                        </div>
+
+                        <div class="card-title-desc"> အစားအစာများ</div>
+                        <p class="card-text-desc">မဖြစ်မနေမြည်းစမ်းကြည့်သင့်သည့်အာရှနိုင်ငံအသီးသီးမှအစားအသောက်များ</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="MapFood_with_chatbot.html" class="btn-card-action btn-red">ကြည့်ရန်</a>
+                    </div>
+                </div>
+
+
+                <!-- Category 3: Myanmar Cooking Guide -->
+                <div class="category-card">
+                    <div class="card-header-banner card-header-orange">
+                        မြန်မာ့အစားအစာ ချက်ပြုတ်နည်း လမ်းညွှန်
+                    </div>
+                    <div class="card-body">
+                        <div class="myanmar-dishes-row">
+                            <div class="food-item">
+                                <img src="images/Mohinga_Myanmar.jpg" alt="Mohinga">
+                                <div class="food-label">Mohinga</div>
+                            </div>
+                            <div class="food-item">
+                                <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=300&q=80" alt="Shan Noodles">
+                                <div class="food-label">Shan Noodles</div>
+                            </div>
+                        </div>
+
+                        <div class="steps-flow">
+                            <div class="step-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                            <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 10px;"></i>
+                            <div class="step-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                            <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 10px;"></i>
+                            <div class="step-icon"><i class="fa-solid fa-utensils"></i></div>
+                        </div>
+
+                        <div class="card-title-desc">မြန်မာ့အစားအစာ ချက်ပြုတ်နည်း လမ်းညွှန်</div>
+                        <p class="card-text-desc">မြန်မာ့အစားအစာ ချက်ပြုတ်နည်းလမ်းညွှန် လေ့လာပါ</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="CookingGuide_with_chatbot.html" class="btn-card-action btn-orange">စတင်ရန်</a>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+<button id="uniChatToggle" aria-label="Open chatbot">💬</button>
+<div id="uniChatBox" aria-live="polite">
+ <div class="uc-head"><div><b>🍽️ Food Assistant</b><small>အစားအစာ၊ ချက်ပြုတ်နည်းနှင့် ၄၈ နိုင်ငံ Cuisine မေးနိုင်ပါတယ်</small></div><button class="uc-close" id="uniChatClose">×</button></div>
+ <div class="uc-messages" id="ucMessages"><div class="uc-msg uc-bot">မင်္ဂလာပါ 👋<br>ဒီ website ထဲမှာရှိတဲ့ အစားအစာများ၊ မြန်မာဟင်းချက်နည်းများ၊ ပါဝင်ပစ္စည်းများ၊ ချက်ပြုတ်အဆင့်များနဲ့ အာရှ ၄၈ နိုင်ငံရဲ့ နာမည်ကြီးအစားအစာများကို တိုက်ရိုက်မေးနိုင်ပါတယ်။</div></div>
+ <form class="uc-form" id="ucForm"><input id="ucInput" autocomplete="off" placeholder="ဥပမာ - Mohinga ချက်နည်းပြောပါ"><button type="submit">ပို့</button></form>
+</div>
+
+
+<script id="universal-chatbot-script">
+const __chatRecipes = [
+            {
+                title: "ကြက်သား ကုန်းဘောင်ကြီးချက် (မင်္ဂလာဆောင်စတိုင်)",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "မင်္ဂလာဆောင်စတိုင် ဆီပြန်အရောင်လှပြီး မွှေးကြိုင်သော ကြက်သားကုန်းဘောင်ကြီးချက်။",
+                time: "ပြင်ဆင်ချိန် - ၄၅ မိနစ်",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကြက်သား ၅၀ သား", "ကရဝေးရွက်", "မဆလာ", "အုန်းနို့ခွက်ဝက်", "ဂျင်း", "ကြက်သွန်နီ/ဖြူ", "အသားမှုန့်", "ဆီ"],
+                steps: [
+                    "ကြက်သားကို အတုံးကြီးကြီးတုံးပြီး ဂျင်း၊ ကြက်သွန်ဖြူ၊ မဆလာတို့ဖြင့် နာရီဝက် နှပ်ထားပါ။",
+                    "အိုးထဲတွင် ကြက်သွန်နီနှင့် ကရဝေးရွက်ကို ဆီသတ်ပြီး ကြက်သားထည့်လုံးပါ။",
+                    "အသားတင်းလာလျှင် အုန်းနို့နှင့် ရေထည့်ကာ အသားနူးအိပြီး ဆီပြန် အရောင်လှလာသည်အထိ ချက်ပါ။"
+                ]
+            },
+            {
+                title: "ဝက်သားမျှစ်ချဉ် အိုးကပ်ဟင်း",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ဝက်သုံးထပ်သားနှင့် မျှစ်ချဉ်တို့၏ ချဉ်စပ်အရသာ ပေါင်းစပ်ထားသော အိုးကပ်ဟင်း။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ဝက်သုံးထပ်သား ၃၀ သား", "မျှစ်ချဉ်အမျှင်", "ကြက်သွန်နီ", "ငရုတ်သီးစိမ်း", "ငရုတ်သီးမှုန့်", "ဆီ"],
+                steps: [
+                    "မျှစ်ချဉ်ကို ရေစင်အောင်ဆေးပြီး ညှစ်ထားပါ။",
+                    "အိုးတွင် ကြက်သွန်နီနှင့် ငရုတ်သီးမှုန့်ကို ဆီသတ်ပြီး ဝက်သားထည့်လုံးပါ။",
+                    "ဝက်သားကျက်လျှင် မျှစ်ချဉ်ထည့်မွှေပြီး ရေမထည့်ဘဲ မီးအေးအေးဖြင့် အိုးကပ်ပြီး ဆီပြန်လာသည်အထိ တည်ပါ။"
+                ]
+            },
+            {
+                title: "ငါးသလောက် ပဒုမ္မာကြာရွက်နှပ်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ကြာရွက်ဖြင့်အုပ်ကာ အရိုးပါဝါးစားနိုင်အောင် ဖိအားပေးအိုးဖြင့် နှပ်ထားသော ငါးသလောက်နှပ်။",
+                time: "ပြင်ဆင်ချိန် - ၁ နာရီ ၁၅ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ငါးသလောက် ၁ ကောင်", "ကြာရွက်နုနု ၂ ရွက်", "မန်ကျည်းမှည့်ရည်", "ကြံသကာ", "ဂျင်း", "စပါးလင်", "ဆီ"],
+                steps: [
+                    "ငါးသလောက်ကို သန့်စင်ပြီး အတုံးကြီးတုံးကာ ဂျင်း၊ စပါးလင်၊ မန်ကျည်းရည်၊ ကြံသကာတို့ဖြင့် နယ်ပါ။",
+                    "အိုးအောက်ခြေတွင် ကြာရွက်ခင်းပြီး ငါးများကို စီထည့်ပါ။",
+                    "ရေနှင့် ဆီများများထည့်ကာ ဖိအားပေးအိုး (Pressure Cooker) တွင် အရိုးပါဝါးစားနိုင်သည်အထိ ၁ နာရီခန့် နှပ်ချက်ပါ။"
+                ]
+            },
+            {
+                title: "ပုစွန် ဆားဘဲဥနှစ်ကြော်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ထောပတ်မွှေးမွှေးနှင့် ဘဲဥငန်အနှစ်တို့ဖြင့် ပုစွန်ကြော်ကို ရောစပ်ထားသော ဟင်းလျာ။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ပုစွန်လတ် ၁၀ ကောင်", "ဘဲဥငန်ပြုတ် (အနှစ်သာ) ၂ လုံး", "ကော်မှုန့်", "ကြက်သွန်မြိတ်", "ထောပတ်", "ဆီ"],
+                steps: [
+                    "ပုစွန်ကို သန့်စင်ပြီး ကျောခွဲကာ ကော်မှုန့်ပါးပါးလူး၍ ဆီပူတွင် ကြွပ်အောင်ကြော်ပြီး ဆယ်ထားပါ။",
+                    "ဒယ်အိုးတွင် ထောပတ်ထည့်ပြီး ဘဲဥငန်အနှစ်များကို ကြေညက်အောင် မွှေပါ။",
+                    "အမြှုပ်ထလာလျှင် ပုစွန်ကြော်နှင့် ကြက်သွန်မြိတ်ထည့်ကာ အမြန်လှန်ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "ငါးဖယ် ဆီတို့ဟင်း",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ငါးဖယ်ကြော်များကို ဆီများများဖြင့် အနှစ်စိမ့်ဝင်အောင် ချက်ထားသော ရိုးရာဆီတို့ဟင်း။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ငါးဖယ်ခြစ် ၂၀ သား", "ကြက်သွန်နီ/ဖြူ (ထောင်းပြီး)", "ငရုတ်သီးမှုန့်", "နနွင်း", "ဆီများများ"],
+                steps: [
+                    "ငါးဖယ်ကို ဆား၊ နနွင်းနယ်ပြီး လက်မခန့် အပြားလေးများလုပ်ကာ ဆီပူတွင် ကြော်ပြီး ဆယ်ထားပါ။",
+                    "ကြက်သွန်နီ၊ ဖြူနှင့် ငရုတ်သီးမှုန့်ကို ဆီများများဖြင့် ဆီသတ်ပါ။",
+                    "အနှစ်ရလျှင် ငါးဖယ်ကြော်များထည့်ကာ ရေအနည်းငယ်ဖြင့် အနှစ်များ ငါးဖယ်ထဲစိမ့်ဝင်ပြီး ဆီပြန်သည်အထိ ချက်ပါ။"
+                ]
+            },
+            {
+                title: "ဆိတ်သား ကလဝေချက် (ဆီပြန်မွှေးမွှေး)",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ညှီနံ့ကင်းစင်ပြီး တရုတ်မဆလာအနံ့မွှေးကြိုင်သော ဆိတ်သားဆီပြန်ချက်။",
+                time: "ပြင်ဆင်ချိန် - ၅၀ မိနစ်",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ဆိတ်သား ၃၀ သား", "ကရဝေးရွက်", "စပါးလင်", "ဂျင်း", "ကြက်သွန်ဖြူ", "တရုတ်မဆလာ", "ဆီ"],
+                steps: [
+                    "ဆိတ်သားညှီနံ့ပျောက်ရန် ဂျင်း၊ စပါးလင်၊ တရုတ်မဆလာတို့ဖြင့် နာနာနယ်ထားပါ။",
+                    "အိုးတွင် ကြက်သွန်နှင့် ကရဝေးရွက်ကို ဆီသတ်ပြီး ဆိတ်သားထည့်လုံးပါ။",
+                    "အသားကျစ်လျှင် ရေကို အသားမြုပ်အောင်ထည့်ပြီး ဆိတ်သားနူးအိကာ ဆီပြန်သည်အထိ ချက်ပါ။"
+                ]
+            },
+            {
+                title: "ကဏန်းချဉ်စပ် ကော်ရည်ပျစ်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ခရုဆီနှင့် ကော်ရည်ပျစ်ပျစ်တို့ဖြင့် ဟင်းရည်တွဲဖက်ပါဝင်သော ချဉ်စပ်ကဏန်းချက်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ကဏန်း ၃ ကောင်", "ကြက်ဥ ၁ လုံး", "ခရုဆီ", "ငရုတ်သီးစိမ်း", "ဂျင်း", "ကြက်သွန်ဖြူ", "ကော်မှုန့်ရည်"],
+                steps: [
+                    "ကဏန်းကို သန့်စင်ပြီး အပိုင်းပိုင်းဖြတ်ပါ။ ဂျင်း၊ ကြက်သွန်ဖြူကို ဆီသတ်ပြီး ကဏန်းထည့်ကြော်ပါ။",
+                    "ခရုဆီ၊ ရေအနည်းငယ်ထည့်ကာ ကဏန်းကျက်လျှင် ကြက်ဥရည်ကို လောင်းထည့်ပြီး မွှေပါ။",
+                    "နောက်ဆုံးတွင် ကော်ရည်ထည့်၍ ဆမ်းပြီး ငရုတ်သီးစိမ်းအုပ်ပါ။"
+                ]
+            },
+            {
+                title: "ပြောင်းဖူး အသားစင်းကြော်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "ပြောင်းဖူးစေ့ချိုချိုလေးများနှင့် အသားစင်းစင်းတို့ ခြောက်ခြောက်လေးလှော်ထားသော လူကြိုက်များဟင်းလျာ။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၂၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ပြောင်းဖူးစေ့ ၁ ခွက်", "ကြက်သား (သို့) ဝက်သားစင်းထားသား ၁၀ သား", "ကြက်သွန်ဖြူ", "ခရုဆီ", "ဆီ"],
+                steps: [
+                    "ဒယ်အိုးတွင် ကြက်သွန်ဖြူကို ဆီသတ်ပြီး စင်းထားသောအသားကို ထည့်ကြော်ပါ။",
+                    "အသားကျက်လျှင် ပြောင်းဖူးစေ့များ ထည့်ပါ။",
+                    "ခရုဆီ၊ အသားမှုန့်ထည့်ပြီး ပြောင်းဖူးစေ့များ နူးညံ့ကာ ခြောက်ခြောက်လေးဖြစ်သည်အထိ လှန်ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "အမဲသား စပါးလင်ချက်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "စပါးလင်အနံ့မွှေးမွှေးဖြင့် အမဲသားနူးအိအောင် ချက်ထားသော ဟင်းလျာ။",
+                time: "ပြင်ဆင်ချိန် - ၅၀ မိနစ်",
+                servings: "၄ ဦးစာ",
+                ingredients: ["အမဲသား ၄၀ သား", "စပါးလင်ထောင်း ၁ ခွက်", "ဂျင်း", "ကြက်သွန်ဖြူ", "ငရုတ်သီးမှုန့်", "ဆီ"],
+                steps: [
+                    "အမဲသားကို အတုံးသေးလှီးပြီး ဆား၊ နနွင်းနယ်ပါ။",
+                    "အိုးတွင် ဂျင်း၊ ကြက်သွန်ဖြူနှင့် စပါးလင်ထောင်းများကို မွှေးနေအောင် ဆီသတ်ပါ။",
+                    "အမဲသားထည့်လုံးပြီး ရေခမ်းလျှင် ရေထပ်ထည့်ကာ စပါးလင်အနံ့စိမ့်ဝင်ပြီး အသားနူးသည်အထိ နှပ်ချက်ပါ။"
+                ]
+            },
+            {
+                title: "မရမ်းသီး ငါးခြောက်ချက်",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "မရမ်းသီးခြောက်၏ အချဉ်ဓာတ်နှင့် ငါးခြောက်ကြော်တို့ တွဲဖက်ထားသော ဆီပြန်ချက်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ငါးခြောက်အတုံးလေးများ", "မရမ်းသီးခြောက် ၅ ခု", "ကြက်သွန်နီ", "ငရုတ်သီးစိမ်း", "ငရုတ်သီးမှုန့်", "ဆီ"],
+                steps: [
+                    "ငါးခြောက်ကို ရေဆေးပြီး ကြော်ထားပါ။ ကြက်သွန်နီနှင့် ငရုတ်သီးမှုန့်ကို ဆီသတ်ပါ။",
+                    "ပြီးလျှင် ရေစိမ်ထားသော မရမ်းသီးခြောက်နှင့် ငါးခြောက်ကြော်များကို ထည့်ပါ။",
+                    "ရေအနည်းငယ်ထည့်ကာ အချဉ်အရသာစိမ့်ထွက်ပြီး ဆီပြန်၊ ငရုတ်သီးစိမ်းအုပ်ပြီး ချပါ။"
+                ]
+            },
+            {
+                title: "ငါးမြွေထိုး အိုးကပ်ဟင်း",
+                category: "savory",
+                categoryLabel: "ဟင်းလျာများ",
+                desc: "စပါးလင်ဂျင်းတို့ဖြင့် ဆီဝဲနေအောင် အိုးကပ်ချက်ထားသော ငါးမြွေထိုးဟင်း။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ငါးမြွေထိုး", "ဆား", "နနွင်း", "ဂျင်း", "ကြက်သွန်", "စပါးလင်ထောင်း", "ငရုတ်သီးစိမ်း", "ဆီ"],
+                steps: [
+                    "ငါးမြွေထိုးကို ဆား၊ နနွင်းနယ်ပါ။ အိုးတွင် ဂျင်း၊ ကြက်သွန်၊ စပါးလင်ထောင်းများကို ဆီသတ်ပြီး ငါးထည့်လုံးပါ။",
+                    "ရေအနည်းငယ်ထည့်ကာ အိုးကပ်ဆီပြန်ချက်ပြီး ငရုတ်သီးစိမ်းအုပ်ပါ။"
+                ]
+            },
+            // --- မုန့်လုပ်နည်းများ (Desserts)[cite: 1] ---
+            {
+                title: "ရွှေကြည်မုန့် (ဘိန်းစေ့ဖြူး)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အုန်းနို့မွှေးမွှေးနှင့် ဘိန်းစေ့ဖြူးထားသော ရိုးရာရွှေကြည်မုန့်ဖုတ်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၆ ဦးစာ",
+                ingredients: ["ရွှေကြည်မှုန့်", "အုန်းနို့", "သကြား", "ရေ", "ဘိန်းစေ့"],
+                steps: [
+                    "ရွှေကြည်မှုန့်ကို အရောင်လှလာသည်အထိ လှော်ပါ။",
+                    "ပြီးလျှင် အုန်းနို့၊ သကြား၊ ရေတို့ထည့်ပြီး ပျစ်ခဲလာသည်အထိ မွှေကျိုပါ။",
+                    "ရလာသော မုန့်နှစ်ကို လင်ဗန်းတွင်ဖြန့်၊ အပေါ်မှ ဘိန်းစေ့ဖြူးပြီး အပေါ်မီး၊ အောက်မီးဖြင့် ဖုတ်ပါ။"
+                ]
+            },
+            {
+                title: "အာလူးပူတင်း",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အာလူးနှင့် ထောပတ်နို့စိမ်းတို့ဖြင့် ပေါင်းစပ်ဖုတ်ထားသော ပူတင်းမုန့်။",
+                time: "ပြင်ဆင်ချိန် - ၅၀ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["အာလူး ၃၀ သား (ပြုတ်ပြီးထောင်းထား)", "ကြက်ဥ ၃ လုံး", "သကြား ၁ ခွက်", "နို့စိမ်း", "ထောပတ်"],
+                steps: [
+                    "ထောင်းထားသော အာလူး၊ ကြက်ဥ၊ သကြား၊ နို့စိမ်းနှင့် ထောပတ်တို့ကို သမအောင် သေချာမွှေပါ။",
+                    "ပြီးလျှင် ထောပတ်သုတ်ထားသော ခွက်ထဲထည့်ကာ Oven တွင် (သို့) ပေါင်းအိုးတွင် မိနစ် ၄၀ ခန့် ဖုတ်/ပေါင်းပေးပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဦးနှောက် (အချို)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ဆန်မှုန့်နှင့် အုန်းနို့တို့ဖြင့် နူးညံ့ပျော့ပြောင်းစွာ ကျိုထားသော အချိုမုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ဆန်မှုန့် ၂၀ သား", "အုန်းနို့ ၁ ခွက်", "သကြား", "ဆား", "ရေ"],
+                steps: [
+                    "ဆန်မှုန့်ကို ရေ၊ အုန်းနို့၊ သကြား၊ ဆားတို့ဖြင့် ခပ်ကျဲကျဲဖျော်ပြီး ဇကာစစ်ပါ။",
+                    "အိုးထဲထည့်ကာ မီးအေးအေးဖြင့် မုန့်သားအိပြီး ပြောင်လာသည်အထိ မွှေကျိုပါ။",
+                    "ပြီးလျှင် ဗန်းထဲထည့်ကာ အအေးခံပြီး သုံးဆောင်ပါ။"
+                ]
+            },
+            {
+                title: "ကောက်ညှင်း (မုန့်သိုင်းခြုံ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ထန်းလျက်ယိုဌာပနာသွင်းပြီး ငှက်ပျောဖက်ဖြင့် ပေါင်းထားသော ကောက်ညှင်းမုန့်။",
+                time: "ပြင်ဆင်ချိန် - ၄၅ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့် ၂၀ သား", "အုန်းသီးခြစ်", "ထန်းလျက်ရည်", "ငှက်ပျောဖက်"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်ကို ရေဖြင့်နယ်ပြီး အလုံးလေးများလုံးကာ ပြုတ်ပါ။ အုန်းသီးခြစ်နှင့် ထန်းလျက်ရည်ကို ယိုထိုးထားပါ။",
+                    "ပြုတ်ထားသော ကောက်ညှင်းလုံးများကို ထန်းလျက်ယိုဖြင့် ဌာပနာသွင်းပြီး ငှက်ပျောဖက်ဖြင့်ပတ်၍ ပေါင်းပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဆန်းသုပ် (ကျေးလက်ရိုးရာ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အုန်းသီးခြစ်၊ သကြားတို့ဖြင့် သုပ်စားရသည့် ကျေးလက်ရိုးရာမုန့်ဆန်း။",
+                time: "ပြင်ဆင်ချိန် - ၁၅ မိနစ်",
+                servings: "၃ ဦးစာ",
+                ingredients: ["မုန့်ဆန်း ၁ ဘူး", "အုန်းသီးခြစ် ၁ ခွက်", "ရေနွေးအနည်းငယ်", "သကြား", "ဆား"],
+                steps: [
+                    "မုန့်ဆန်းကို ရေနွေးဖျန်းပြီး ၅ မိနစ်ခန့် ဖောင်းလာအောင် အုပ်ထားပါ။",
+                    "မုန့်ဆန်းပွလာလျှင် အုန်းသီးခြစ်၊ သကြား၊ ဆားအနည်းငယ်တို့ဖြင့် သမအောင် နယ်သုပ်ပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ပျားသလက် (အချို)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အပေါက်လေးများထွက်လာကာ ထန်းလျက်ရည်၊ အုန်းသီးစိတ်တင်ထားသော မုန့်ပျားသလက်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၂၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ဆန်မှုန့် ၂၀ သား", "ရေ", "သကြားညို (သို့) ထန်းလျက်ရည်", "အုန်းသီးစိတ်"],
+                steps: [
+                    "ဆန်မှုန့်ကို ရေဖြင့် အရည်ခပ်ကျဲကျဲဖျော်ပါ။ မုန့်ပျားသလက်အိုး (သို့) ဒယ်အိုးတွင် မုန့်နှစ်လောင်းထည့်ပါ။",
+                    "မုန့်သားအပေါက်လေးများ ထလာလျှင် အပေါ်မှ ထန်းလျက်ရည်နှင့် အုန်းသီးစိတ်တင်ကာ အဖုံးအုပ်ဖုတ်ပါ။"
+                ]
+            },
+            {
+                title: "ငှက်ပျောသီး ကျောက်ကျော",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ရွှေငှက်ပျောသီးနှင့် နို့စိမ်းတို့ ရောစပ်ကျိုထားသော ကျောက်ကျောအချိုပွဲ။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ကျောက်ကျောမှုန့် ၁ ထုပ်", "ရွှေငှက်ပျောသီး ၃ လုံး (ခြေထားသား)", "နို့စိမ်း", "သကြား", "ရေ"],
+                steps: [
+                    "ကျောက်ကျောမှုန့်ကို ရေဖြင့်ကျိုပါ။ ဆူလာလျှင် သကြားနှင့် ခြေထားသော ငှက်ပျောသီးများ ထည့်ပါ။",
+                    "ပျစ်လာလျှင် နို့စိမ်းထည့်မွှေပြီး ဗန်းထဲလောင်းထည့်ကာ အအေးခံပါ။"
+                ]
+            },
+            {
+                title: "ကောက်ညှင်းပေါင်း နှင့် ငါးခြောက်ဖုတ်",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အုန်းသီးခြစ်၊ နှမ်းဆားဖြူးထားသည့် ကောက်ညှင်းပေါင်းကို ငါးခြောက်ဖုတ်ထောင်းနှင့် တွဲဖက်စားသုံးရသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - ၄၀ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းဆန်", "ရေ", "အုန်းသီးခြစ်", "နှမ်းဆား", "ငါးခြောက်"],
+                steps: [
+                    "ကောက်ညှင်းဆန်ကို ပေါင်းအိုးဖြင့် နူးအိအောင် ပေါင်းပါ။ ကျက်လျှင် အုန်းသီးခြစ်၊ နှမ်းဆားတို့ ဖြူးပါ။",
+                    "ငါးခြောက်ကို မီးဖုတ်၍ ထောင်းပြီး ကောက်ညှင်းပေါင်းနှင့် တွဲဖက်စားသုံးပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဘဲဥ (မုန့်လုံးကြီး)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ပဲနောက်ပြုတ်ဌာပနာသွင်းပြီး ဘဲဥပုံစံလုံးကာ ဆီကြော်ထားသော ကောက်ညှင်းမုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့်", "ဆန်မှုန့်", "ပဲနောက်ပြုတ်", "အုန်းသီးခြစ်", "ဆီ"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်နှင့် ဆန်မှုန့်ရောနယ်ပြီး အပြားလုပ်ပါ။ အလယ်တွင် ပဲနောက်ပြုတ်ကို ဌာပနာသွင်း၍ ဘဲဥပုံစံလုံးပါ။",
+                    "ဆီပူတွင် ရွှေဝါရောင်သန်းသည်အထိ ကြော်ပြီး အုန်းသီးခြစ်ဖြင့် စားပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဆီကြော်အနု (မုန့်ကွင်း)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ထန်းလျက်ရည်ဖြင့်နယ်ကာ ကွင်းပုံစံဖော်၍ ဆီကြွပ်ကြော်ထားသော မုန့်ကွင်း။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့် ၂၀ သား", "ထန်းလျက်ရည်", "ဆီ"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်ကို ထန်းလျက်ရည်ဖြင့် ပျစ်ပျစ်နယ်ပါ။ မုန့်နှစ်ကို အချောင်းရှည်လုပ်ပြီး ထိပ်နှစ်ဖက်ကို ကွင်းပုံစံ ဆက်လိုက်ပါ။",
+                    "ဆီပူပူတွင် မုန့်ကွင်းများကို ကြွပ်ရွလာသည်အထိ ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "ပဲပုပ်အကြော် (ရှမ်းရိုးရာ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ရှမ်းရိုးရာ နေလှန်းထားသော ပဲပုပ်ချပ်များကို ဆီပူထိုးကြော်ထားခြင်း။",
+                time: "ပြင်ဆင်ချိန် - ၁၀ မိနစ်",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ပဲပုပ်ချပ်", "ဆီ"],
+                steps: [
+                    "ပဲပုပ်ချပ်များကို နေလှန်းထားပါ။ ဒယ်အိုးတွင် ဆီများများထည့်ပြီး ပူလာလျှင် ပဲပုပ်ချပ်ကို ထည့်ထည့်ချင်း အမြန်ပြန်ဆယ်ပါ။",
+                    "(မီးပြင်းလျှင် တူးလွယ်သဖြင့် သတိပြုပါ)"
+                ]
+            },
+            {
+                title: "သာကူကောက်ညှင်းထုပ်",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "သာကူစေ့နှင့် ကောက်ညှင်းမှုန့်ကို ငှက်ပျောဖက်ဖြင့်ထုပ်၍ ပေါင်းထားသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - ၄၅ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["သာကူစေ့ ၁ ဘူး", "ကောက်ညှင်းမှုန့်", "သကြား", "အုန်းသီးခြစ်", "ငှက်ပျောဖက်"],
+                steps: [
+                    "သာကူစေ့ကို ရေဆေးပြီး သကြား၊ အုန်းသီးခြစ်တို့ဖြင့် နယ်ပါ။ ကောက်ညှင်းမှုန့်ကို ရေဖျန်းပြီး သာကူနှင့် ရောမွှေပါ။",
+                    "ငှက်ပျောဖက်ဖြင့် လုံအောင်ထုပ်ပြီး ပေါင်းအိုးတွင် နာရီဝက်ခန့် ပေါင်းပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ခေါင်းအုံး",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ကောက်ညှင်းဆန်နှင့် ပဲပြုတ်ကို ခေါင်းအုံးပုံစံလေးထောင့်ချည်ပြီး နာရီပေါင်းများစွာ ပြုတ်ထားသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - ၃ နာရီခွဲ",
+                servings: "၆ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းဆန်", "ပဲနီလေးပြုတ် (သို့) ပဲနောက်", "ငှက်ပျောဖက်", "နှီးကြိုး"],
+                steps: [
+                    "ကောက်ညှင်းဆန်နှင့် ပဲပြုတ်ကို ရောနယ်ပါ။ ငှက်ပျောဖက်ပေါ်တင်၍ ခေါင်းအုံးပုံစံ လေးထောင့်ကျကျထုပ်ပြီး နှီးကြိုးဖြင့် တင်းနေအောင် ချည်ပါ။",
+                    "ရေနွေးအိုးတွင် ၃ နာရီခန့် နူးအိအောင် ပြုတ်ပါ။"
+                ]
+            },
+            {
+                title: "ရွှေကြည်မုန့် (စေးပိုင်)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "သကြားညိုနှင့် အုန်းနို့သုံးကာ ပိုမိုစေးပိုင်စွာ ကျိုချက်ထားသော ရွှေကြည်မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၆ ဦးစာ",
+                ingredients: ["ရွှေကြည်မှုန့်", "အုန်းနို့", "သကြားညို", "ဘိန်းစေ့"],
+                steps: [
+                    "အုန်းနို့နှင့် သကြားညိုထည့်ကာ မုန့်သားအိပြီး ပြောင်လာသည်အထိ မွှေကျိုပါ။",
+                    "ဗန်းတွင်ဖြန့်၍ အပေါ်မှ ဘိန်းစေ့ဖြူးကာ ဖုတ်ပါ။ (ရိုးရိုးရွှေကြည်ထက် ပိုမိုစေးပိုင်ပါသည်)"
+                ]
+            },
+            {
+                title: "ပဲကပ်ကြော် (မန္တလေးစတိုင်)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "မန္တလေးစတိုင် ပဲစေ့များကပ်ထားသော ကြွပ်ရွသည့် ဆန်မှုန့်မုန့်ကြော်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ပဲလွန်း (သို့) ကုလားပဲ (ရေစိမ်ထားသား)", "ဆန်မှုန့်", "ကောက်ညှင်းမှုန့်", "ဆား", "ဆီ"],
+                steps: [
+                    "ဆန်မှုန့်နှင့် ကောက်ညှင်းမှုန့်ကို ရေဖြင့် ပျစ်ပျစ်ဖျော်ပါ။ ဇွန်းပြားကြီးကြီးပေါ်တွင် မုန့်နှစ်တင်၊ အပေါ်မှ ရေစိမ်ထားသော ပဲစေ့များကို စီတင်ပါ။",
+                    "ပြီးလျှင် ဆီပူထဲသို့ အသာအယာလျှောချပြီး မုန့်သားကြွပ်ရွလာသည်အထိ ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "အုန်းနို့ သာကူပြင် (အတုံးလေးများ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အုန်းနို့သကြားတို့ဖြင့် ကျိုခဲထားပြီး လေးထောင့်အတုံးလေးများ လှီးထားသော သာကူပြင်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["သာကူစေ့", "အုန်းနို့", "သကြား", "ဆား", "ရေ"],
+                steps: [
+                    "သာကူစေ့ကို ရေနွေးဖြင့် မျက်စိပျောက်အောင် ကျိုပါ။ သကြားနှင့် အုန်းနို့ထည့်ကာ ပျစ်ခဲလာသည်အထိ မွှေပါ။",
+                    "ပြီးလျှင် ဗန်းထဲလောင်းထည့်ကာ သေချာအအေးခံပြီး လေးထောင့်အတုံးလေးများ လှီးဖြတ်ပါ။"
+                ]
+            },
+            {
+                title: "မုန့်လုံးရေပေါ်ပုံစံဆန်း",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ထန်းလျက်ခဲဌာပနာသွင်းပြုတ်ပြီး အုန်းသီးခြစ်၊ မုန့်ဆန်းတို့ဖြင့် လိမ့်ထားသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့်", "ထန်းလျက်ခဲ", "အုန်းသီးခြစ်", "မုန့်ဆန်း"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်ကို အလုံးလုံးပြီး အလယ်တွင် ထန်းလျက်ခဲထည့်ကာ ရေနွေးပူတွင် ပြုတ်ပါ။",
+                    "မုန့်ပေါ်လာလျှင် ဆယ်ယူပြီး အုန်းသီးခြစ်နှင့် မုန့်ဆန်းလှော်တို့ဖြင့် ရောနယ်ထားသော အမှုန့်ထဲတွင် လိမ့်ပေးပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဦးနှောက် (အငန်/ကြက်သွန်ဆီချက်)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ဆန်မှုန့်ကျိုကို အအေးခံပြီး အပေါ်မှ ကြက်သွန်နီဆီချက်မွှေးမွှေး ဖြူးစားရသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ဆန်မှုန့် ၂၀ သား", "ရေ", "ဆား", "ကြက်သွန်နီဆီချက်"],
+                steps: [
+                    "ဆန်မှုန့်ကို ရေ၊ ဆားတို့ဖြင့် ခပ်ကျဲကျဲဖျော်ပြီး ဇကာစစ်ပါ။ အိုးထဲထည့်ကာ မီးအေးအေးဖြင့် မုန့်သားအိပြီး ပြောင်လက်လာသည်အထိ မပြတ်မွှေကျိုပါ။",
+                    "ဗန်းထဲထည့် အအေးခံပြီး လှီးဖြတ်ကာ အပေါ်မှ ကြက်သွန်နီဆီချက်မွှေးမွှေး ဖြူးစားပါ။"
+                ]
+            },
+            {
+                title: "ကောက်ညှင်းထမင်းညှပ် (ပဲယိုဌာပနာ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ကောက်ညှင်းထမင်းနှစ်လွှာကြားတွင် ပဲနောက်ယိုညှပ်ထားသော မုန့်အမျိုးအစား။",
+                time: "ပြင်ဆင်ချိန် - ၄၅ မိနစ်",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းဆန်", "ပဲနောက် (ယိုထိုးထားသား)", "အုန်းသီးခြစ်"],
+                steps: [
+                    "ကောက်ညှင်းထမင်းကို နူးအိအောင် ချက်ပါ။",
+                    "ဗန်းတစ်ခုတွင် ကောက်ညှင်းထမင်းတစ်လွှာခင်း၊ အလယ်တွင် ပဲနောက်ယိုတစ်လွှာခင်းပြီး အပေါ်မှ ကောက်ညှင်းထမင်း နောက်တစ်လွှာ ထပ်အုပ်ပါ။",
+                    "အအေးခံပြီး လှီးဖြတ်ကာ အုန်းသီးခြစ်ဖြူးစားပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ဆီကြော် ထန်းလျက်အနှစ်",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ထန်းလျက်ရည်ပျစ်ပျစ်ဖြင့်နယ်ပြီး ဘေးသားများကြွပ်ရွအောင် ကြော်ထားသော မုန့်ဆီကြော်။",
+                time: "ပြင်ဆင်ချိန် - ၄ နာရီ မိနစ် ၃၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့်", "ဆန်မှုန့်", "ထန်းလျက်ရည် ပျစ်ပျစ်", "ဆီ"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်နှင့် ဆန်မှုန့်ကို ထန်းလျက်ရည်ဖြင့် သမအောင် နယ်ပြီး မုန့်နှစ်ကို ၄ နာရီခန့် နှပ်ထားပါ။",
+                    "ဆီအိုးတွင် ဆီများများထည့်ပြီး ပူလာလျှင် မုန့်နှစ်ကို အဝိုင်းလိုက် လောင်းထည့်ကာ ဘေးသားများ ကြွပ်ရွပြီး ရွှေဝါရောင်သန်းလာသည်အထိ ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "ငှက်ပျောသီး ကောက်ညှင်းယို",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ဖိကျမ်းငှက်ပျောသီးနှင့် ကောက်ညှင်းမှုန့်တို့ကို ထန်းလျက်ရည်ဖြင့် ယိုထိုးထားသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ဖိကျမ်းငှက်ပျောသီးမှည့် ၅ လုံး", "ကောက်ညှင်းမှုန့် ၁၀ သား", "ထန်းလျက်ရည်", "အုန်းသီးခြစ်"],
+                steps: [
+                    "ငှက်ပျောသီးကို ခြေထားပါ။ အိုးထဲတွင် ခြေထားသော ငှက်ပျောသီး၊ ကောက်ညှင်းမှုန့်နှင့် ထန်းလျက်ရည်တို့ကို ရောမွှေပြီး မီးအေးအေးဖြင့် မုန့်သားကျစ်ခဲပြီး ပြောင်လာသည်အထိ ယိုထိုးပါ။",
+                    "ဗန်းထဲထည့် အအေးခံပြီး သုံးဆောင်ပါ။"
+                ]
+            },
+            {
+                title: "သာကူ ကလန့်မုန့်",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "သာကူစေ့ကို အုန်းသီးခြစ်သကြားတို့ဖြင့်နယ်ကာ ဒယ်အိုးတွင် အပြားလိုက် ဖုတ်ထားသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၂၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["သာကူစေ့", "သကြား", "အုန်းသီးခြစ်", "ဆား"],
+                steps: [
+                    "သာကူစေ့ကို ရေဆေးပြီး ရေစစ်ထားပါ။ အုန်းသီးခြစ်၊ သကြား၊ ဆားတို့ဖြင့် သာကူစေ့ကို သမအောင် နယ်ပါ။",
+                    "ပြီးလျှင် ဒယ်အိုးပူပူတွင် ဆီမထည့်ဘဲ မုန့်နှစ်ကို အပြားလိုက်ထည့်ကာ အပေါ်အောက် လှန်ပြီး သာကူစေ့များ ကျက်ကြည်လာသည်အထိ ဖုတ်ပါ။"
+                ]
+            },
+            {
+                title: "မုန့်လုံးကြီး ပဲကပ်",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ကုလားပဲယိုဌာပနာသွင်းပြီး ဆီကြော်ထားသည့် ကောက်ညှင်းမုန့်လုံးကြီး။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့်", "ကုလားပဲပြုတ် (ခြေထားသား)", "သကြားညို", "ဆီ"],
+                steps: [
+                    "ပဲပြုတ်ကို သကြားညိုဖြင့် ယိုထိုးပြီး အလုံးလေးများ လုံးထားပါ။ ကောက်ညှင်းမှုန့်ကို နယ်ပြီး ပဲယိုလုံးများကို ဌာပနာသွင်း၍ လုံးပါ။",
+                    "ဆီပူတွင် မုန့်လုံးများ ဝါဝင်းလာသည်အထိ ကြော်ပါ။"
+                ]
+            },
+            {
+                title: "မုန့်ကွင်း သကြားရည်ဆမ်း",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ဆီကြော်ထားသော မုန့်ကွင်းများကို သကြားရည်ပူပူတွင်ဆမ်းကာ သကြားခဲလေးများဖြင့် ချိုကြွပ်စေသော မုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၃၀",
+                servings: "၄ ဦးစာ",
+                ingredients: ["ကောက်ညှင်းမှုန့် ၂၀ သား", "သကြားဖြူ ၁ ခွက်", "ရေ", "ဆီ"],
+                steps: [
+                    "ကောက်ညှင်းမှုန့်ကို ရေဖြင့်နယ်ပြီး အချောင်းရှည်လုပ်ကာ ထိပ်နှစ်ဖက်ဆက်၍ ကွင်းပုံစံလုပ်ပြီး ဆီကြော်ပါ။",
+                    "သကြားကို ရေအနည်းငယ်ဖြင့် ပျစ်ခဲနေအောင် ကျိုပါ။ ကြော်ထားသော မုန့်ကွင်းများကို သကြားရည်ပူပူတွင် နှစ်ပြီး ဆယ်ယူကာ အအေးခံပါက သကြားခဲလေးများဖြင့် ချိုကြွပ်နေပါလိမ့်မည်။"
+                ]
+            },
+            {
+                title: "ပဲပြုတ် အိအိ (အိမ်တွင်းဖြစ်)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "အိမ်တွင်းဖြစ် ပဲလွန်း (သို့) ကုလားပဲကို ဆော်ဒါအနည်းငယ်ထည့်၍ နူးအိအောင်ပြုတ်ထားခြင်း။",
+                time: "ပြင်ဆင်ချိန် - ၈ နာရီ မိနစ် ၃၀",
+                servings: "၅ ဦးစာ",
+                ingredients: ["ပဲလွန်း (သို့) ကုလားပဲခြမ်း", "စားဆော်ဒါ အနည်းငယ်", "ဆား", "ဆီ"],
+                steps: [
+                    "ပဲကို ရေတွင် တစ်ညစိမ်ထားပါ။ အိုးတွင် ပဲမြုပ်ရုံ ရေထည့်၊ ဆော်ဒါနှင့် ဆားအနည်းငယ်ထည့်ကာ ပဲစေ့များ နူးအိပြီး ရေခမ်းသည်အထိ ပြုတ်ပါ။",
+                    "နံနက်ခင်းတွင် ဆီချက်၊ နံနံပင်တို့ဖြင့် သုပ်စားနိုင်ပါသည်။"
+                ]
+            },
+            {
+                title: "အုန်းနို့ ကောက်ညှင်းကျောက်ကျော (နှစ်လွှာ)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ကောက်ညှင်းထမင်းလွှာနှင့် အုန်းနို့ကျောက်ကျောလွှာ နှစ်လွှာပါဝင်သော ကျောက်ကျောမုန့်။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၄၀",
+                servings: "၆ ဦးစာ",
+                ingredients: ["ကျောက်ကျောမှုန့်", "ကောက်ညှင်းထမင်း", "အုန်းနို့", "သကြား", "ရေ"],
+                steps: [
+                    "ပထမအလွှာအတွက် ကျောက်ကျောရည်ကျိုပြီး ကောက်ညှင်းထမင်းနှင့် ရောကာ ဗန်းထဲလောင်းထည့် ခဲထားပါ။",
+                    "ဒုတိယအလွှာအတွက် ကျောက်ကျောရည်ကို အုန်းနို့၊ သကြားတို့ဖြင့်ကျိုပြီး ခဲထားသော ကောက်ညှင်းလွှာပေါ်သို့ လောင်းထည့်ကာ အအေးခံပါ။"
+                ]
+            },
+            {
+                title: "မုန့်လင်မယား အစပ် (ကြက်သွန်မြိတ်)",
+                category: "dessert",
+                categoryLabel: "မုန့်များ",
+                desc: "ပဲပြုတ်နှင့် ကြက်သွန်မြိတ်ဖြူးပြီး ခွက်နှစ်ခုပူးကပ်ကာ လုပ်ထားသော မုန့်လင်မယား။",
+                time: "ပြင်ဆင်ချိန် - မိနစ် ၂၀",
+                servings: "၃ ဦးစာ",
+                ingredients: ["ဆန်မှုန့်", "ရေ", "ပဲပြုတ်", "ကြက်သွန်မြိတ်", "မုန့်လင်မယားခွက်အိုး", "ဆီ"],
+                steps: [
+                    "ဆန်မှုန့်ကို ရေ၊ ဆားတို့ဖြင့် ဖျော်ပါ။ မုန့်အိုးခွက်များတွင် ဆီသုတ်ပြီး မုန့်နှစ်လောင်းထည့်ပါ။",
+                    "အပေါ်မှ ပဲပြုတ်နှင့် ကြက်သွန်မြိတ်ဖြူးပါ။ မုန့်သားကျက်လျှင် ခွက်နှစ်ခုကို တစ်ခုနှင့်တစ်ခု မှောက်ရက် ပူးကပ်ပေးပြီး ဆယ်ယူပါ။"
+                ]
+            }
+        ];
+const __chatFoods = [
+            // North Asia (1)
+  { 
+    name: "AFGHANISTAN", lat: 33.9, lng: 67.7, icon: "🍲", 
+    foods: [
+      { name: "Kabuli Pulao", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ဆန်ရှည်၊ သိုးသား၊ မုန်လာဥနီ၊ သစ်သီးခြောက်တို့ဖြင့် ချက်ပြုတ်ထားသော အာဖဂန်နစ္စတန်၏ အမျိုးသားဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Mantu", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "အမဲသား သို့မဟုတ် သိုးသားနုတ်နုတ်စဉ်း ပါဝင်သည့် အာဖဂန်ရိုးရာ ပေါက်စီ/ဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Bolani", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အာလူး၊ ကြက်သွန်မြတ် သို့မဟုတ် ရွှေဖရုံသီး အနှစ်ဌာပနာပါသော ပြားကပ်ကြော် ပေါင်မုန့်ဖြစ်ပါသည်။" },
+      { name: "Ashak", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ကြက်သွန်မြတ်ဌာပနာပါသော ဖက်ထုပ်ကို အမဲသားဆော့စ်၊ ဒိန်ချဉ်တို့ဖြင့် တွဲဖက်စားသုံးရသော အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Chapan Kabob", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သိုးသားကို မီးကင်ထားသော အာဖဂန်ရိုးရာ အသားကင် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "ARMENIA", lat: 40.0, lng: 45.0, icon: "🥩", 
+    foods: [
+      { name: "Khorovats", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "အာမေးနီးယား ရိုးရာ မီးသွေးကင် အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Dolma", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စပျစ်ရွက်ထဲတွင် အသားနုတ်နုတ်စဉ်းနှင့် ဆန်တို့ကို ထုပ်၍ ပေါင်းထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Ghapama", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ရွှေဖရုံသီးအတွင်း ဆန်၊ သစ်သီးခြောက်၊ ပျားရည်တို့ထည့်၍ ပေါင်းထားသော အချိုပွဲ ရိုးရာဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Khachapuri", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "ဒိန်ခဲနှင့် ကြက်ဥပါဝင်သော ရိုးရာ မုန့်ဖုတ်ပြား ဖြစ်ပါသည်။" },
+      { name: "Lavash", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အာမေးနီးယား ရိုးရာ ပါးပါးပြားပြား ဂျုံမုန့် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "AZERBAIJAN", lat: 40.1, lng: 47.5, icon: "🍚", 
+    foods: [
+      { name: "Plov", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အဇာဘိုင်ဂျန်ရိုးရာ သိုးသား၊ သဖန်းသီး၊ သဖန်းခြောက်တို့ ပါဝင်သော ထမင်းဆီဆမ်း ဖြစ်ပါသည်။" },
+      { name: "Shah Plov", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "မုန့်ကုတ်အကျွပ်အတွင်း ချက်ပြုတ်ထားသော မင်းမူပွဲသုံး ထမင်းဆီဆမ်း ဖြစ်ပါသည်။" },
+      { name: "Dushbara", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "အမဲသားနုတ်နုတ်စဉ်း ပါဝင်သည့် အလွန်သေးငယ်သော ဖက်ထုပ်စွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Lula Kabab", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သိုးသားစဉ်းကို သံချောင်းတွင် စွပ်၍ ကင်ထားသော အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Kutab", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အသား သို့မဟုတ် အစောငွေရွက်ဌာပနာပါသော လဝက်ပုံစံ ဂျုံမုန့်ကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "BAHRAIN", lat: 26.0, lng: 50.5, icon: "🍲", 
+    foods: [
+      { name: "Machboos", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အမွှေးအကြိုင်များ၊ ကြက်သား သို့မဟုတ် သိုးသားတို့ဖြင့် ချက်ပြုတ်ထားသော ဘာရိန်းအမျိုးသား ထမင်းဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Muhammar", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "စူးစမ်းဖွယ် အချိုအရသာရှိသော ထမင်းဖြစ်ပြီး ငါးကြော်များနှင့် တွဲဖက်စားသုံးလေ့ရှိပါသည်။" },
+      { name: "Luqaimat", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စွဲမက်ဖွယ်ကောင်းသော ပျားရည် သို့မဟုတ် စူကာရည်ဆမ်း ရိုးရာ မုန့်လုံးကြော် အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Tikka Bahraini", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "ရှာလကာရည်နှင့် အမွှေးအကြိုင်များ စိမ်ထားသော အမဲသားတုံးကင် ဖြစ်ပါသည်။" },
+      { name: "Harees", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဂျုံနှင့် အသားတို့ကို ကြေညက်သည်အထိ ရောပြုတ်ထားသော ရိုးရာဆန်ပြုတ်ပျစ်ပျစ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "BANGLADESH", lat: 23.7, lng: 90.3, icon: "🐟", 
+    foods: [
+      { name: "Ilish Macher Jhol", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "ဘင်္ဂလားဒေ့ရှ်၏ အမျိုးသားငါးဖြစ်သော ငါးသေတ္တာ/ငါးသလောက်ကို မုန်ညင်းဆီ၊ ငရုတ်သီးတို့ဖြင့် ချက်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Kacchi Biryani", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "သိုးသားအစိမ်းကို အမွှေးအကြိုင်၊ အာလူးတို့နှင့် ဆန်ဆုတိုပေါင်း ချက်ထားသော ဒကာဒန် ဘီရီယာနီ ဖြစ်ပါသည်။" },
+      { name: "Bhuna Khichuri", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဆန်နှင့် ပဲနီလေးကို အမွှေးအကြိုင်များဖြင့် ဆီသတ်ချက်ပြုတ်ထားသော မိုးရာသီသုံး ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Shorshe Ilish", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "မုန်ညင်းစေ့အနှစ်ဖြင့် ချက်ပြုတ်ထားသော ငါးသလောက်ဟင်း ဖြစ်ပါသည်။" },
+      { name: "Rasgulla", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "နို့ခဲလုံးကို သကြားရေစိမ်ထားသော ဘင်္ဂလားရိုးရာ အချိုပွဲ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "BHUTAN", lat: 27.5, lng: 90.4, icon: "🧀", 
+    foods: [
+      { name: "Ema Datshi", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ငရုတ်သီးစိမ်းများကို ယာကုနွားနို့မှရသော ဒိန်ခဲအနှစ်ဖြင့် ချက်ပြုတ်ထားသည့် ဘူတန်အမျိုးသား ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Khur-le", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဘူတန်ရိုးရာ ဂျုံမုန့် (Buckwheat Pancake) ဖြစ်ပြီး ဟင်းအစပ်များနှင့် တွဲဖက်စားသုံးပါသည်။" },
+      { name: "Phaksha Paa", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "ဝက်သား၊ ငရုတ်သီးခြောက်နှင့် မုန်လာဥနီတို့ဖြင့် ချက်ပြုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Momos", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "အသား သို့မဟုတ် ဒိန်ခဲဌာပနာပါသော ဘူတန်စတိုင် ဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Jasha Maroo", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ကြက်သွန်နီ၊ ဂျင်း၊ ငရုတ်သီးတို့ဖြင့် စပ်စပ်ချက်ထားသော ကြက်သားဟင်း ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "BRUNEI", lat: 4.5, lng: 114.7, icon: "🥣", 
+    foods: [
+      { name: "Ambuyat", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "သာကူပင် ပင်စည်မှ ရရှိသော အနှစ်ဖြင့် လုပ်ဆောင်ထားသည့် ဘရူနိုင်း၏ အမျိုးသား အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Nasi Katok", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ထမင်း၊ ကြက်ကြော်နှင့် စမ္ဗလ ငရုတ်သီးအနှစ်တို့ ပါဝင်သော လူကြိုက်များသည့် လမ်းဘေးစာ ဖြစ်ပါသည်။" },
+      { name: "Beef Rendang", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "အုန်းနို့၊ အမွှေးအကြိုင်တို့ဖြင့် နူးအီနေအောင် ချက်ထားသော အမဲသားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Pulut Panggang", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "ကောက်ညှင်းထုပ်အတွင်း ပုစွန်ခြောက် သို့မဟုတ် အုန်းသီးဌာပနာထည့်၍ မီးကင်ထားသော မုန့်ဖြစ်ပါသည်။" },
+      { name: "Kuih Cincin", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ကြံသကြားနှင့် ဆန်မုန့်နှစ်ဖြင့် ပြုလုပ်ထားသော ကွင်းပုံစံ ကြွပ်ကြွပ်ကြော် မုန့်ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "CAMBODIA", lat: 12.5, lng: 105.0, icon: "🍜", 
+    foods: [
+      { name: "Fish Amok", img: "images/fish_amok_cambodia.jpg", desc: "ငှက်ပျောရွက်ထဲတွင် ငါး၊ အုန်းနို့၊ ရိုးရာဟင်းခတ်အနှစ်တို့ဖြင့် ပေါင်းထားသော ကမ္ဘောဒီးယား အမျိုးသားဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Nom Banh Chok", img: "images/Nom_Banh_Chok_cambodia.jpg", desc: "ငါးအုပ်စု အုန်းနို့ဟင်းရည်၊ ဟင်းသီးဟင်းရွက်တို့ဖြင့် စားသုံးရသော ခမာ မုန့်ဟင်းခါး ဖြစ်ပါသည်။" },
+      { name: "Lok Lak", img: "images/Lok_Lak_cambodia.jpg", desc: "အမဲသားအတုံးများကို မီးတောက်ဖြင့် လှိမ့်ကြော်၍ ငရုတ်ကောင်း သံပုရာရည်ဆော့စ်ဖြင့် စားသုံးရသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Kuy Teav", img: "images/kuy_teav_cambodia.jpg", desc: "ဝက်ရိုးစွပ်ပြုတ်၊ ဝက်သား၊ ကြက်သွန်မြတ်တို့ ပါဝင်သော ခေါက်ဆွဲပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Bai Sach Chrouk", img: "images/Bai_Sach_Chrouk_cambodia.jpg", desc: "အုန်းနို့စိမ် မီးကင်ထားသော ဝက်သားနှင့် ထမင်း နံနက်စာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "CHINA", lat: 35.8, lng: 104.1, icon: "🥟", 
+    foods: [
+      { name: "Peking Duck", img: "images/peking_duck_china.jpg", desc: "အရေခွံ ကြွပ်ကြွပ် မီးကင်ထားသော ပေကျင်း ဘဲကင် ဖြစ်ပါသည်။" },
+      { name: "Dim Sum", img: "images/Dim_Sum_china.jpg", desc: "မကန်ဒုံး၊ ပေါက်စီ၊ ဖက်ထုပ် အဆာပလာ အမျိုးမျိုးပါဝင်သော ရိုးရာ လက်ဘက်ရည်ဝိုင်းသုံး အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Kung Pao Chicken", img: "images/Kung_Pao_Chicken_china.jpg", desc: "ကြက်သား၊ မြေပဲ၊ ငရုတ်သီးခြောက်တို့ဖြင့် စပ်စပ်ကြော်ထားသော စီချွမ်း ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Mapo Tofu", img: "images/Mapo_Tofu_china.jpg", desc: "ပဲတို့ဖူး၊ အမဲသား သို့မဟုတ် ဝက်သားစဉ်းကို စီချွမ်းငရုတ်အနှစ်ဖြင့် အစပ်ချက်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Xiao Long Bao", img: "images/Xiao_Long_Bao_china.jpg", desc: "အတွင်း၌ စွပ်ပြုတ်ရည် ပါဝင်သော ရှန်ဟိုင်း ပေါက်စီ ပူပူနွေးနွေး ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "CYPRUS", lat: 35.1, lng: 33.4, icon: "🧀", 
+    foods: [
+      { name: "Halloumi Cheese", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ဆိုက်ပရပ်စ်၏ နာမည်ကျော် မီးကင်စားနိုင်သော ဒိန်ခဲ အမျိုးအစား ဖြစ်ပါသည်။" },
+      { name: "Souvla", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သိုးသား သို့မဟုတ် ဝက်သား အတုံးကြီးများကို သံချောင်းတွင် စွပ်၍ နာရီပေါင်းများစွာ မီးကင်ထားသော အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Kleftiko", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "မီးဖိုအပိတ်အတွင်း နာရီပေါင်းများစွာ နှေးနှေးအေးအေး ချက်ပြုတ်ထားသော သိုးသားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Sheftalia", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "အသားနုတ်နုတ်စဉ်း၊ ကြက်သွန်နီတို့ဖြင့် ပြုလုပ်ထားသော ရိုးရာ ဝက်အူချောင်းကင် ဖြစ်ပါသည်။" },
+      { name: "Koupepia", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စပျစ်ရွက်အတွင်း အသားနုတ်နုတ်စဉ်းနှင့် ဆန်ထည့်၍ ပေါင်းထားသော ဟင်းလျာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "GEORGIA", lat: 42.0, lng: 43.5, icon: "🥧", 
+    foods: [
+      { name: "Khachapuri", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "လှေပုံစံ မုန့်ဖုတ်ပြားအတွင်း ဒိန်ခဲ၊ ထောပတ်နှင့် ကြက်ဥ တို့ ပါဝင်သော နာမည်ကျော် ဂျော်ဂျီယာမုန့် ဖြစ်ပါသည်။" },
+      { name: "Khinkali", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "အမဲသား၊ ဝက်သား သို့မဟုတ် သိုးသား အရည်ပါဝင်သော ဂျော်ဂျီယာရိုးရာ ဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Satsivi", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "သစ်ကြားသီးအနှစ်ဖြင့် ချက်ပြုတ်ထားသော ကြက်သား သို့မဟုတ် ဆင်ကြက်ဆင် အရည်သောက် ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Shashlik", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သံချောင်းတွင် စွပ်၍ မီးကင်ထားသော ဝက်သား သို့မဟုတ် သိုးသားကင် ဖြစ်ပါသည်။" },
+      { name: "Badrijani Nigvzit", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "ခင်းသီးပြားကြော်အတွင်း သစ်ကြားသီးအနှစ် ဌာပနာထည့်ထားသော အမြည်းဟင်းလျာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "INDIA", lat: 20.6, lng: 78.9, icon: "🍛", 
+    foods: [
+      { name: "Butter Chicken", img: "images/Butter_Chicken_india.jpg", desc: "ဒိန်ချဉ်၊ ထောပတ်၊ ခရမ်းချဉ်သီး အရည်အနှစ်တို့ဖြင့် ချက်ပြုတ်ထားသော နာမည်ကျော် အိန္ဒိယ ကြက်သားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Biryani", img: "images/Biryani_india.jpg", desc: "အမွှေးအကြိုင်များ၊ ကြက်သား သို့မဟုတ် သိုးသားတို့ဖြင့် ချက်ပြုတ်ထားသော အိန္ဒိယရိုးရာ ဒန်ပေါက် ဖြစ်ပါသည်။" },
+      { name: "Masala Dosa", img: "images/Masala_Dosa_india.jpg", desc: "ဆန်နှင့် ပဲတို့ဖြင့် ပြုလုပ်ထားသော မုန့်ကြွပ်အတွင်း အာလူးမဆလာ ဌာပနာထည့်ထားသော တောင်အိန္ဒိယ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Samosa", img: "images/Samosa_india.jpg", desc: "အာလူး၊ ပဲစိမ်းတို့ ဌာပနာထည့်၍ ကြော်ထားသော တြိဂံပုံစံ စမိုဆာ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Gulab Jamun", img: "images/Gulab_Jamun_india.jpg", desc: "နို့ခဲလုံးကို သကြားရေစိမ်ထားသော အိန္ဒိယ နာမည်ကျော် အချိုပွဲ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "INDONESIA", lat: -0.7, lng: 113.9, icon: "Satay", 
+    foods: [
+      { name: "Nasi Goreng", img: "images/Nasi_Goreng.jpg", desc: "ပဲငါးပိချို၊ ကြက်သွန်ဖြူ၊ ငရုတ်သီး၊ ကြက်ဥတို့ဖြင့် ကြော်ထားသော အင်ဒိုနီးရှား ထမင်းကြော် ဖြစ်ပါသည်။" },
+      { name: "Rendang", img: "images/Rendang.jpg", desc: "အုန်းနို့၊ အမွှေးအကြိုင်မျိုးစုံဖြင့် နာရီပေါင်းများစွာ ချက်ထားသော စူမားတြား အမဲသားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Satay", img: "images/Satay.jpg", desc: "ကြက်သား၊ အမဲသား တို့ကို သံချောင်း/ဝါးချောင်းတွင် စွပ်ကင်၍ မြေပဲဆော့စ်ဖြင့် စားသုံးရသော အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Gado-Gado", img: "images/Gado_Gado.jpg", desc: "သုတ်ထားသော ဟင်းသီးဟင်းရွက်များ၊ တို့ဖူး၊ ကြက်ဥပြုတ်တို့ကို မြေပဲဆော့စ်ဆမ်းထားသော အသုတ် ဖြစ်ပါသည်။" },
+      { name: "Bakso", img: "images/Bakso.jpg", desc: "အမဲသားလုံး၊ ခေါက်ဆွဲ၊ ဟင်းသီးဟင်းရွက်တို့ ပါဝင်သော ရိုးရာ အမဲသားလုံး စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "IRAN", lat: 32.4, lng: 53.6, icon: "🍢", 
+    foods: [
+      { name: "Kebab Koobideh", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သိုးသား သို့မဟုတ် အမဲသားနုတ်နုတ်စဉ်းကို မီးသွေးဖြင့် ကင်ထားသော အီရန် အမျိုးသား အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Ghormeh Sabzi", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "အစိမ်းရောင် ရိုးရာဟင်းသီးဟင်းရွက်များ၊ ပဲနီလေး၊ သိုးသားတို့ဖြင့် ချက်ပြုတ်ထားသော စွပ်ပြုတ် ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Tahdig", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ထမင်းအိုးအောက်ခြေမှ ရရှိသော ကြွပ်ကြွပ်ရွှေဝါရောင် ထမင်းဂျိုး ဖြစ်ပါသည်။" },
+      { name: "Fesenjan", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "သလင်းသီးအနှစ်၊ သစ်ကြားသီးတို့ဖြင့် ချက်ပြုတ်ထားသော ဘဲသား သို့မဟုတ် ကြက်သားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Ash Reshteh", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "ခေါက်ဆွဲ၊ ပဲမျိုးစုံ၊ အစိမ်းရောင် ဟင်းရွက်တို့ ပါဝင်သော ထူထူပြစ်ပြစ် စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "IRAQ", lat: 33.2, lng: 43.6, icon: "🐟", 
+    foods: [
+      { name: "Masgouf", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "ငါးကြင်းကို နှစ်ခြမ်းခွဲ၍ မီးပုံဘေးတွင် မီးကင်ထားသော ဧရာဝတီ/အီရတ်၏ အမျိုးသား ငါးကင် ဖြစ်ပါသည်။" },
+      { name: "Quzi", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "သိုးသား တစ်ကောင်လုံး သို့မဟုတ် အပိုင်းကြီးများကို နှေးနှေးအေးအေး ပေါင်း၍ ထမင်း၊ သစ်သီးခြောက်တို့ဖြင့် စားသုံးရသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Tepsi Baytinijan", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ခင်းသီး၊ အမဲသားလုံး၊ ခရမ်းချဉ်သီးတို့ဖြင့် မီးဖို၌ ဖုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Kleicha", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စွန်ပလွန်သီး အနှစ်ဌာပနာ ပါဝင်သော အီရတ် ရိုးရာ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Dolma Iraqi", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ကြက်သွန်နီ၊ ကြက်သွန်ဖြူ၊ ခင်းသီးတို့အတွင်း အသားနုတ်နုတ်စဉ်းနှင့် ဆန်ထည့်၍ ပေါင်းထားသော ဟင်းလျာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "ISRAEL", lat: 31.0, lng: 34.8, icon: "🧆", 
+    foods: [
+      { name: "Falafel", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ကုလားပဲအနှစ်ကို လုံး၍ ဆီကြော်ထားသော အရှေ့အလယ်ပိုင်း ရိုးရာ အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Shakshuka", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ခရမ်းချဉ်သီး၊ ငရုတ်သီး၊ ကြက်သွန်နီ အရည်အနှစ်တွင် ကြက်ဥကို ဖောက်ထည့်၍ ကျက်အောင်ချက်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Hummus", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ကုလားပဲ၊ နှမ်းအနှစ်၊ သံပုရာရည်တို့ဖြင့် ဖျော်စပ်ထားသော နှစ်သက်ဖွယ် အနှစ် အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Sabich", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "ခင်းသီးကြော်၊ ကြက်ဥပြုတ်၊ တာဟီနီအနှစ်တို့ ပါဝင်သော ပီတာမုန့် ဖြစ်ပါသည်။" },
+      { name: "Challah", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800", desc: "ကျစ်ဆံမြီးကျစ်ထားသော အစ္စရေး ရိုးရာ ဂျုံမုန့် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "JAPAN", lat: 36.2, lng: 138.2, icon: "Sushi", 
+    foods: [
+      { name: "Sushi", img: "images/Sushi_japan.jpg", desc: "ဆူရှီဆန်၊ ပင်လယ်ငါးစိမ်း၊ ရေညှိတို့ဖြင့် ပြုလုပ်ထားသော ဂျပန်နိုင်ငံ၏ ကမ္ဘာကျော် အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Ramen", img: "images/Ramen_japan.jpg", desc: "ဝက်ရိုး သို့မဟုတ် ငါးပြုတ်ရည်၊ ခေါက်ဆွဲ၊ ဝက်သားပြုတ်ပြားတို့ ပါဝင်သော စွပ်ပြုတ်ခေါက်ဆွဲ ဖြစ်ပါသည်။" },
+      { name: "Tempura", img: "images/Tempura_japan.jpg", desc: "ပုစွန် သို့မဟုတ် ဟင်းသီးဟင်းရွက်များကို မုန့်နှစ်နှစ်၍ ကြွပ်ကြွပ်ကြော်ထားသော အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Chicken Teriyaki", img: "images/Chicken_Teriyaki_japan.jpg", desc: "ပဲငါးပိချို၊ သကြားတို့ဖြင့် စုတ်ယူထားသော မီးကင် ကြက်သားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Takoyaki", img: "images/Takoyaki_japan.jpg", desc: "ပြည်ကြီးငါး အတုံးငယ်များ ပါဝင်သော လုံးဝိုင်းသည့် မုန့်ကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "JORDAN", lat: 30.5, lng: 36.2, icon: "🍗", 
+    foods: [
+      { name: "Mansaf", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ဂျမီးဒ် (ကျောက်ခဲကဲ့သို့ ခြောက်သွေ့သော ဒိန်ချဉ်) အနှစ်ဖြင့် ချက်ပြုတ်ထားသော သိုးသားနှင့် ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Zarb", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သဲကန္တာရ မြေအောက်မီးဖို၌ ဖုတ်ထားသော အသားနှင့် ဟင်းသီးဟင်းရွက်များ ဖြစ်ပါသည်။" },
+      { name: "Falafel Jordan", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ဂျော်ဒန်စတိုင် ကြွပ်ကြွပ်ရွှေဝါရောင် ကုလားပဲကြော် ဖြစ်ပါသည်။" },
+      { name: "Knafeh", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ဒိန်ခဲပါဝင်သော မုန့်မျှင်တန်း အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Shorba Adas", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဇီရာနှင့် အမွှေးအကြိုင်များ ပါဝင်သော ပဲနီလေး စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "KAZAKHSTAN", lat: 48.0, lng: 68.0, icon: "🥩", 
+    foods: [
+      { name: "Beshbarmak", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "မြင်းသား သို့မဟုတ် သိုးသားပြုတ်နှင့် ခေါက်ဆွဲပြားတို့ကို ရောစပ်ထားသော ကာဇက်စတန် အမျိုးသားဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Kazy", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "မြင်းနံရိုးသားဖြင့် ပြုလုပ်ထားသော ရိုးရာ ဝက်အူချောင်းကဲ့သို့ အသားချောင်း ဖြစ်ပါသည်။" },
+      { name: "Baursak", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "အဝိုင်း သို့မဟုတ် လေးထောင့်ပုံစံ ကြော်ထားသော ရိုးရာ ဂျုံမုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Shashlik Kazak", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သံချောင်းတွင် စွပ်ကင်ထားသော မီးသွေးကင် သိုးသား ဖြစ်ပါသည်။" },
+      { name: "Manty", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "သိုးသားနုတ်နုတ်စဉ်းနှင့် ငရုတ်ကောင်းနက် ပါဝင်သော ပေါင်းထုပ် ပေါက်စီ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "KUWAIT", lat: 29.3, lng: 47.4, icon: "🍲", 
+    foods: [
+      { name: "Machboos Laham", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အမွှေးအကြိုင်များ၊ သိုးသားတို့ဖြင့် ချက်ပြုတ်ထားသော ကူဝိတ် အမျိုးသား ထမင်းဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Gargoor", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "ဆော့စ်နှင့် ငါးပြုတ်တို့ ပါဝင်သော ရိုးရာ ပင်လယ်စာ ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Jareesh", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဂျုံနှင့် ကြက်သားတို့ ပါဝင်သော ဆန်ပြုတ်ပျစ်ပျစ် ဖြစ်ပါသည်။" },
+      { name: "Mutabbaq Samak", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "မုန်ညင်းစေ့၊ ငါးကြော်တို့နှင့် ချက်ထားသော ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Balaleet", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဇာဖရန်၊ ဧလက္ကရီတို့ဖြင့် ချက်ထားသော မုန့်တီအချိုနှင့် ကြက်ဥကြော် စားသုံးရသည့် အစားအစာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "KYRGYZSTAN", lat: 41.2, lng: 74.7, icon: "🍜", 
+    foods: [
+      { name: "Laghman", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "လက်ဖြင့် ဆွဲလုပ်ထားသော ခေါက်ဆွဲ၊ အသား၊ ဟင်းသီးဟင်းရွက်တို့ ပါဝင်သော ခေါက်ဆွဲဟင်း ဖြစ်ပါသည်။" },
+      { name: "Beshbarmak Kyrgyz", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "သိုးသားပြုတ်နှင့် ခေါက်ဆွဲပြားတို့ကို လက်ဖြင့် စားသုံးရသော ရိုးရာ ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Samsa", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "အမဲသား သို့မဟုတ် သိုးသားဌာပနာ ပါဝင်သော ရိုးရာ မုန့်ဖုတ် စမိုဆာ ဖြစ်ပါသည်။" },
+      { name: "Kuurdak", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "အမဲသား/သိုးသား၊ ကြက်သွန်နီ၊ အာလူးတို့ဖြင့် ဆီသတ်ကြော်ထားသော အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Ashlan Foo", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "အေးအေးစပ်စပ် စားသုံးရသော ခေါက်ဆွဲနှင့် ပဲဂျယ်လီ စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "LAOS", lat: 19.8, lng: 102.4, icon: "🥗", 
+    foods: [
+      { name: "Larb", img: "images/Larb_Laos.jpg", desc: "အသားနုတ်နုတ်စဉ်း (ကြက်/ဝက်/အမဲ)၊ သံပုရာရည်၊ ငရုတ်သီး၊ ကောက်ညှင်းမှုန့်တို့ဖြင့် သုတ်ထားသော လာအို အမျိုးသား အသုတ် ဖြစ်ပါသည်။" },
+      { name: "Tam Mak Hoong", img: "images/Tam_Mak_Hoong_Laos.jpg", desc: "သင်္ဘောသီး အစပ်သုတ် ဖြစ်ပါသည်။" },
+      { name: "Khao Niew", img: "images/Khao_Niew_Laos.jpg", desc: "လာအိုလူမျိုးတို့၏ အဓိက အစားအစာဖြစ်သော ကောက်ညှင်းပေါင်း ဖြစ်ပါသည်။" },
+      { name: "Khao Piak Sen", img: "images/Khao_Piak_Sen_Laos.jpg", desc: "ကြက်သား သို့မဟုတ် ဝက်သား ပါဝင်သော တပိအိုကာ ခေါက်ဆွဲစွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Mok Pa", img: "images/Mok_Pa_Laos.jpg", desc: "ငှက်ပျောရွက်ထဲတွင် ငါးနှင့် အမွှေးအကြိုင်များ ထည့်၍ ပေါင်းထားသော ဟင်းလျာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "LEBANON", lat: 33.8, lng: 35.8, icon: "🧆", 
+    foods: [
+      { name: "Tabbouleh", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ပါစလီရွက်၊ ခရမ်းချဉ်သီး၊ ဂျုံကြမ်း၊ သံပုရာရည်တို့ဖြင့် သုတ်ထားသော နာမည်ကျော် လေဘာနွန် အသုတ် ဖြစ်ပါသည်။" },
+      { name: "Kibbeh", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "အမဲသား သိုးသားစဉ်းနှင့် ဂျုံတို့ကို ရောစပ်၍ ဗူးသီးပုံစံ ကြော်ထားသော မုန့် ဖြစ်ပါသည်။" },
+      { name: "Shawarma", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "ဒေါင်လိုက်မီးကင်ထားသော ကြက်သား သို့မဟုတ် အမဲသားကို မုန့်ပြားဖြင့် ထုပ်ထားသော အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Fattoush", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ဟင်းသီးဟင်းရွက်များနှင့် ပီတာမုန့်ကြွပ်များ ပါဝင်သော လေဘာနွန် အသုတ် ဖြစ်ပါသည်။" },
+      { name: "Hummus Lebanese", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ဇီရာ၊ ကုလားပဲ၊ သံပုရာရည်တို့ဖြင့် ဖျော်ထားသော အနှစ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "MALAYSIA", lat: 4.2, lng: 101.9, icon: "🍚", 
+    foods: [
+      { name: "Nasi Lemak", img: "Nasi_Lemak_Malaysia.jpg", desc: "အုန်းနို့ထမင်း၊ စမ္ဗလငရုတ်သီး၊ ငါးနီတူးကြော်၊ မြေပဲနှင့် ကြက်ဥပြုတ်တို့ ပါဝင်သော မလေးရှား အမျိုးသား အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Laksa", img: "Laksa_Malaysia.jpg", desc: "အုန်းနို့ သို့မဟုတ် ငါးစွပ်ပြုတ်၊ မုန့်တီ၊ ပုစွန်/ကြက်သားတို့ ပါဝင်သော ဟင်းခါး ဖြစ်ပါသည်။" },
+      { name: "Roti Canai", img: "Roti_Canai_Malaysia.jpg", desc: "ပဲဟင်း သို့မဟုတ် မဆလာဟင်းရည်ဖြင့် စားသုံးရသော မလေးရှား ရိုးရာ ပလာတာ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Char Kway Teow", img: "Char_Kway_Teow_Malaysia.jpg", desc: "နန်းပြားကြီး၊ ပုစွန်၊ ပဲပင်ပေါက်တို့ဖြင့် အပူရှိန်ပြင်းပြင်း ကြော်ထားသော ခေါက်ဆွဲကြော် ဖြစ်ပါသည်။" },
+      { name: "Satay Malaysia", img: "Satay_Malaysia.jpg", desc: "ကြက်သား သို့မဟုတ် အမဲသား မီးသွေးကင်နှင့် မြေပဲဆော့စ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "MALDIVES", lat: 3.2, lng: 73.2, icon: "🐟", 
+    foods: [
+      { name: "Mas Huni", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ငါးသေတ္တာ/ငါးပုဒ်ခြောက်၊ အုန်းသီးခြစ်၊ ကြက်သွန်နီ၊ ငရုတ်သီးတို့ သုတ်ထားသော မော်လဒိုက် နံနက်စာ ဖြစ်ပါသည်။" },
+      { name: "Garudhiya", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ငါးပြုတ်ရည်ကြည် ဖြစ်ပြီး ထမင်း၊ သံပုရာရည်၊ ငရုတ်သီးတို့နှင့် စားသုံးရပါသည်။" },
+      { name: "Boshi Mashuni", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ငှက်ပျောဖူး၊ အုန်းသီး၊ အမွှေးအကြိုင်တို့ သုတ်ထားသော အသုတ် ဖြစ်ပါသည်။" },
+      { name: "Bis Keemiya", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ကြက်ဥပြုတ်၊ ဂေါ်ဖီထုတ်၊ ကြက်သွန်နီတို့ ပါဝင်သော မော်လဒိုက် စမိုဆာ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Kulhi Boakibaa", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ငါးနီတူးနှင့် ဆန်တို့ ပါဝင်သော အစပ် မုန့်ဖုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "MONGOLIA", lat: 46.8, lng: 103.8, icon: "🥟", 
+    foods: [
+      { name: "Buuz", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "သိုးသား သို့မဟုတ် အမဲသား ပါဝင်သော မွန်ဂိုလီးယား ရိုးရာ ပေါင်းဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Khuurshuur", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အသားနုတ်နုတ်စဉ်း ဌာပနာပါသော မွန်ဂိုလီးယား မုန့်ကြော် ပြား ဖြစ်ပါသည်။" },
+      { name: "Khorkhog", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "ကျောက်ခဲပူများ သုံး၍ အိုးပိတ်အတွင်း ချက်ပြုတ်ထားသော သိုးသားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Tsuivan", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "ဂျုံခေါက်ဆွဲ၊ သိုးသား၊ ဟင်းသီးဟင်းရွက်တို့ ပါဝင်သော ပေါင်းခေါက်ဆွဲကြော် ဖြစ်ပါသည်။" },
+      { name: "Airag", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "မြင်းမ နို့ကို အချဉ်ဖောက်ထားသော မွန်ဂိုလီးယား ရိုးရာ သောက်စရာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "MYANMAR", lat: 21.9, lng: 95.9, icon: "🍜", 
+    foods: [
+      { name: "မုန့်ဟင်းခါး (Mohinga)", img: "images/Mohinga_Myanmar.jpg", desc: "ငါးခူ/ငါးကြင်း ဟင်းရည် ပူပူနွေးနွေးဖြင့် စားသုံးရသော မြန်မာတို့၏ အမျိုးသား အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "လက်ဖက်သုတ် (Lahpet Thoke)", img: "images/Lahpet_Thoke_Myanmar.jpg", desc: "နှပ်ထားသော လက်ဖက်၊ အကြော်စုံ၊ နှမ်း၊ ကြက်သွန်ဖြူတို့ဖြင့် သုတ်ထားသော မြန်မာ့ရိုးရာ အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "အုန်းနို့ခေါက်ဆွဲ (Onhno Khao Swe)", img: "images/Onhno_Khao_Swe.jpg", desc: "ကြက်သား အုန်းနို့ဟင်းရည်၊ ဂျုံခေါက်ဆွဲတို့ ပါဝင်သော အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "ရှမ်းခေါက်ဆွဲ (Shan Noodles)", img: "images/Shan_Noodles.jpg", desc: "ဆန်ခေါက်ဆွဲ၊ ဝက်သား/ကြက်သား အနှစ်တို့ဖြင့် သုတ် သို့မဟုတ် စွပ်ပြုတ် ချက်ပြုတ်ထားသော ရှမ်းရိုးရာ အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "ငါးထမင်းချဉ် (Shan Fish Rice)", img: "images/Shan_Fish_Rice.jpg", desc: "ငါးနီတူး/ငါးကြင်း၊ အာလူး၊ ထမင်းနယ်၍ ကြက်သွန်ဖြူဆီချက်၊ ဂျင်းတို့ဖြင့် စားသုံးရသော အစားအစာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "NEPAL", lat: 28.3, lng: 84.1, icon: "🥟", 
+    foods: [
+      { name: "Dal Bhat", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ပဲဟင်းရည်၊ ထမင်း၊ ဟင်းသီးဟင်းရွက် အച്ചာတို့ ပါဝင်သော နီပေါတို့၏ အဓိက အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Momo Nepal", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "ကြက်သား၊ အမဲသား သို့မဟုတ် ဟင်းသီးဟင်းရွက် ဌာပနာပါသော နီပေါစတိုင် ပေါင်းဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Sel Roti", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ဆန်မုန့်နှစ်ဖြင့် ပြုလုပ်ထားသော ကွင်းပုံစံ ကြွပ်ကြွပ် အချို မုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Chatamari", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "ဆန်မုန့်ပြားပေါ်တွင် အသားနုတ်နုတ်စဉ်း၊ ကြက်ဥတို့ တင်ထားသော နီပေါ ပီဇာ ဖြစ်ပါသည်။" },
+      { name: "Gorkhali Lamb", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "အမွှေးအကြိုင်များ၊ အာလူးတို့ဖြင့် ချက်ထားသော သိုးသားဟင်း ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "NORTH KOREA", lat: 40.3, lng: 127.5, icon: "🍜", 
+    foods: [
+      { name: "Naengmyeon", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "ပြုံးယမ်းစတိုင် ရေခဲစွပ်ပြုတ်ရည်ဖြင့် စားသုံးရသော အေးစက်စက် ခေါက်ဆွဲ ဖြစ်ပါသည်။" },
+      { name: "Kimchi", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "မုန်လာထုပ်ကို အချဉ်ဖောက်ထားသော ရိုးရာ အချဉ် မကန်ဒုံး ဖြစ်ပါသည်။" },
+      { name: "Injo Gogi Bap", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ပဲပုပ်ဖတ်အတွင်း ထမင်းထည့်၍ ငရုတ်အနှစ်ဆမ်းထားသော လမ်းဘေးစာ ဖြစ်ပါသည်။" },
+      { name: "Pyeongyang Onban", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ထမင်းပေါ်တွင် ကြက်သားပြုတ်၊ မုန့်ကြော်၊ မှိုတို့ တင်ထားသော စွပ်ပြုတ် ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Sinseollo", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "မင်းမူပွဲသုံး အသား၊ ဟင်းသီးဟင်းရွက်၊ ဖက်ထုပ်တို့ ပါဝင်သော စူပါ မီးဖိုအိုး စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "OMAN", lat: 21.5, lng: 55.9, icon: "🍖", 
+    foods: [
+      { name: "Shuwa", img: "images/Shuwa.jpg", desc: "သန္တာပင်ရွက်ဖြင့် ထုပ်၍ မြေအောက်မီးဖို၌ ၂၄ နာရီခန့် ဖုတ်ထားသော သိုးသားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Majboos Oman", img: "images/Majboos_Oman.jpg", desc: "ဇာဖရန်၊ အမွှေးအကြိုင်တို့ဖြင့် ချက်ပြုတ်ထားသော အိုမန် ဒန်ပေါက် ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Halwa Omani", img: "images/Halwa_Omani.jpg", desc: "ဧလက္ကရီ၊ ဇာဖရန်၊ သကြား၊ အခွံမာသီးတို့ ပါဝင်သော ရိုးရာ အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Mashuai", img: "images/Mashuai.jpg", desc: "သံပုရာရည်ဆော့စ်ဆမ်း မီးကင်ထားသော ငါးနှင့် သပိတ်ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Harees Oman", img: "images/Harees_Oman.jpg", desc: "ဂျုံနှင့် အသားတို့ဖြင့် ချက်ပြုတ်ထားသော နံနက်စာ ဆန်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "PAKISTAN", lat: 30.3, lng: 69.3, icon: "🍲", 
+    foods: [
+      { name: "Nihari", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "အမဲဂျင်း သို့မဟုတ် သိုးသားကို ညဉ့်နက်သည်အထိ ထူထူပြစ်ပြစ် ချက်ထားသော ပန်ဂျာဘီ ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Chicken Karahi", img: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800", desc: "ခရမ်းချဉ်သီး၊ ဂျင်း၊ ငရုတ်သီးစိမ်းတို့ဖြင့် ဒယ်အိုးအတွင်း စပ်စပ်ကြော်ထားသော ကြက်သားဟင်း ဖြစ်ပါသည်။" },
+      { name: "Biryani Pakistani", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "စပ်စပ်မွှေးမွှေး ပါကစ္စတန်စတိုင် ကြက်သား/သိုးသား ဒန်ပေါက် ဖြစ်ပါသည်။" },
+      { name: "Seekh Kebab", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "အမဲသား သို့မဟုတ် ကြက်သားစဉ်းကို သံချောင်းစွပ် မီးကင်ထားသော အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Halwa Puri", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "ပူရီ မုန့်ကြော်၊ မဆလာ ပဲဟင်းနှင့် ရိုးရာ ဟယ်လ်ဝါ အချိုမုန့် နံနက်စာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "PALESTINE", lat: 31.9, lng: 35.2, icon: "🍗", 
+    foods: [
+      { name: "Musakhan", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "ကြက်သွန်နီ၊ စူးမက်အမွှေးအကြိုင်၊ အိုလစ်ဗ်ဆီတို့ဖြင့် ပေါင်းထားသော ကြက်သားနှင့် ပီတာမုန့် ဖြစ်ပါသည်။" },
+      { name: "Maqluba", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အမဲသား၊ ခင်းသီး၊ အာလူးတို့ ပါဝင်ပြီး အိုးမှ ထမင်းပန်းကန်ထဲ သောက်မှောက် ခင်းင်းရသော ထမင်းဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Falafel Palestine", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ကုလားပဲနှင့် အစိမ်းရောင် ဟင်းခတ်အမွှေးအကြိုင်များ ပါဝင်သော မုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Kanafeh Nabulsieh", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "နာဘလုစ်မြို့ထွက် ဒိန်ခဲနှင့် မုန့်မျှင်တန်း အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Kofta bi Tahini", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "အမဲသားလုံးများကို တာဟီနီ နှမ်းအနှစ်ဆော့စ်ဖြင့် ဖုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "PHILIPPINES", lat: 12.8, lng: 121.7, icon: "🍖", 
+    foods: [
+      { name: "Chicken Adobo", img: "images/Chicken_Adobo.jpg", desc: "ပဲငါးပိရည်၊ ရှာလကာရည်၊ ကြက်သွန်ဖြူ၊ ငရုတ်ကောင်းတို့ဖြင့် နူးအီအောင် ချက်ထားသော ဖိလစ်ပိုင် အမျိုးသားဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Lechon", img: "images/Lechon.jpg", desc: "ဝက်တစ်ကောင်လုံးကို မီးသွေးဖြင့် အကင်လိုက် ကြွပ်ကြွပ်ကင်ထားသော မင်းမူပွဲသုံး အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Sinigang", img: "images/Sinigang.jpg", desc: "မန်ကျည်းသီးဖြင့် ချက်ထားသော အချဉ် စွပ်ပြုတ်ဟင်း ဖြစ်ပါသည်။" },
+      { name: "Kare-Kare", img: "images/Kare_Kare.jpg", desc: "နွားအမြီး၊ ဟင်းသီးဟင်းရွက်တို့ကို မြေပဲဆော့စ်ဖြင့် ချက်ပြုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Halo-Halo", img: "images/Halo_Halo.jpg", desc: "ရေခဲခြစ်၊ သီးစုံ၊ ပဲအချို၊ နို့ဆီတို့ ပါဝင်သော ရိုးရာ အချိုပွဲ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "QATAR", lat: 25.3, lng: 51.1, icon: "🍲", 
+    foods: [
+      { name: "Machboos Qatar", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အမွှေးအကြိုင်များ၊ ကြက်သား သို့မဟုတ် သိုးသားတို့ဖြင့် ချက်ပြုတ်ထားသော ကာတာ အမျိုးသား ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Thareed", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ပီတာမုန့်ခြောက်ပေါ်တွင် အသား၊ ဟင်းသီးဟင်းရွက် စွပ်ပြုတ်ဆမ်းထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Madrouba", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဆန်၊ နို့၊ ထောပတ်၊ ကြက်သားတို့ဖြင့် ကြေညက်သည်အထိ ချက်ထားသော ဆန်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Luqaimat Qatar", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စွန်ပလွန်သီး ရေနွေးကြမ်းဆမ်း မုန့်လုံးကြော် အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Balaleet Qatar", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဇာဖရန် မုန့်တီအချိုနှင့် ကြက်ဥကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "RUSSIA", lat: 61.5, lng: 105.3, icon: "Soup", 
+    foods: [
+      { name: "Borscht", img: "Borscht.jpg", desc: "မုန်လာဥနီနီ (Beetroot)၊ အမဲသား၊ ဂေါ်ဖီတို့ ပါဝင်သော ရုရှား အနီရောင် စွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Beef Stroganoff", img: "Beef_Stroganoff.jpg", desc: "အမဲသား၊ မှိုတို့ကို စာဝါခရီးမ် (Sour cream) ဆော့စ်ဖြင့် ချက်ထားသော နာမည်ကျော် ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Pelmeni", img: "Pelmeni.jpg", desc: "အသားနုတ်နုတ်စဉ်း ပါဝင်သော ရုရှား ရိုးရာ ပေါင်း/ပြုတ် ဖက်ထုပ် ဖြစ်ပါသည်။" },
+      { name: "Blini", img: "Blini.jpg", desc: "ငါးဥ (Caviar) သို့မဟုတ် ယိုဖြင့် စားသုံးရသော ရုရှား ပန်ကိတ် မုန့် ဖြစ်ပါသည်။" },
+      { name: "Olivier Salad", img: "Olivier_Salad.jpg", desc: "အာလူး၊ ကြက်ဥပြုတ်၊ မာရိုနိစ်ဆော့စ်တို့ ပါဝင်သော ရုရှား အာလူးသုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "SAUDI ARABIA", lat: 23.8, lng: 45.0, icon: "🍚", 
+    foods: [
+      { name: "Kabsa", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ဆန်ရှည်၊ အမွှေးအကြိုင်များ၊ ကြက်သား သို့မဟုတ် သိုးသားတို့ ပါဝင်သော ဆော်ဒီအာရေးဗီးယား အမျိုးသား ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Mandi", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "မြေအောက်မီးဖို၌ ချက်ပြုတ်ထားသော သိုးသားနှင့် ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Jareesh Saudi", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဂျုံနှင့် အသားတို့ ပါဝင်သော ရိုးရာ အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Mutabbaq", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အသားစဉ်း၊ ကြက်ဥ၊ ကြက်သွန်မြတ်တို့ ပါဝင်သော ခေါက်မုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Saleeg", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "နို့၊ ကြက်ပြုတ်ရည်တို့ဖြင့် ချက်ထားသော အဖြူရောင် နို့ဆန်ပြုတ် ထမင်း ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "SINGAPORE", lat: 1.3, lng: 103.8, icon: "🦀", 
+    foods: [
+      { name: "Chilli Crab", img: "images/chilli_crab_singapore.jpg", desc: "ငရုတ်သီး၊ ခရမ်းချဉ်သီး၊ ကြက်ဥ အနှစ်ဆော့စ်ဖြင့် ချက်ပြုတ်ထားသော စင်းကာပူ နာမည်ကျော် ဂဏန်းဟင်း ဖြစ်ပါသည်။" },
+      { name: "Hainanese Chicken Rice", img: "images/Hainanese_Chicken_Rice_singapore.jpg", desc: "ကြက်ပြုတ်ရည်ဖြင့် ချက်ထားသော ထမင်းနှင့် ကြက်ပြုတ် ဟိုင်နန် ကြက်ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Laksa Katong", img: "images/Laksa_Katong_singapore.jpg", desc: "အုန်းနို့ အစပ်ဟင်းရည်၊ ပုစွန်၊ ငါးဆွဲပြားတို့ ပါဝင်သော ခေါက်ဆွဲ ဖြစ်ပါသည်။" },
+      { name: "Kaya Toast", img: "images/Kaya_Toast_singapore.jpg", desc: "အုန်းသီးယို၊ ထောပတ် သုတ်ထားသော ပေါင်မုန့်ကင်နှင့် ကြက်ဥ မကျက်တကျက် စားသုံးရသော နံနက်စာ ဖြစ်ပါသည်။" },
+      { name: "Char Kway Teow Sg", img: "images/Char_Kway_Teow_Sg.jpg", desc: "ပဲငါးပိအမည်း၊ ပုစွန်၊ ဝက်အူချောင်းတို့ဖြင့် ကြော်ထားသော နန်းပြားကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "SOUTH KOREA", lat: 35.9, lng: 127.7, icon: "🇰🇷", 
+    foods: [
+      { name: "Kimchi Jjigae", img: "images/Kimchi_Jjigae_SKorea.jpg", desc: "ဂိမ်ချီ၊ ဝက်သား၊ တို့ဖူးတို့ ပါဝင်သော ကိုရီးယား အစပ် စွပ်ပြုတ် ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Bibimbap", img: "images/Bibimbap_SKorea.jpg", desc: "ဟင်းသီးဟင်းရွက်စုံ၊ အသား၊ ကြက်ဥ၊ ငရုတ်အနှစ်တို့ဖြင့် နယ်စားရသော ကိုရီးယား ထမင်းသုတ် ဖြစ်ပါသည်။" },
+      { name: "Bulgogi", img: "images/Bulgogi_SKorea.jpg", desc: "ပဲငါးပိချို၊ နှမ်းဆီတို့ဖြင့် စိမ်၍ ကင်ထားသော အမဲသား ပါးပါးပြား ဖြစ်ပါသည်။" },
+      { name: "Tteokbokki", img: "images/Tteokbokki.jpg", desc: "ဆန်မုန့်ချောင်းများကို ကိုရီးယား ငရုတ်အနှစ်ဆော့စ်ဖြင့် ချက်ထားသော လမ်းဘေးစာ ဖြစ်ပါသည်။" },
+      { name: "Samgyeopsal", img: "images/Samgyeopsal.jpg", desc: "ဝက်သုံးထပ်သား မီးကင် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "SRI LANKA", lat: 7.8, lng: 80.7, icon: "🍲", 
+    foods: [
+      { name: "Kottu Roti", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "ပလာတာမုန့်၊ ကြက်ဥ၊ ဟင်းသီးဟင်းရွက်၊ ကြက်သားတို့ဖြင့် စင်း၍ ကြော်ထားသော သီရိလင်္ကာ လမ်းဘေးစာ ဖြစ်ပါသည်။" },
+      { name: "Fish Ambul Thiyal", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "မက္ကလင်သီး (Goraka) ဖြင့် အမည်းရောင်ဖြစ်အောင် ချက်ထားသော ငါးအစပ်ဟင်း ဖြစ်ပါသည်။" },
+      { name: "Hoppers (Appam)", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဆန်မုန့်နှစ်၊ အုန်းနို့တို့ဖြင့် ဒယ်အိုးခွက်တွင် ဖုတ်ထားသော အာပွန်မုန့် ဖြစ်ပါသည်။" },
+      { name: "Parippu", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "အုန်းနို့၊ အမွှေးအကြိုင်တို့ဖြင့် ချက်ထားသော ပဲနီလေးဟင်း ဖြစ်ပါသည်။" },
+      { name: "Pol Sambol", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "အုန်းသီးခြစ်၊ ငရုတ်သီး၊ သံပုရာရည်တို့ဖြင့် ထိမ်းစပ်ထားသော အုန်းသီးအသုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "STATE OF PALESTINE", lat: 31.9, lng: 35.2, icon: "🧆", 
+    foods: [
+      { name: "Musakhan", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "စူးမက်အမွှေးအကြိုင်၊ ကြက်သွန်နီတို့ဖြင့် ချက်ထားသော ကြက်သား မုန့်ပြား ဖြစ်ပါသည်။" },
+      { name: "Maqluba", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အိုးမှ ဇောက်ထိုးမှောက်ခင်း စားသုံးရသော အသားနှင့် ဟင်းသီးဟင်းရွက် ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Mutabbak", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ဒိန်ခဲ သို့မဟုတ် အခွံမာသီး ဌာပနာပါသော မုန့်ခေါက် ဖြစ်ပါသည်။" },
+      { name: "Kiddeh", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ဂျုံနှင့် အသားစဉ်းတို့ဖြင့် ပြုလုပ်ထားသော အသားလုံးကြော် ဖြစ်ပါသည်။" },
+      { name: "Hummus", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ကုလားပဲ ရိုးရာ အနှစ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "SYRIA", lat: 34.8, lng: 38.9, icon: "🍲", 
+    foods: [
+      { name: "Kibbeh Syrian", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "ဆီးရီးယား အမျိုးသား အသားလုံး မုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Yabrak", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စပျစ်ရွက်ထဲတွင် အမဲသား၊ ဆန်တို့ထည့်၍ သံပုရာရည်ဖြင့် ပြုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Fatteh", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ကြော်ထားသော ပီတာမုန့်၊ ကုလားပဲ၊ ဒိန်ချဉ်၊ နှမ်းအနှစ်တို့ ပါဝင်သော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Muhammara", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ငရုတ်နီ၊ သစ်ကြားသီးတို့ဖြင့် ပြုလုပ်ထားသော အနှစ် အမြည်း ဖြစ်ပါသည်။" },
+      { name: "Shawarma Syrian", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "ကြက်သွန်ဖြူဆော့စ် ပါဝင်သော ဆီးရီးယားစတိုင် ကြက်သား လိပ်မုန့် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "TAIWAN", lat: 23.7, lng: 121.0, icon: "🧋", 
+    foods: [
+      { name: "Beef Noodle Soup", img: "images/Beef_Noodle_Soup.jpg", desc: "နူးအီနေသော အမဲသားတုံး၊ ခေါက်ဆွဲ၊ စပ်စပ်ပြစ်ပြစ် စွပ်ပြုတ်ရည် ပါဝင်သော တိုင်ဝမ် အမျိုးသား အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Bubble Tea", img: "images/Bubble_Tea.jpg", desc: "တက်ပီအိုကာ ပုလဲလုံးများ ပါဝင်သော တိုင်ဝမ်ထုတ် နာမည်ကျော် နို့လက်ဖက်ရည် ဖြစ်ပါသည်။" },
+      { name: "Gua Bao", img: "images/Gua_Bao.jpg", desc: "ဝက်သုံးထပ်သား၊ မြေပဲမှုန့်၊ အချဉ်တို့ ပါဝင်သော တိုင်ဝမ် ဟမ်ဘာဂါ ပေါက်စီ ဖြစ်ပါသည်။" },
+      { name: "Lu Rou Fan", img: "images/Lu_Rou_Fan.jpg", desc: "ပဲငါးပိရည်ဖြင့် ချက်ထားသော ဝက်သားနုတ်နုတ်စဉ်း ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Stinky Tofu", img: "images/Stinky_Tofu.jpg", desc: "အနံ့စူးရှပြီး ကြွပ်ကြွပ်ကြော်ထားသော အချဉ်ဖောက် တို့ဖူးကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "TAJIKISTAN", lat: 38.8, lng: 71.2, icon: "🍚", 
+    foods: [
+      { name: "Osh / Plov", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "သိုးသား၊ မုန်လာဥနီ၊ ဇီရာတို့ဖြင့် ချက်ထားသော တာဂျီကစ္စတန် အမျိုးသား ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Qurutob", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "မုန့်ပြားများပေါ်တွင် ဒိန်ခဲခြောက်ရေစိမ်အနှစ်၊ ကြက်သွန်နီ၊ သခွားသီးတို့ တင်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Sambusa", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "သိုးသား၊ ကြက်သွန်နီ ဌာပနာပါသော တာဂျစ် စမိုဆာ မုန့် ဖြစ်ပါသည်။" },
+      { name: "Shashlik Tajik", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "မီးသွေးကင် သိုးသားအတုံးများ ဖြစ်ပါသည်။" },
+      { name: "Shurbo", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "သိုးသားအတုံးကြီးများ၊ အာလူး၊ မုန်လာဥနီ ပါဝင်သော စွပ်ပြုတ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "THAILAND", lat: 15.8, lng: 100.9, icon: "🍲", 
+    foods: [
+      { name: "Tom Yum Goong", img: "images/Tom_Yum_Goong_thai.jpg", desc: "ပုစွန်၊ စပါးလင်၊ ရှဲမောက်ရွက်၊ ငရုတ်သီးတို့ ပါဝင်သော ထိုင်း ရိုးရာ တုံယမ်းချဉ်စပ် စွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Pad Thai", img: "images/Pad_Thai.jpg", desc: "ဆန်ခေါက်ဆွဲ၊ ပုစွန်/ကြက်သား၊ ပဲပင်ပေါက်၊ မြေပဲတို့ဖြင့် ကြော်ထားသော နာမည်ကျော် ဖတ်ထိုင်း ဖြစ်ပါသည်။" },
+      { name: "Som Tam", img: "images/Som_Tam_Thai.jpg", desc: "သင်္ဘောသီးစိမ်း၊ ငရုတ်သီး၊ ငါးငံပြာရည်၊ သံပုရာရည်တို့ဖြင့် ထောက်ထားသော သင်္ဘောသီးထောက် ဖြစ်ပါသည်။" },
+      { name: "Green Curry (Gaeng Keow Wan)", img: "images/Green_Curry_Thai.jpg", desc: "အုန်းနို့၊ အစိမ်းရောင် ငရုတ်အနှစ်၊ ကြက်သားတို့ဖြင့် ချက်ထားသော ထိုင်း ဟင်းစိမ်း ဖြစ်ပါသည်။" },
+      { name: "Mango Sticky Rice", img: "images/Mango_Sticky_Rice.jpg", desc: "သရက်သီးမှည့်၊ ကောက်ညှင်းပေါင်း၊ အုန်းနို့ဆော့စ် ပါဝင်သော အချိုပွဲ ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "TIMOR-LESTE", lat: -8.8, lng: 125.7, icon: "🌽", 
+    foods: [
+      { name: "Batar Daan", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ပြောင်းဖူး၊ ပဲမျိုးစုံ၊ ရွှေဖရုံသီးတို့ဖြင့် ချက်ပြုတ်ထားသော တီမော အမျိုးသား အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Ikan Saboko", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800", desc: "ငှက်ပျောရွက်ထဲတွင် ငါး၊ မန်ကျည်းသီး၊ ငရုတ်သီးတို့ စိမ်၍ ကင်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Caruru", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ရုံးပတီသီး၊ ပုစွန်တို့ဖြင့် ချက်ပြုတ်ထားသော ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Katupa", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "ထန်းရွက်ထဲတွင် အုန်းနို့ဖြင့် ပေါင်းထားသော ကောက်ညှင်းထုပ် ဖြစ်ပါသည်။" },
+      { name: "Tapai", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "အချဉ်ဖောက်ထားသော ကောက်ညှင်း အချိုပွဲ မုန့် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "TURKEY", lat: 38.9, lng: 35.2, icon: "🥙", 
+    foods: [
+      { name: "Doner Kebab", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "ဒေါင်လိုက် လှည့်ကင်ထားသော အမဲသား သို့မဟုတ် ကြက်သား ရိုးရာ အသားကင် ဖြစ်ပါသည်။" },
+      { name: "Baklava", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ဂျုံရွက်ပါးပါး၊ သစ်ကြားသီး၊ ပျားရည်တို့ ပါဝင်သော နာမည်ကျော် တူရကီ အချိုမုန့် ဖြစ်ပါသည်။" },
+      { name: "Lahmacun", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "မုန့်ပြားပေါ်တွင် အသားနုတ်နုတ်စဉ်း၊ ဟင်းသီးဟင်းရွက်တို့ တင်ထားသော တူရကီ ပီဇာ ဖြစ်ပါသည်။" },
+      { name: "Pide", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "လှေပုံစံ မုန့်ဖုတ်ပြားအတွင်း အသား၊ ဒိန်ခဲတို့ ထည့်ထားသော မုန့် ဖြစ်ပါသည်။" },
+      { name: "Kofte", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "အမွှေးအကြိုင်များ ရောစပ်ထားသော တူရကီ အမဲသား/သိုးသားလုံး ကင် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "TURKMENISTAN", lat: 38.9, lng: 59.5, icon: "🥩", 
+    foods: [
+      { name: "Dograma", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဂျုံမုန့်၊ သိုးသား၊ ကြက်သွန်နီ တို့ကို ဖဲ့ချေ၍ သိုးသားပြုတ်ရည် ဆမ်းထားသော ရိုးရာ ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Plov Turkmen", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "သိုးသား၊ မုန်လာဥနီတို့ဖြင့် ချက်ထားသော ထမင်းဆီဆမ်း ဖြစ်ပါသည်။" },
+      { name: "Gutap", img: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800", desc: "အသား သို့မဟုတ် အစောငွေရွက် ဌာပနာပါသော လဝက်ပုံစံ မုန့်ကြော် ဖြစ်ပါသည်။" },
+      { name: "Shurpa Turkmen", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "သိုးသားတုံးကြီးများနှင့် ဟင်းသီးဟင်းရွက် ပါဝင်သော စွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Ichlekli", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800", desc: "သဲကန္တာရ သဲပူထဲတွင် ဖုတ်လေ့ရှိသော သိုးသား ပီဇာ မုန့် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "UNITED ARAB EMIRATES", lat: 23.4, lng: 53.8, icon: "🍲", 
+    foods: [
+      { name: "Al Machboos", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "အမွှေးအကြိုင်များ၊ အသား၊ သံပုရာခြောက်တို့ဖြင့် ချက်ပြုတ်ထားသော UAE ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Al Harees", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "ဂျုံနှင့် သိုးသား/ကြက်သားတို့ဖြင့် ချက်ပြုတ်ထားသော ရိုးရာ မင်းမူပွဲသုံး ဆန်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Luqaimat UAE", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "စွန်ပလွန်သီး ရေနွေးကြမ်းဆမ်း အာရပ် မုန့်လုံးကြော် အချိုပွဲ ဖြစ်ပါသည်။" },
+      { name: "Shawarma UAE", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "မီးကင်ထားသော အသား၊ အာလူးကြော်၊ ကြက်သွန်ဖြူဆော့စ် ပါဝင်သော လိပ်မုန့် ဖြစ်ပါသည်။" },
+      { name: "Balaleet UAE", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800", desc: "ဧလက္ကရီ၊ ဇာဖရန် မုန့်တီအချိုနှင့် ကြက်ဥကြော် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "UZBEKISTAN", lat: 41.3, lng: 64.5, icon: "🍚", 
+    foods: [
+      { name: "Uzbek Plov", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "သိုးသား၊ မုန်လာဥနီဝါ၊ ဇီရာ၊ ကုလားပဲတို့ဖြင့် ဒယ်အိုးကြီးတွင် ချက်ထားသော ဥဇဘက်ကစ္စတန် အမျိုးသား ထမင်း ဖြစ်ပါသည်။" },
+      { name: "Samsa Uzbek", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800", desc: "သိုးသား၊ ကြက်သွန်နီ ဌာပနာပါသော ရိုးရာ မြေအိုး မုန့်ဖုတ် ဖြစ်ပါသည်။" },
+      { name: "Shashlik Uzbek", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", desc: "သန်းချောင်းစွပ် မီးသွေးကင် သိုးသားအတုံးများ ဖြစ်ပါသည်။" },
+      { name: "Laghman Uzbek", img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800", desc: "လက်ဆွဲခေါက်ဆွဲနှင့် အသား ဟင်းသီးဟင်းရွက် စွပ်ပြုတ် ဖြစ်ပါသည်။" },
+      { name: "Manty Uzbek", img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800", desc: "သိုးသားနုတ်နုတ်စဉ်း ပါဝင်သော ရိုးရာ ပေါင်းဖက်ထုပ် ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "VIETNAM", lat: 14.0, lng: 108.2, icon: "🍜", 
+    foods: [
+      { name: "Pho", img: "images/Pho_Viet.jpg", desc: "အမဲရိုး သို့မဟုတ် ကြက်ရိုး ပြုတ်ရည်ကြည်၊ ဆန်ခေါက်ဆွဲ၊ အမဲသား ပါးပါးပြားတို့ ပါဝင်သော ဗီယက်နမ် အမျိုးသား ခေါက်ဆွဲ ဖြစ်ပါသည်။" },
+      { name: "Banh Mi", img: "images/Banh_Mi_Viet.jpg", desc: "ပြင်သစ် ပေါင်မုန့်ရှည်အတွင်း ဝက်သား၊ ပတေးအနှစ်၊ အချဉ်တို့ ထည့်ထားသော ပေါင်မုန့်ညှပ် ဖြစ်ပါသည်။" },
+      { name: "Bun Cha", img: "images/Bun_Cha_viet.jpg", desc: "မီးကင်ထားသော ဝက်သားလုံး၊ မုန့်ဖတ်၊ ငါးငံပြာရည် အချိုစပ်ဆော့စ် ပါဝင်သော ဟာနွိုင် အစားအစာ ဖြစ်ပါသည်။" },
+      { name: "Goi Cuon", img: "images/Goi_Cuon_viet.jpg", desc: "ဆန်စက္ကူပြားထဲတွင် ပုစွန်၊ ဝက်သား၊ မုန့်ဖတ်၊ အစိမ်းရွက်တို့ ထုပ်ထားသော လတ်ဆတ် စပရင်းလိပ် ဖြစ်ပါသည်။" },
+      { name: "Cao Lau", img: "images/Cao_Lau_viet.jpg", desc: "ဟိုအန်းမြို့ထွက် ဝက်သား၊ ခေါက်ဆွဲ၊ ဟင်းရွက်တို့ ပါဝင်သော ခေါက်ဆွဲဟင်း ဖြစ်ပါသည်။" }
+    ]
+  },
+  { 
+    name: "YEMEN", lat: 15.5, lng: 48.5, icon: "🍲", 
+    foods: [
+      { name: "Saltah", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800", desc: "အမဲပြုတ်ရည်၊ ဟင်းသီးဟင်းရွက်နှင့် ပဲနို့နံ့သာ (Fenugreek) အနှစ်တို့ ပါဝင်သော ယီမင် အမျိုးသား ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Mandi Yemen", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800", desc: "မြေအောက်မီးဖို၌ ချက်ထားသော သိုးသား သို့မဟုတ် ကြက်သား ဒန်ပေါက် ဖြစ်ပါသည်။" },
+      { name: "Fahsa", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800", desc: "ကျောက်အိုးအတွင်း ပူပူနွေးနွေး ချက်ပြုတ်ထားသော အမဲသား နူးနူး ဟင်းလျာ ဖြစ်ပါသည်။" },
+      { name: "Bint Al-Sahn", img: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800", desc: "ထောပတ်၊ ပျားရည် ဆမ်းထားသော လေယာများစွာပါ ရိုးရာ မုန့်ဖုတ် ဖြစ်ပါသည်။" },
+      { name: "Shakshouka Yemeni", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800", desc: "ကြက်သွန်နီ၊ ခရမ်းချဉ်သီးတို့ဖြင့် စပ်စပ်ကြော်ထားသော ကြက်ဥကြော် ဟင်း ဖြစ်ပါသည်။" }
+    ]
+  }
+];
+(function(){
+ const box=document.getElementById('uniChatBox'),toggle=document.getElementById('uniChatToggle'),close=document.getElementById('uniChatClose'),form=document.getElementById('ucForm'),input=document.getElementById('ucInput'),msgs=document.getElementById('ucMessages');
+ const norm=s=>(s||'').toString().toLowerCase().replace(/[၊။!?၊,.;:()]/g,' ').replace(/\s+/g,' ').trim();
+ function add(text,who){const d=document.createElement('div');d.className='uc-msg '+(who==='user'?'uc-user':'uc-bot');d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+ function recipeAnswer(q){
+   const nq=norm(q); const tokens=nq.split(' ').filter(x=>x.length>1);
+   let best=null,score=0;
+   __chatRecipes.forEach(r=>{const hay=norm([r.title,r.desc,r.categoryLabel,...(r.ingredients||[]),...(r.steps||[])].join(' '));let s=0;tokens.forEach(t=>{if(hay.includes(t))s++;});if(norm(r.title)===nq)s+=20;if(s>score){score=s;best=r;}});
+   if(best&&score>0){
+     let out=`🍲 ${best.title}\n\n${best.desc||''}`;
+     if(best.time||best.servings)out+=`\n⏱️ ${best.time||''}  🍽️ ${best.servings||''}`;
+     if(/ပါဝင်|ပစ္စည်း|ingredient|ချက်နည်း|ဘယ်လို|how|recipe|ပြုလုပ်|လုပ်နည်း|cook|ချက်/.test(nq)){
+       if(best.ingredients?.length)out+=`\n\n📌 ပါဝင်ပစ္စည်းများ\n• `+best.ingredients.join('\n• ');
+       if(best.steps?.length)out+=`\n\n👩‍🍳 ချက်ပြုတ်နည်း\n`+best.steps.map((x,i)=>`${i+1}. ${x}`).join('\n');
+     }
+     return out;
+   } return null;
+ }
+ function foodAnswer(q){
+   const nq=norm(q); const tokens=nq.split(' ').filter(x=>x.length>1);let hits=[];
+   __chatFoods.forEach(c=>{let country=norm(c.name);let foods=c.foods||[];let matchedCountry=tokens.some(t=>country.includes(t)||t.includes(country));foods.forEach(f=>{let hay=norm(c.name+' '+f.name+' '+f.desc);let s=0;tokens.forEach(t=>{if(hay.includes(t))s++;});if(matchedCountry)s+=1;if(s>0)hits.push({c,f,s});})});
+   hits.sort((a,b)=>b.s-a.s);hits=hits.slice(0,5);
+   if(!hits.length)return null;
+   const countryQuery=hits[0].c.name;
+   if(/ဘာအစား|နာမည်ကြီး|popular|food|စားစရာ|ဟင်းလျာ/.test(nq)&&tokens.some(t=>norm(countryQuery).includes(t))){
+      const c=hits[0].c;return `🌏 ${c.name} ရဲ့ Food Recommendations\n\n`+(c.foods||[]).map((f,i)=>`${i+1}. ${f.name} — ${f.desc}`).join('\n\n');
+   }
+   return hits.map((x,i)=>`${i+1}. 🌏 ${x.c.name} — 🍽️ ${x.f.name}\n${x.f.desc}`).join('\n\n');
+ }
+ function answer(q){
+   if(!q.trim())return 'မေးချင်တဲ့အကြောင်းအရာကို ရေးပေးပါ 😊';
+   const a=recipeAnswer(q),b=foodAnswer(q);
+   if(a&&b){
+      // Prefer a direct recipe-name match; otherwise show both relevant results.
+      return a+'\n\n────────\n\n🌏 နိုင်ငံတကာအစားအစာ အချက်အလက်\n'+b;
+   }
+   if(a)return a;if(b)return b;
+   return 'ဒီ website ထဲမှာရှိတဲ့ data ထဲက မေးခွန်းနဲ့ ကိုက်ညီတဲ့အကြောင်းအရာကို မတွေ့သေးပါ။\n\nဥပမာ — “ရွှေကြည်မုန့် ချက်နည်း”, “Japan ရဲ့ နာမည်ကြီးအစားအစာ”, “Singapore food”, “Mohinga ပါဝင်ပစ္စည်း” လို့ မေးကြည့်ပါ။';
+ }
+ toggle.onclick=()=>{box.classList.toggle('open');if(box.classList.contains('open'))input.focus();};
+ close.onclick=()=>box.classList.remove('open');
+ form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add(q,'user');input.value='';setTimeout(()=>add(answer(q),'bot'),180);});
+})();
+</script>
+
+</body>
+</html>

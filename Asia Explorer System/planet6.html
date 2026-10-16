@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>မြန်မာ့ရိုးရာ သက်ရောက်ဂြိုလ်နှင့် ယတြာလမ်းညွှန်</title>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root {
+
+    --primary-gold: #D4AF37;
+    --gold-light: #F7E7A8;
+
+    --deep-maroon: #5D001E;
+    --maroon-light: #7A0027;
+    --maroon-dark: #4A0018;
+
+    --soft-bg: #FCF8F2;
+    --card-bg: #FFFDF9;
+
+    --text-dark: #2C3E50;
+    --text-gray: #555;
+
+    --border: #F1E5C1;
+
+    --green: #2E7D32;
+    --green-bg: #E8F5E9;
+
+    --danger: #C62828;
+    --danger-bg: #FFF5F5;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body {
+
+    min-height: 100vh;
+
+    padding: 25px 20px 50px;
+
+    font-family:
+        'Pyidaungsu',
+        sans-serif;
+
+    color: var(--text-dark);
+
+    background:
+
+        radial-gradient(
+            circle at top left,
+            rgba(212,175,55,0.12),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at bottom right,
+            rgba(93,0,30,0.10),
+            transparent 30%
+        ),
+
+        var(--soft-bg);
+}
+
+
+/* =========================================================
+   NAVIGATION BAR
+========================================================= */
+
+.navbar {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: 0 auto 18px;
+
+    padding: 15px 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--maroon-dark),
+            var(--deep-maroon),
+            #6B0024
+        );
+
+    border:
+        1px solid var(--primary-gold);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.13);
+}
+
+
+/* NAV LOGO */
+
+.nav-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--primary-gold);
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   NAV BUTTON AREA
+========================================================= */
+
+.nav-buttons {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* NAV BUTTON */
+
+.nav-reset,
+.nav-mahabote {
+
+    padding:
+        10px 20px;
+
+    border:
+        1px solid var(--primary-gold);
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--gold-light);
+
+    font-family:
+        'Pyidaungsu',
+        sans-serif;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* RESET HOVER */
+
+.nav-reset:hover {
+
+    background:
+        var(--primary-gold);
+
+    color:
+        var(--deep-maroon);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 5px 15px
+        rgba(212,175,55,0.25);
+}
+
+
+/* MAHABOTE HOVER */
+
+.nav-mahabote:hover {
+
+    background:
+        var(--primary-gold);
+
+    color:
+        var(--deep-maroon);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 5px 15px
+        rgba(212,175,55,0.25);
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.container {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: auto;
+
+    background: #fff;
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    border:
+        1px solid var(--primary-gold);
+
+    box-shadow:
+        0 18px 50px
+        rgba(0,0,0,0.14);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    position: relative;
+
+    padding:
+        45px 35px;
+
+    text-align: center;
+
+    color:
+        var(--primary-gold);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--maroon-dark),
+            var(--deep-maroon),
+            #6B0024
+        );
+
+    border-bottom:
+        4px solid var(--primary-gold);
+}
+
+
+.header::before,
+.header::after {
+
+    content: "✦";
+
+    position: absolute;
+
+    font-size: 32px;
+
+    color:
+        rgba(212,175,55,0.65);
+}
+
+
+.header::before {
+
+    left: 35px;
+
+    top: 25px;
+}
+
+
+.header::after {
+
+    right: 35px;
+
+    bottom: 20px;
+}
+
+
+.header h1 {
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    line-height: 1.6;
+}
+
+
+.header p {
+
+    margin-top: 10px;
+
+    font-size: 17px;
+
+    color:
+        var(--gold-light);
+}
+
+
+/* =========================================================
+   FORM SECTION
+========================================================= */
+
+.form-section {
+
+    padding:
+        42px 50px;
+}
+
+
+.input-group {
+
+    margin-bottom: 26px;
+}
+
+
+label {
+
+    display: block;
+
+    margin-bottom: 11px;
+
+    color:
+        var(--deep-maroon);
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+select,
+input {
+
+    width: 100%;
+
+    padding:
+        17px 18px;
+
+    border:
+        2px solid #E9E3D8;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #333;
+
+    font-family:
+        'Pyidaungsu',
+        sans-serif;
+
+    font-size: 18px;
+
+    transition:
+        0.3s ease;
+}
+
+
+select:focus,
+input:focus {
+
+    border-color:
+        var(--primary-gold);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(212,175,55,0.12);
+}
+
+
+/* =========================================================
+   CALCULATE BUTTON
+========================================================= */
+
+.btn-calculate {
+
+    width: 100%;
+
+    padding: 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--deep-maroon),
+            #780028
+        );
+
+    color:
+        var(--primary-gold);
+
+    font-family:
+        'Pyidaungsu',
+        sans-serif;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px
+        rgba(93,0,30,0.22);
+
+    transition:
+        0.3s ease;
+}
+
+
+.btn-calculate:hover {
+
+    transform:
+        translateY(-2px);
+
+    background:
+        var(--maroon-light);
+
+    box-shadow:
+        0 12px 25px
+        rgba(93,0,30,0.28);
+}
+
+
+/* =========================================================
+   RESULT AREA
+========================================================= */
+
+#resultArea {
+
+    display: none;
+
+    padding:
+        0 50px 50px;
+
+    animation:
+        fadeIn 0.6s ease;
+}
+
+
+.result-divider {
+
+    height: 1px;
+
+    margin-bottom: 30px;
+
+    background:
+        #EEEEEE;
+}
+
+
+/* =========================================================
+   PLANET BADGE
+========================================================= */
+
+.planet-wrapper {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+
+.planet-badge {
+
+    display: inline-block;
+
+    padding:
+        14px 30px;
+
+    border-radius: 35px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #E6C45A,
+            var(--primary-gold)
+        );
+
+    color:
+        var(--deep-maroon);
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 6px 18px
+        rgba(212,175,55,0.28);
+}
+
+
+/* =========================================================
+   CALCULATION INFO
+========================================================= */
+
+.age-result {
+
+    padding:
+        18px 20px;
+
+    margin-bottom: 25px;
+
+    border-left:
+        5px solid
+        var(--primary-gold);
+
+    border-radius: 12px;
+
+    background:
+        #FFF9E6;
+
+    color:
+        #6D5200;
+
+    font-size: 16px;
+
+    line-height: 2;
+}
+
+
+/* =========================================================
+   CHART IMAGE
+========================================================= */
+
+.chart-image-wrapper {
+
+    margin-bottom: 25px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    background:
+        var(--card-bg);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+
+.chart-image {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    height: auto;
+
+    margin:
+        0 auto;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 6px 18px
+        rgba(0,0,0,0.08);
+}
+
+
+/* =========================================================
+   RESULT GRID
+========================================================= */
+
+.result-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 22px;
+}
+
+
+.small-result {
+
+    padding: 20px;
+
+    text-align: center;
+
+    background:
+        #FAF7EF;
+
+    border:
+        1px solid #EDE1C4;
+
+    border-radius: 14px;
+}
+
+
+.small-result-title {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color:
+        #777;
+
+    font-size: 15px;
+}
+
+
+.small-result-value {
+
+    color:
+        var(--deep-maroon);
+
+    font-size: 19px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   INFO CARD
+========================================================= */
+
+.info-card {
+
+    margin-bottom: 20px;
+
+    padding: 26px;
+
+    background:
+        var(--card-bg);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 18px;
+
+    transition:
+        0.3s ease;
+}
+
+
+.info-card:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(0,0,0,0.07);
+}
+
+
+.section-title {
+
+    display: inline-block;
+
+    margin-bottom: 15px;
+
+    padding-bottom: 6px;
+
+    color:
+        var(--deep-maroon);
+
+    border-bottom:
+        2px solid
+        var(--primary-gold);
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.content-text {
+
+    color:
+        var(--text-gray);
+
+    font-size: 17px;
+
+    line-height: 2.1;
+}
+
+
+/* =========================================================
+   WARNING CARD
+========================================================= */
+
+.warning-card {
+
+    background:
+        var(--danger-bg);
+
+    border:
+        1px solid #FFCDD2;
+}
+
+
+.warning-card .section-title {
+
+    color:
+        var(--danger);
+
+    border-color:
+        var(--danger);
+}
+
+
+/* =========================================================
+   YATYAR BOX
+========================================================= */
+
+.yatyar-box {
+
+    margin-bottom: 25px;
+
+    padding: 28px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #F1FAF2,
+            #E8F5E9
+        );
+
+    border:
+        1px solid #C8E6C9;
+
+    border-radius: 18px;
+}
+
+
+.yatyar-title {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    color:
+        var(--green);
+
+    font-size: 21px;
+
+    font-weight: bold;
+}
+
+
+.yatyar-icon {
+
+    margin-right: 6px;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(15px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 800px) {
+
+    body {
+
+        padding:
+            20px 12px 40px;
+    }
+
+
+    .navbar {
+
+        max-width: 100%;
+
+        padding:
+            13px 16px;
+    }
+
+
+    .nav-buttons {
+
+        gap: 7px;
+    }
+
+
+    .nav-reset,
+    .nav-mahabote {
+
+        padding:
+            9px 13px;
+
+        font-size: 14px;
+    }
+
+
+    .container {
+
+        max-width: 100%;
+    }
+
+
+    .form-section {
+
+        padding:
+            35px 30px;
+    }
+
+
+    #resultArea {
+
+        padding:
+            0 30px 35px;
+    }
+
+
+    .header h1 {
+
+        font-size: 28px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    body {
+
+        padding:
+            12px 8px 30px;
+    }
+
+
+    .navbar {
+
+        margin-bottom: 12px;
+
+        padding:
+            11px 13px;
+
+        border-radius: 12px;
+    }
+
+
+    .nav-logo {
+
+        font-size: 14px;
+    }
+
+
+    .nav-buttons {
+
+        gap: 5px;
+    }
+
+
+    .nav-reset,
+    .nav-mahabote {
+
+        padding:
+            8px 9px;
+
+        font-size: 12px;
+    }
+
+
+    .container {
+
+        border-radius: 18px;
+    }
+
+
+    .header {
+
+        padding:
+            30px 20px;
+    }
+
+
+    .header h1 {
+
+        font-size: 23px;
+    }
+
+
+    .header p {
+
+        font-size: 14px;
+    }
+
+
+    .header::before {
+
+        left: 15px;
+
+        top: 15px;
+
+        font-size: 23px;
+    }
+
+
+    .header::after {
+
+        right: 15px;
+
+        bottom: 15px;
+
+        font-size: 23px;
+    }
+
+
+    .form-section {
+
+        padding:
+            28px 20px;
+    }
+
+
+    #resultArea {
+
+        padding:
+            0 20px 28px;
+    }
+
+
+    label {
+
+        font-size: 16px;
+    }
+
+
+    select,
+    input {
+
+        padding:
+            14px;
+
+        font-size: 16px;
+    }
+
+
+    .btn-calculate {
+
+        padding:
+            15px;
+
+        font-size: 18px;
+    }
+
+
+    .planet-badge {
+
+        padding:
+            11px 18px;
+
+        font-size: 17px;
+    }
+
+
+    .age-result {
+
+        padding:
+            14px;
+
+        font-size: 14px;
+
+        line-height: 1.9;
+    }
+
+
+    .result-grid {
+
+        grid-template-columns:
+            1fr;
+
+        gap: 12px;
+    }
+
+
+    .info-card {
+
+        padding: 20px;
+    }
+
+
+    .section-title {
+
+        font-size: 18px;
+    }
+
+
+    .content-text {
+
+        font-size: 15px;
+
+        line-height: 2;
+    }
+
+
+    .yatyar-box {
+
+        padding:
+            21px;
+    }
+
+
+    .yatyar-title {
+
+        font-size: 18px;
+    }
+
+
+    .btn-reset {
+
+        font-size: 17px;
+
+        padding:
+            14px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .nav-logo {
+
+        font-size: 11px;
+    }
+
+
+    .nav-buttons {
+
+        gap: 3px;
+    }
+
+
+    .nav-reset,
+    .nav-mahabote {
+
+        font-size: 10px;
+
+        padding:
+            7px 7px;
+    }
+
+
+    .header h1 {
+
+        font-size: 20px;
+    }
+
+
+    .planet-badge {
+
+        font-size: 15px;
+    }
+
+}
+
+
+
+/* NAVBAR FULL WIDTH FIX - ONLY NAVBAR */
+.navbar {
+    width: calc(100vw - 40px);
+    max-width: none;
+    margin-left: 50%;
+    margin-right: 0;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 800px) {
+    .navbar {
+        width: calc(100vw - 24px);
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        width: calc(100vw - 16px);
+        max-width: none;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVIGATION BAR
+====================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+
+        🔮 မြန်မာ့ရိုးရာ ယတြာ
+
+    </div>
+
+
+    <!-- NAVIGATION BUTTONS -->
+
+    <div class="nav-buttons">
+
+         <a
+            href="maharbote6.html"
+            class="nav-mahabote"
+        >
+
+            ☯️ မဟာဘုတ်
+
+        </a>
+        <!-- မူရင်း ပြန်တွက်မည် -->
+
+        <button
+            class="nav-reset"
+            onclick="resetForm()"
+        >
+
+            ↩️ ပြန်တွက်မည်
+
+        </button>
+
+
+        <!-- =================================================
+             မဟာဘုတ် PAGE LINK
+             mahabote.html ကို မိမိသွားလိုသော page filename
+             အတိုင်း ပြောင်းနိုင်သည်
+        ================================================== -->
+
+       
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN CONTAINER
+====================================================== -->
+
+<div class="container">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================== -->
+
+    <div class="header">
+
+        <h1>
+            မြန်မာ့ရိုးရာ ကံကြမ္မာနှင့် ယတြာ
+        </h1>
+
+        <p>
+            သက်ရောက်ဂြိုလ် ဟောကိန်းတွက်စနစ်
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         FORM
+    ================================================== -->
+
+    <div
+        class="form-section"
+        id="formSection"
+    >
+
+
+        <!-- BIRTH DAY -->
+
+        <div class="input-group">
+
+            <label for="birthDay">
+
+                🌙 မွေးဖွားသည့်နေ့နံ
+
+            </label>
+
+
+            <select id="birthDay">
+
+                <option value="0">
+                    တနင်္ဂနွေ
+                </option>
+
+                <option value="1">
+                    တနင်္လာ
+                </option>
+
+                <option value="2">
+                    အင်္ဂါ
+                </option>
+
+                <option value="3">
+                    ဗုဒ္ဓဟူး
+                </option>
+
+                <option value="4">
+                    စနေ
+                </option>
+
+                <option value="5">
+                    ကြာသပတေး
+                </option>
+
+                <option value="6">
+                    ရာဟု
+                </option>
+
+                <option value="7">
+                    သောကြာ
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- AGE -->
+
+        <div class="input-group">
+
+            <label for="ageInput">
+
+                🎂 ယခုရောက်ဆဲအသက်
+
+            </label>
+
+
+            <input
+                type="number"
+                id="ageInput"
+                min="1"
+                max="150"
+                placeholder="ဥပမာ - ၂၅"
+            >
+
+        </div>
+
+
+        <!-- CALCULATE -->
+
+        <button
+            class="btn-calculate"
+            onclick="calculate()"
+        >
+
+            🔮 ဟောကိန်းနှင့် ယတြာကြည့်မည်
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         RESULT AREA
+    ================================================== -->
+
+    <div id="resultArea">
+
+
+        <div class="result-divider"></div>
+
+
+        <!-- PLANET -->
+
+        <div class="planet-wrapper">
+
+            <div
+                class="planet-badge"
+                id="planetName"
+            ></div>
+
+        </div>
+
+
+        <!-- CALCULATION INFORMATION -->
+
+        <div
+            class="age-result"
+            id="calculationInfo"
+        ></div>
+
+
+        <!-- =================================================
+             CHART IMAGE
+        ================================================== -->
+
+        <div class="chart-image-wrapper">
+
+            <img
+                src="images/JO.jpg"
+                class="chart-image"
+                alt="Birth Chart"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             SMALL RESULT
+        ================================================== -->
+
+        <div class="result-grid">
+
+
+            <div class="small-result">
+
+                <span class="small-result-title">
+
+                    မွေးနံ
+
+                </span>
+
+
+                <span
+                    class="small-result-value"
+                    id="birthDayResult"
+                ></span>
+
+            </div>
+
+
+            <div class="small-result">
+
+                <span class="small-result-title">
+
+                    သက်ရောက်ဂြိုလ်
+
+                </span>
+
+
+                <span
+                    class="small-result-value"
+                    id="planetResult"
+                ></span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PREDICTION
+        ================================================== -->
+
+        <div class="info-card">
+
+            <span class="section-title">
+
+                🔮 အသေးစိတ်ဟောကိန်း
+
+            </span>
+
+
+            <div
+                class="content-text"
+                id="predText"
+            ></div>
+
+        </div>
+
+
+        <!-- =================================================
+             WARNING
+        ================================================== -->
+
+        <div
+            class="info-card warning-card"
+        >
+
+            <span class="section-title">
+
+                ⚠️ အထူးသတိပြုရန်
+
+            </span>
+
+
+            <div
+                class="content-text"
+                id="cautionText"
+            ></div>
+
+        </div>
+
+
+        <!-- =================================================
+             YATYAR
+        ================================================== -->
+
+        <div class="yatyar-box">
+
+            <span class="yatyar-title">
+
+                <span class="yatyar-icon">
+                    🌿
+                </span>
+
+                ယတြာနှင့် အကြံပြုချက်
+
+            </span>
+
+
+            <div
+                class="content-text"
+                id="yatyarText"
+            ></div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   ASTROLOGY DATA
+========================================================= */
+
+const ASTRO_DATA = [
+
+    /* 0 - တနင်္ဂနွေ */
+
+    {
+        name: "တနင်္ဂနွေ",
+
+        pred:
+        "လူလိမ်လူခိုးခံရတတ်သည်။ အိုးအိမ်မတည်ဖြစ်တတ်သည်။ " +
+        "သားမယားအတွက် စိတ်များရတတ်သည်။ ကျွဲ၊ နွား " +
+        "ခြေလေးချောင်းစသော သတ္တဝါများ ထွက်တတ်သည်။ " +
+        "ရုံးပြင်ကနား ရောက်တတ်သည်။ တစ်နှစ်အတွင်း " +
+        "အခြေမတည် နေရတတ်ပြီး အနာအဆာ ရတတ်သည်။ " +
+        "ရန်ရှိသည်။ မိန်းမနှောက်ယှက်တတ်သည်။",
+
+        caution:
+        "တောင်အရပ်က နဖူးမောက် နယောင်ကောက်သောသူ " +
+        "ဝင်လာလျှင် လက်မခံပါနှင့်။ ခိုးကိန်း၊ မီးကိန်း " +
+        "မြင်သည်။ ဝမ်းရောဂါ၊ လေရောဂါများ စွဲကပ်တတ်သည်။ " +
+        "အရှေ့မြောက်အရပ်သို့ သွားလာရာတွင် သတိထားပါ။",
+
+        yatyar:
+        "အညံ့များ ပြေပျောက်စေရန် ကုသိုလ်ကောင်းမှုများ " +
+        "အစဉ်မပြတ် ပြုလုပ်ပေးပါ။ အရှေ့မြောက်အရပ်သို့ " +
+        "သွားလာရာတွင် သတိထားပါ။ မိမိ၏ စကားအပြောအဆို " +
+        "နှင့် အပေါင်းအသင်းများကိုလည်း ဆင်ခြင်ပါ။"
+    },
+
+
+    /* 1 - တနင်္လာ */
+
+    {
+        name: "တနင်္လာ",
+
+        pred:
+        "ခြေနှစ်ချောင်းဝင်တတ်သည်။ ရုတ်တရက် ငွေကြေး " +
+        "မြောက်များစွာ ဝင်တတ်သည် သို့မဟုတ် မိမွေဖမွေ " +
+        "ရတတ်သည်။ အလှူဒါနများ ပြုရတတ်သည်။ " +
+        "အမှုအခင်းကိစ္စများနှင့် ပြဿနာများကို အောင်မြင်စွာ " +
+        "ဖြေရှင်းနိုင်တတ်သည်။ အပျိုလူပျိုဖြစ်လျှင် " +
+        "ချစ်သူနှင့် တွေ့ရတတ်သည်။ သွားလေရာ " +
+        "မျက်နှာပွင့်လန်းမည်။",
+
+        caution:
+        "စီးပွားရေးနှင့် ပတ်သက်လျှင် အမှားအယွင်း " +
+        "မရှိစေရန် သတိထားပါ။ ငွေကြေးကိစ္စများကို " +
+        "စာရင်းသေချာစွာ စစ်ဆေးပြီးမှ ဆောင်ရွက်ပါ။",
+
+        yatyar:
+        "စီးပွားရှာရာတွင် တနင်္လာသားသမီး၊ " +
+        "ကြာသပတေးသားသမီးများနှင့် မိတ်ဖက်ပြု၍ " +
+        "လုပ်ကိုင်ပါက ပိုမိုအောင်မြင်ဖြစ်ထွန်းပါလိမ့်မည်။ " +
+        "လာဘ်လာဘများ တိုးပွားစေရန် အလှူအတန်းများ " +
+        "ပြုလုပ်ပေးပါ။"
+    },
+
+
+    /* 2 - အင်္ဂါ */
+
+    {
+        name: "အင်္ဂါ",
+
+        pred:
+        "အိမ်၊ ပတ်ဝန်းကျင်၊ အပေါင်းအသင်းနှင့် အလုပ်တွင် " +
+        "ပြဿနာများ ဖြစ်ပွားတတ်သည်။ ရန်သူအနှောက်အယှက်များ " +
+        "ကြုံရတတ်သည်။ အပျိုလူပျိုများ ချစ်သူရည်းစား " +
+        "အပြိုင်အဆိုင် ပေါ်တတ်သည်။ အလုပ်အကိုင် " +
+        "မဖြောင့်မညံ့ဘဲ ဆုံးရှုံးမှု ရှိတတ်သည်။ " +
+        "ချစ်သောသူများနှင့် ကွဲကွာရတတ်သည်။",
+
+        caution:
+        "ဒေါသဖြစ်လောက်စရာများ မကြာခဏကြုံရတတ်၍ " +
+        "သည်းခံပါ။ ခိုက်ရန်ဖြစ်ခြင်းနှင့် စကားများခြင်းများကို " +
+        "အထူးရှောင်ပါ။ ပစ္စည်းပျောက်ရှတတ်၊ သူခိုးခိုးခံရတတ်သည်။ " +
+        "သွေးထွက်သံယို ဖြစ်ခြင်းများကိုလည်း သတိထားပါ။",
+
+        yatyar:
+        "အဓိကအားဖြင့် စကားအပြောအဆိုကို အထူးဆင်ခြင်ပါ။ " +
+        "ဒေါသကို ထိန်းချုပ်ပြီး စိတ်ရှည်သည်းခံခြင်းသည် " +
+        "အကောင်းဆုံး ယတြာဖြစ်ပါသည်။ ဘေးဥပါဒ်ကင်းစေရန် " +
+        "ဘုရားတွင် ရေချမ်းနှင့် အမွှေးနံ့သာ ကပ်လှူပေးပါ။"
+    },
+
+
+    /* 3 - ဗုဒ္ဓဟူး */
+
+    {
+        name: "ဗုဒ္ဓဟူး",
+
+        pred:
+        "ငွေကြေးရရှိခြင်း၊ လာဘ်လာဘ ရုတ်တရက်ဝင်ခြင်းများ " +
+        "ဖြစ်တတ်သည်။ ရွှေဝင်ခြင်း၊ လူဝင်ခြင်းများ ဖြစ်တတ်သည်။ " +
+        "စီးပွားဥစ္စာ တိုးတက်မည်။ စုတ်လဘ် ခြေနှစ်ချောင်း " +
+        "ဝင်တတ်သည်။ ချစ်သူခင်သူနှင့် တွေ့ရတတ်သည်။",
+
+        caution:
+        "ကျန်းမာရေး အနည်းငယ် ညံ့တတ်သည်။ လူဝင်လူထွက် " +
+        "များလာလျှင် သတိပြုပါ။ လိမ်လည်သူများ၊ ခိုးယူသူများနှင့် " +
+        "ကြုံတွေ့ရတတ်သည်။ ငွေကြေးနှင့် ပစ္စည်းများကို " +
+        "ဂရုတစိုက် ထိန်းသိမ်းပါ။",
+
+        yatyar:
+        "ကျန်းမာရေးနှင့် စိတ်အေးချမ်းရေးအတွက် ကုသိုလ်ပြုပါ။ " +
+        "ဗုဒ္ဓဟူးနေ့တိုင်း မိမိတတ်နိုင်သမျှ အလှူတစ်ခုခု " +
+        "ပြုလုပ်ပေးပါ။ မိဘ၊ ဆရာသမားများကို ရိုသေလေးစားပါ။"
+    },
+
+
+    /* 4 - စနေ */
+
+    {
+        name: "စနေ",
+
+        pred:
+        "ပြဿနာများခြင်း၊ အမှုအခင်းပေါ်ခြင်း၊ သွေးထွက်သံယို " +
+        "ဖြစ်ခြင်းများ ဖြစ်ပေါ်တတ်သည်။ မြေ၊ ရွှေ၊ အိမ်ယာ " +
+        "ရောင်းဝယ်ခြင်းပြုလျှင် အရှုံးပေါ်တတ်သည်။ " +
+        "တစ်ရပ်တစ်ကျေး ခရီးဝေးသွားလျှင် ဘေးဥပါဒ်ပေါ်တတ်သည်။ " +
+        "ငွေကုန်ကြေးကျ များမည်။ မိန်းမတစ်ဦးဦးကြောင့် " +
+        "စိတ်သောက ရောက်တတ်သည်။",
+
+        caution:
+        "ဥစ္စာပျောက်ခြင်း၊ သူခိုးခိုးခံရခြင်း သတိထားပါ။ " +
+        "စိတ်ချမ်းသာစရာ ကင်းဝေးနေတတ်သည်။ ခရီးဝေးသွားရာတွင် " +
+        "အထူးသတိထားပြီး မလိုအပ်သော အန္တရာယ်များကို ရှောင်ပါ။",
+
+        yatyar:
+        "သီလလုံအောင် စောင့်ထိန်းပါ။ ကုသိုလ်အမှုများကို " +
+        "အစဉ်မပြတ် ပြုလုပ်ပါ။ ဘုရားတွင် ထီးဖြူလှူဒါန်းခြင်း၊ " +
+        "ရဟန်းသံဃာများအား ဆွမ်းလောင်းလှူခြင်း စသည့် " +
+        "မိမိတတ်နိုင်သော ကုသိုလ်များ ပြုလုပ်ပါ။"
+    },
+
+
+    /* 5 - ကြာသပတေး */
+
+    {
+        name: "ကြာသပတေး",
+
+        pred:
+        "ခရီးဝေး သွားရတတ်သည်။ စီးပွားလဘ်လာဘများ ရရှိမည်။ " +
+        "မြေနှင့် ပတ်သက်သော ကိစ္စများ ပေါ်ပေါက်တတ်သည်။ " +
+        "အမွေအနှစ် သို့မဟုတ် ငွေကြေးများ ရုတ်တရက် ရရှိတတ်သည်။ " +
+        "ချစ်သူခင်သူ ပေါများမည်။",
+
+        caution:
+        "ကောင်းသောကိစ္စများတွင် မိန်းမတစ်ဦးဦး၏ အဖျက်ကြုံရတတ် " +
+        "သဖြင့် သတိထားပါ။ လူပျိုအပျိုဖြစ်လျှင် မတော်တဆ " +
+        "အိမ်ထောင်ကျတတ်သည်ဟု ရိုးရာယုံကြည်မှုတွင် ဆိုထားသည်။",
+
+        yatyar:
+        "အဖျက်အဆီးများ ကင်းစင်စေရန် ကြာသပတေးနေ့တိုင်း " +
+        "ဘုရားတွင် မုန့်ဝါ သို့မဟုတ် မိမိတတ်နိုင်သော " +
+        "အလှူတစ်ခုခု ပြုလုပ်ပါ။ ခရီးသွားရာတွင် ဘေးကင်းစေရန် " +
+        "မေတ္တာသုတ် ရွတ်ဖတ်ခြင်းကိုလည်း ပြုလုပ်နိုင်ပါသည်။"
+    },
+
+
+    /* 6 - ရာဟု */
+
+    {
+        name: "ရာဟု",
+
+        pred:
+        "ပူပင်သောက များရတတ်သည်။ တစ်ရပ်တစ်မြေ " +
+        "နေရာထိုင်ခင်း ပြောင်းရွှေ့ရတတ်သည်။ ပစ္စည်းဥစ္စာ " +
+        "ဆုံးရှုံးတတ်သည်။ မိမိဆွေမျိုး မိတ်ဆွေများထဲမှ " +
+        "မကောင်းပြော၊ မကောင်းကြံတတ်သည်။ အစွပ်အစွဲခံရခြင်း၊ " +
+        "အနာရောဂါများ ခံစားရတတ်သည်။",
+
+        caution:
+        "လူကြီးမိဘ ဆရာသမားများနှင့် မသင့်မတင့် ဖြစ်တတ်သည်။ " +
+        "လင်မယား စကားများတတ်၊ ကွဲကွာရတတ်သည်။ လူလိမ်၊ " +
+        "လူကောက်၊ သူခိုး အန္တရာယ်ရှိသည်။ အနောက်အရပ်သို့ " +
+        "သွားလာရာတွင် သတိထားပါ။",
+
+        yatyar:
+        "ဘေးဥပါဒ်ကင်းစင်စေရန် ဘုရားတွင် မိမိတတ်နိုင်သော " +
+        "အလှူတစ်ခုခု ပြုလုပ်ပါ။ ရာဟုနေ့ဟု ယုံကြည်ကြသည့် " +
+        "ဗုဒ္ဓဟူးညနေတွင် ကုသိုလ်ပြုခြင်း၊ မေတ္တာပို့ခြင်း " +
+        "တို့ကို ပြုလုပ်နိုင်ပါသည်။"
+    },
+
+
+    /* 7 - သောကြာ */
+
+    {
+        name: "သောကြာ",
+
+        pred:
+        "စီးပွားချမ်းသာ တိုးတက်မည်။ အိမ်ခြံမြေ၊ ရွှေ၊ ငွေ " +
+        "ပစ္စည်းများ ဝင်မည်။ အလုပ်အကိုင် ရာထူးအဆင့်အတန်းနှင့် " +
+        "လခများ တိုးတက်မည်။ ဆင်းရဲနွမ်းပါးသူပင် ဖြစ်ပါစေ " +
+        "စီးပွားဥစ္စာ တိုးတက်မည်။ အိုးအိမ်အသစ် ရတတ်သည်။ " +
+        "ဘုန်းတန်ခိုး ကြီးမားမည်။",
+
+        caution:
+        "ခရီးအသွားအလာ များတတ်သည်။ ခရီးသွားရာတွင် " +
+        "အချိန်နှင့် ငွေကြေးကို စနစ်တကျ စီမံထားပါ။ " +
+        "အသစ်ဝင်လာသော အခွင့်အရေးများကိုလည်း သေချာစွာ " +
+        "စဉ်းစားပြီးမှ ဆုံးဖြတ်ပါ။",
+
+        yatyar:
+        "လာဘ်လာဘများ တည်မြဲစေရန်နှင့် ဘုန်းတန်ခိုး " +
+        "ကြီးမားစေရန် ဘုရားတွင် သစ်သီး (၅) မျိုး " +
+        "လှူဒါန်းပေးပါ။ ရဟန်းသံဃာများကို ဆွမ်းလောင်းလှူခြင်း " +
+        "ဖြင့် မိမိယုံကြည်သည့်အတိုင်း ကုသိုလ်ပြုနိုင်ပါသည်။"
+    }
+
+];
+
+
+/* =========================================================
+   CALCULATE FUNCTION
+========================================================= */
+
+function calculate() {
+
+    const birthIdx =
+        parseInt(
+            document
+                .getElementById("birthDay")
+                .value
+        );
+
+
+    const ageInput =
+        document
+            .getElementById("ageInput")
+            .value
+            .trim();
+
+
+    const age =
+        parseInt(ageInput);
+
+
+    /* VALIDATION */
+
+    if (
+        !age ||
+        isNaN(age) ||
+        age <= 0 ||
+        age > 150
+    ) {
+
+        alert(
+            "ကျေးဇူးပြု၍ မှန်ကန်သော အသက်ကို ထည့်သွင်းပေးပါ။"
+        );
+
+        document
+            .getElementById("ageInput")
+            .focus();
+
+        return;
+    }
+
+
+    /* =====================================================
+       AGE % 8
+    ====================================================== */
+
+    const remainder =
+        age % 8;
+
+
+    let finalIdx;
+
+
+    /* =====================================================
+       PLANET CALCULATION
+    ====================================================== */
+
+    if (remainder === 0) {
+
+        finalIdx =
+            (
+                birthIdx - 1 + 8
+            ) % 8;
+
+    }
+
+    else {
+
+        finalIdx =
+            (
+                birthIdx +
+                remainder -
+                1
+            ) % 8;
+
+    }
+
+
+    /* GET DATA */
+
+    const data =
+        ASTRO_DATA[finalIdx];
+
+
+    /* BIRTH DAY NAME */
+
+    const birthDayName =
+        document
+            .getElementById("birthDay")
+            .options[birthIdx]
+            .text;
+
+
+    /* =====================================================
+       DISPLAY PLANET
+    ====================================================== */
+
+    document
+        .getElementById("planetName")
+        .innerText =
+            data.name +
+            " ဂြိုလ် သက်ရောက်နေပါသည်";
+
+
+    document
+        .getElementById("planetResult")
+        .innerText =
+            data.name;
+
+
+    document
+        .getElementById("birthDayResult")
+        .innerText =
+            birthDayName;
+
+
+    /* =====================================================
+       PREDICTION
+    ====================================================== */
+
+    document
+        .getElementById("predText")
+        .innerText =
+            data.pred;
+
+
+    /* =====================================================
+       CAUTION
+    ====================================================== */
+
+    document
+        .getElementById("cautionText")
+        .innerText =
+            data.caution;
+
+
+    /* =====================================================
+       YATYAR
+    ====================================================== */
+
+    document
+        .getElementById("yatyarText")
+        .innerText =
+            data.yatyar;
+
+
+    /* =====================================================
+       CALCULATION MESSAGE
+    ====================================================== */
+
+    let calculationMessage;
+
+
+    if (remainder === 0) {
+
+        calculationMessage =
+            "ယခုရောက်ဆဲအသက် " +
+            age +
+            " နှစ်ကို ၈ နှင့်စား၍ အကြွင်း ၀ ရရှိသောကြောင့် " +
+            "မွေးနံမှ တစ်ခွင်ဆုတ်၍ သက်ရောက်ဂြိုလ်ကို တွက်ထားပါသည်။";
+
+    }
+
+    else {
+
+        calculationMessage =
+            "ယခုရောက်ဆဲအသက် " +
+            age +
+            " နှစ်ကို ၈ နှင့်စားရာ အကြွင်း " +
+            remainder +
+            " ရရှိသောကြောင့် မွေးနံမှ အကြွင်းအတိုင်း " +
+            "ရေတွက်၍ သက်ရောက်ဂြိုလ်ကို တွက်ထားပါသည်။";
+
+    }
+
+
+    document
+        .getElementById("calculationInfo")
+        .innerText =
+            "📅 အသက် " +
+            age +
+            " နှစ်  •  " +
+            calculationMessage;
+
+
+    /* =====================================================
+       SHOW RESULT
+    ====================================================== */
+
+    const resultArea =
+        document.getElementById("resultArea");
+
+
+    resultArea.style.display =
+        "block";
+
+
+    /* =====================================================
+       SCROLL TO RESULT
+    ====================================================== */
+
+    setTimeout(function() {
+
+        resultArea.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   RESET FUNCTION
+========================================================= */
+
+function resetForm() {
+
+    /* RESET BIRTH DAY */
+
+    document
+        .getElementById("birthDay")
+        .value = "0";
+
+
+    /* CLEAR AGE */
+
+    document
+        .getElementById("ageInput")
+        .value = "";
+
+
+    /* HIDE RESULT */
+
+    document
+        .getElementById("resultArea")
+        .style.display =
+            "none";
+
+
+    /* SCROLL TO FORM */
+
+    setTimeout(function() {
+
+        document
+            .getElementById("formSection")
+            .scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "start"
+
+            });
+
+    }, 100);
+
+
+    /* FOCUS AGE INPUT */
+
+    setTimeout(function() {
+
+        document
+            .getElementById("ageInput")
+            .focus();
+
+    }, 500);
+
+}
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+document
+    .getElementById("ageInput")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                calculate();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

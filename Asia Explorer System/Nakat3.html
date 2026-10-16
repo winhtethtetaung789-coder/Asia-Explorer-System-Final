@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>နက္ခတ် Birth Chart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    margin:0;
+}
+
+body{
+    font-family:"Noto Sans Myanmar","Myanmar Text",sans-serif;
+    background:#030814;
+    color:#f7fbff;
+}
+
+/* =========================================================
+   ROOT COLORS
+========================================================= */
+
+:root{
+    --bg:#030814;
+    --panel:#0a1729;
+    --panel2:#0d2036;
+    --cyan:#45e5ff;
+    --cyan2:#8af3ff;
+    --white:#f7fbff;
+    --muted:#d6e0ec;
+    --gold:#ffd15c;
+    --purple:#b278ff;
+}
+
+/* =========================================================
+   NAVIGATION BAR
+========================================================= */
+
+.navbar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+
+    height:72px;
+
+    z-index:9999;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 28px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(4,15,30,.98),
+            rgba(8,28,49,.97),
+            rgba(9,19,43,.98)
+        );
+
+    border-bottom:1px solid rgba(69,229,255,.25);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.35),
+        0 0 25px rgba(69,229,255,.05);
+
+    backdrop-filter:blur(18px);
+}
+
+.nav-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    color:#8cefff;
+
+    font-size:21px;
+    font-weight:900;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 0 18px rgba(69,229,255,.35);
+}
+
+.nav-brand-icon{
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid rgba(69,229,255,.65);
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(31,81,112,.8),
+            rgba(12,28,52,.95)
+        );
+
+    box-shadow:
+        0 0 20px rgba(69,229,255,.15);
+}
+
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.nav-btn{
+    height:43px;
+
+    padding:0 17px;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid rgba(77,225,255,.35);
+    border-radius:12px;
+
+    color:#eafaff;
+
+    background:rgba(10,31,52,.8);
+
+    font-family:inherit;
+    font-size:14px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:.22s ease;
+}
+
+.nav-btn:hover{
+    transform:translateY(-2px);
+
+    border-color:#62eaff;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20,80,108,.9),
+            rgba(31,31,76,.9)
+        );
+
+    box-shadow:
+        0 8px 25px rgba(69,229,255,.13);
+}
+
+.nav-btn.home{
+    color:#7cefff;
+}
+
+.nav-btn.reset{
+    color:#ffd56a;
+}
+
+.nav-date{
+    display:none;
+
+    padding:8px 13px;
+
+    border-radius:10px;
+
+    color:#dcefff;
+
+    background:rgba(5,20,36,.8);
+
+    border:1px solid rgba(69,229,255,.18);
+
+    font-size:12px;
+}
+
+/* =========================================================
+   INPUT VIEW
+========================================================= */
+
+#inputView{
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:95px 24px 24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(43,210,255,.18),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 15% 85%,
+            rgba(125,83,255,.14),
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #020611,
+            #07152a 55%,
+            #020611
+        );
+}
+
+.input-panel{
+    position:relative;
+
+    width:min(700px,92vw);
+
+    padding:42px;
+
+    overflow:hidden;
+
+    text-align:center;
+
+    border:1px solid rgba(79,232,255,.55);
+
+    border-radius:30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,45,73,.95),
+            rgba(5,14,27,.98)
+        );
+
+    box-shadow:
+        0 30px 90px rgba(0,0,0,.55),
+        0 0 55px rgba(53,224,255,.12),
+        inset 0 1px 0 rgba(255,255,255,.09);
+
+    backdrop-filter:blur(20px);
+}
+
+.input-panel:before{
+    content:"✦  ✧  ✦";
+
+    position:absolute;
+
+    top:16px;
+    right:25px;
+
+    color:var(--cyan);
+
+    letter-spacing:7px;
+
+    opacity:.7;
+}
+
+.input-panel h1{
+    margin:0 0 12px;
+
+    color:#83efff;
+
+    font-size:36px;
+
+    font-weight:900;
+
+    text-shadow:
+        0 0 24px rgba(69,229,255,.45);
+}
+
+.input-panel p{
+    margin:0 0 26px;
+
+    color:#dce7f2;
+
+    font-size:19px;
+
+    line-height:1.9;
+}
+
+/* =========================================================
+   DATE INPUT
+========================================================= */
+
+.date-label{
+    display:block;
+
+    margin-bottom:9px;
+
+    text-align:left;
+
+    color:#86eeff;
+
+    font-size:17px;
+    font-weight:800;
+}
+
+.input-panel input[type="date"]{
+    width:100%;
+
+    height:62px;
+
+    padding:0 18px;
+
+    border:1px solid rgba(80,228,255,.65);
+
+    border-radius:15px;
+
+    outline:none;
+
+    background:#061223;
+
+    color:#fff;
+
+    font-family:inherit;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color-scheme:dark;
+
+    cursor:pointer;
+
+    transition:.2s ease;
+}
+
+.input-panel input[type="date"]:hover{
+    border-color:#70ecff;
+}
+
+.input-panel input[type="date"]:focus{
+    border-color:#7cefff;
+
+    box-shadow:
+        0 0 0 4px rgba(69,229,255,.08),
+        0 0 30px rgba(69,229,255,.2);
+}
+
+.date-hint{
+    display:block;
+
+    margin-top:9px;
+
+    text-align:left;
+
+    color:#9db2c8;
+
+    font-size:13px;
+}
+
+.input-panel button{
+    width:100%;
+
+    height:62px;
+
+    margin-top:18px;
+
+    border:0;
+
+    border-radius:15px;
+
+    cursor:pointer;
+
+    color:#fff;
+
+    font-family:inherit;
+
+    font-size:19px;
+
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            100deg,
+            #13cfe9,
+            #5869f3 58%,
+            #925ef7
+        );
+
+    box-shadow:
+        0 15px 38px rgba(58,186,255,.22);
+
+    transition:.25s ease;
+}
+
+.input-panel button:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 20px 48px rgba(58,220,255,.3);
+}
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+#result{
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    background:#02050d;
+
+    padding-top:72px;
+}
+
+/* =========================================================
+   REFERENCE PAGE
+========================================================= */
+
+.reference-page{
+    position:relative;
+
+    width:1600px;
+    height:900px;
+
+    flex:none;
+
+    padding:18px 32px 16px;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(39,157,235,.15),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 100%,
+            rgba(139,75,255,.09),
+            transparent 28%
+        ),
+        linear-gradient(
+            180deg,
+            #071326 0%,
+            #020712 100%
+        );
+}
+
+.reference-page:before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:.055;
+
+    background-image:
+        radial-gradient(
+            circle,
+            #69eaff 0 1px,
+            transparent 1.5px
+        );
+
+    background-size:88px 88px;
+}
+
+.reference-page:after{
+    content:"";
+
+    position:absolute;
+
+    inset:10px;
+
+    border:1px solid rgba(91,225,255,.06);
+
+    border-radius:28px;
+
+    pointer-events:none;
+}
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.ref-title{
+    position:relative;
+
+    z-index:2;
+
+    margin:0 0 10px;
+
+    text-align:center;
+
+    color:#8cefff;
+
+    font-size:34px;
+
+    line-height:1.35;
+
+    font-weight:900;
+
+    text-shadow:
+        0 0 25px rgba(69,229,255,.42);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.ref-hero{
+    position:relative;
+
+    z-index:2;
+
+    height:154px;
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:
+        145px
+        minmax(0,1fr)
+        390px;
+
+    gap:22px;
+
+    align-items:center;
+
+    padding:12px 20px;
+
+    border:1px solid rgba(73,226,255,.7);
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18,44,72,.92),
+            rgba(6,15,29,.96)
+        );
+
+    box-shadow:
+        0 18px 55px rgba(0,0,0,.3),
+        0 0 38px rgba(64,224,255,.08),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.calc-art{
+    position:relative;
+
+    width:105px;
+    height:105px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:3px solid #55e8ff;
+
+    border-radius:27px;
+
+    background:rgba(4,18,34,.8);
+
+    color:#62ebff;
+
+    font-size:50px;
+
+    box-shadow:
+        0 0 0 8px rgba(72,225,255,.035),
+        0 0 30px rgba(72,225,255,.28),
+        inset 0 0 25px rgba(115,87,255,.1);
+}
+
+.calc-art:before{
+    content:"✦  ✧  ✦";
+
+    position:absolute;
+
+    top:-25px;
+
+    left:0;
+    right:0;
+
+    text-align:center;
+
+    color:#6beaff;
+
+    font-size:14px;
+
+    letter-spacing:6px;
+}
+
+.hero-copy{
+    min-width:0;
+}
+
+.hero-copy h2{
+    margin:0 0 5px;
+
+    color:#fff;
+
+    font-size:24px;
+
+    line-height:1.45;
+
+    font-weight:900;
+}
+
+.hero-copy .big{
+    color:#ffd45f;
+
+    font-size:32px;
+
+    line-height:1.35;
+
+    font-weight:900;
+}
+
+.hero-copy p{
+    margin:7px 0 0;
+
+    color:#dbe6f1;
+
+    font-size:14px;
+
+    line-height:1.8;
+}
+
+.hero-nakhat{
+    position:relative;
+
+    height:112px;
+
+    padding:16px 20px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(79,226,255,.72);
+
+    border-radius:21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(17,54,80,.95),
+            rgba(31,18,62,.96)
+        );
+}
+
+.hero-nakhat h3{
+    position:relative;
+
+    z-index:2;
+
+    margin:0;
+
+    color:#ffd45f;
+
+    font-size:24px;
+
+    line-height:1.45;
+
+    font-weight:900;
+}
+
+.hero-nakhat p{
+    position:relative;
+
+    z-index:2;
+
+    width:84%;
+
+    margin:8px 0 0;
+
+    color:#e4ebf4;
+
+    font-size:13px;
+
+    line-height:1.8;
+}
+
+/* =========================================================
+   TITLES
+========================================================= */
+
+.ref-section-title,
+.ref-fortune-title{
+    position:relative;
+
+    z-index:2;
+
+    text-align:center;
+
+    color:#f9fcff;
+
+    font-size:25px;
+
+    line-height:1.45;
+
+    font-weight:900;
+}
+
+.ref-section-title{
+    margin:10px 0 7px;
+}
+
+.ref-fortune-title{
+    margin:9px 0 7px;
+}
+
+.ref-section-title:before,
+.ref-section-title:after,
+.ref-fortune-title:before,
+.ref-fortune-title:after{
+    content:"";
+
+    display:inline-block;
+
+    width:85px;
+    height:1px;
+
+    margin:0 14px 7px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #4ce5ff,
+            transparent
+        );
+}
+
+/* =========================================================
+   TWO COLUMNS
+========================================================= */
+
+.dashboard-columns{
+    position:relative;
+
+    z-index:2;
+
+    width:100%;
+
+    height:575px;
+
+    display:grid;
+
+    grid-template-columns:
+        360px
+        minmax(0,1fr);
+
+    gap:16px;
+
+    align-items:stretch;
+}
+
+.dashboard-column{
+    min-width:0;
+    min-height:0;
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+/* =========================================================
+   LEFT TRAITS
+========================================================= */
+
+.traits-panel{
+    flex:1;
+
+    min-height:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    padding:8px;
+
+    border:1px solid rgba(72,222,255,.42);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,38,62,.9),
+            rgba(5,14,27,.95)
+        );
+}
+
+.traits-panel .trait{
+    position:relative;
+
+    flex:1;
+
+    min-height:0;
+
+    display:grid;
+
+    grid-template-columns:
+        86px
+        minmax(0,1fr);
+
+    gap:15px;
+
+    align-items:center;
+
+    padding:15px 16px;
+
+    border:1px solid rgba(73,224,255,.28);
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(24,52,82,.84),
+            rgba(7,18,33,.9)
+        );
+
+    overflow:hidden;
+
+    transition:.25s ease;
+}
+
+.traits-panel .trait:hover{
+    transform:translateX(3px);
+
+    border-color:rgba(87,232,255,.65);
+}
+
+.trait-icon{
+    width:74px;
+    height:74px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:2px solid #4ce4ff;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(63,223,255,.18),
+            rgba(3,16,30,.92) 70%
+        );
+
+    font-size:34px;
+}
+
+.trait-content{
+    min-width:0;
+}
+
+.trait-content h3{
+    margin:0 0 7px;
+
+    color:#70edff;
+
+    font-size:21px;
+
+    line-height:1.5;
+
+    font-weight:900;
+}
+
+.trait-content p{
+    margin:0;
+
+    color:#f3f7fb;
+
+    font-size:14px;
+
+    line-height:1.9;
+}
+
+.traits-panel .trait:nth-child(2) .trait-icon{
+    color:#a878ff;
+    border-color:#a878ff;
+}
+
+.traits-panel .trait:nth-child(3) .trait-icon{
+    color:#ffc84d;
+    border-color:#ffc84d;
+}
+
+.traits-panel .trait:nth-child(2) h3{
+    color:#bb8cff;
+}
+
+.traits-panel .trait:nth-child(3) h3{
+    color:#ffd363;
+}
+
+/* =========================================================
+   FORTUNE
+========================================================= */
+
+.ref-fortune-wrap{
+    flex:1;
+
+    min-height:0;
+
+    width:100%;
+
+    padding:8px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(73,219,255,.4);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,33,55,.92),
+            rgba(4,12,24,.96)
+        );
+}
+
+#fortuneGrid{
+    width:100%;
+    height:100%;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    grid-template-rows:
+        repeat(3,minmax(0,1fr));
+
+    gap:8px;
+}
+
+.fortune-card{
+    position:relative;
+
+    min-width:0;
+    min-height:0;
+
+    display:grid;
+
+    grid-template-columns:
+        72px
+        minmax(0,1fr);
+
+    grid-template-rows:
+        auto
+        1fr
+        auto;
+
+    column-gap:12px;
+
+    align-items:center;
+
+    padding:12px 14px;
+
+    border:1px solid rgba(76,222,255,.45);
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,39,64,.96),
+            rgba(5,17,31,.98)
+        );
+
+    overflow:hidden;
+}
+
+.fortune-icon{
+    grid-row:1 / 4;
+
+    width:62px;
+    height:62px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:2.5px solid currentColor;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(60,220,255,.14),
+            rgba(3,14,28,.94) 70%
+        );
+}
+
+.fortune-icon svg{
+    width:38px;
+    height:38px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:2.4;
+
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.fortune-card h3{
+    min-width:0;
+
+    margin:0;
+
+    color:#70edff;
+
+    font-size:20px;
+
+    line-height:1.5;
+
+    font-weight:900;
+}
+
+.fortune-card p{
+    min-width:0;
+    min-height:0;
+
+    margin:4px 0 0;
+
+    color:#f1f5f9;
+
+    font-size:15px;
+
+    line-height:1.85;
+
+    overflow:hidden;
+}
+
+.score{
+    margin-top:3px;
+}
+
+.score-label span:last-child{
+    font-size:25px;
+
+    font-weight:900;
+
+    color:currentColor;
+
+    text-shadow:
+        0 0 13px currentColor;
+}
+
+/* =========================================================
+   CARD COLORS
+========================================================= */
+
+.fortune-card[data-key="family"]{
+    color:#ffd34f;
+    border-color:rgba(255,211,79,.6);
+}
+
+.fortune-card[data-key="education"]{
+    color:#38e4ff;
+    border-color:rgba(56,228,255,.55);
+}
+
+.fortune-card[data-key="love"]{
+    color:#b26cff;
+    border-color:rgba(178,108,255,.58);
+}
+
+.fortune-card[data-key="career"]{
+    color:#55ec87;
+    border-color:rgba(85,236,135,.58);
+}
+
+.fortune-card[data-key="finance"]{
+    color:#ff9e43;
+    border-color:rgba(255,158,67,.58);
+}
+
+.fortune-card[data-key="warning"]{
+    color:#ff637f;
+    border-color:rgba(255,99,127,.6);
+}
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.hidden-data{
+    display:none !important;
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+.reference-page>*{
+    animation:rise .55s ease both;
+}
+
+@keyframes rise{
+
+    from{
+        opacity:0;
+        transform:translateY(7px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1050px){
+
+    .dashboard-columns{
+        grid-template-columns:
+            300px
+            minmax(0,1fr);
+
+        gap:12px;
+    }
+
+    .traits-panel .trait{
+        grid-template-columns:
+            68px
+            minmax(0,1fr);
+
+        gap:10px;
+
+        padding:10px;
+    }
+
+    .trait-icon{
+        width:58px;
+        height:58px;
+
+        font-size:28px;
+    }
+
+    .trait-content h3{
+        font-size:19px;
+    }
+
+    .trait-content p{
+        font-size:12.5px;
+    }
+
+    .fortune-card{
+        grid-template-columns:
+            58px
+            minmax(0,1fr);
+
+        column-gap:9px;
+
+        padding:8px;
+    }
+
+    .fortune-icon{
+        width:52px;
+        height:52px;
+    }
+
+    .fortune-icon svg{
+        width:31px;
+        height:31px;
+    }
+
+    .fortune-card h3{
+        font-size:18px;
+    }
+
+    .fortune-card p{
+        font-size:11.5px;
+    }
+
+    .ref-title{
+        font-size:30px;
+    }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .reference-page{
+        padding:14px 18px;
+    }
+
+    .ref-title{
+        font-size:25px;
+    }
+
+    .ref-hero{
+        grid-template-columns:
+            105px
+            1fr;
+
+        height:155px;
+    }
+
+    .hero-nakhat{
+        display:none;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:760px){
+
+    .navbar{
+        height:64px;
+
+        padding:0 12px;
+    }
+
+    .nav-brand{
+        font-size:15px;
+    }
+
+    .nav-brand-icon{
+        width:36px;
+        height:36px;
+    }
+
+    .nav-actions{
+        gap:5px;
+    }
+
+    .nav-btn{
+        height:38px;
+
+        padding:0 10px;
+
+        font-size:12px;
+    }
+
+    .nav-date{
+        display:none;
+    }
+
+    #inputView{
+        padding:
+            85px
+            14px
+            20px;
+    }
+
+    .input-panel{
+        padding:28px 20px;
+    }
+
+    .input-panel h1{
+        font-size:27px;
+    }
+
+    .input-panel p{
+        font-size:15px;
+    }
+
+    .input-panel input[type="date"]{
+        height:58px;
+        font-size:17px;
+    }
+
+    .input-panel button{
+        height:58px;
+        font-size:17px;
+    }
+
+    #result{
+        position:relative;
+
+        min-height:100vh;
+
+        height:auto;
+
+        overflow:visible;
+
+        padding-top:64px;
+    }
+
+    .reference-page{
+        width:100%;
+
+        height:auto;
+
+        min-height:100vh;
+
+        overflow:visible;
+
+        padding:
+            18px
+            12px
+            25px;
+    }
+
+    .ref-title{
+        font-size:23px;
+    }
+
+    .ref-hero{
+        height:auto;
+
+        min-height:150px;
+
+        grid-template-columns:
+            85px
+            minmax(0,1fr);
+    }
+
+    .hero-copy h2{
+        font-size:20px;
+    }
+
+    .hero-copy .big{
+        font-size:27px;
+    }
+
+    .hero-copy p{
+        font-size:12px;
+    }
+
+    .dashboard-columns{
+        height:auto;
+
+        display:flex;
+
+        flex-direction:column;
+    }
+
+    .traits-panel{
+        min-height:330px;
+    }
+
+    .traits-panel .trait{
+        min-height:100px;
+    }
+
+    .fortune-column{
+        min-height:560px;
+    }
+
+    .ref-fortune-wrap{
+        min-height:550px;
+    }
+
+    .dashboard-column .ref-section-title,
+    .dashboard-column .ref-fortune-title{
+        font-size:21px;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media(max-width:500px){
+
+    .nav-brand span{
+        display:none;
+    }
+
+    .nav-actions{
+        gap:5px;
+    }
+
+    .nav-btn{
+        padding:0 8px;
+    }
+
+    #fortuneGrid{
+        grid-template-columns:1fr;
+
+        grid-template-rows:
+            repeat(6,minmax(110px,1fr));
+
+        overflow:visible;
+    }
+
+    .ref-fortune-wrap{
+        height:auto;
+
+        overflow:visible;
+    }
+
+    .fortune-column{
+        min-height:auto;
+    }
+
+    .fortune-card{
+        min-height:110px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<nav class="navbar">
+
+    <div class="nav-brand">
+
+        <div class="nav-brand-icon">
+            ✦
+        </div>
+
+        <span>
+            နက္ခတ် Birth Chart
+        </span>
+
+    </div>
+
+
+    <div class="nav-actions">
+
+        <div
+            class="nav-date"
+            id="navDate"
+        >
+            📅 -
+        </div>
+
+
+        <!-- =================================================
+             MAIN HOME PAGE LINK
+             index.html = မူလ Home Page
+        ================================================== -->
+
+        <a
+            class="nav-btn home"
+            href="MyanmarHome3.html"
+        >
+            🏠 Fortune
+        </a>
+
+
+        <button
+            class="nav-btn reset"
+            type="button"
+            onclick="resetForm()"
+        >
+            ↩ ပြန်စမည်
+        </button>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================================
+     INPUT PAGE
+========================================================= -->
+
+<section id="inputView">
+
+    <div class="input-panel">
+
+        <h1>
+            ✦ နက္ခတ် Birth Chart ✦
+        </h1>
+
+        <p>
+            မွေးသက္ကရာဇ်ထည့်ပြီး<br>
+            နက္ခတ်နှင့် ကံကြမ္မာအချက်အလက်များကို
+            တွက်ချက်ကြည့်ပါ
+        </p>
+
+
+        <label
+            class="date-label"
+            for="birthDate"
+        >
+            📅 မွေးသက္ကရာဇ်
+        </label>
+
+
+        <!--
+            min = 1900-01-01
+            max ကို JavaScript က ယနေ့ date အတိုင်း
+            အလိုအလျောက်ထည့်ပေးမည်
+        -->
+
+        <input
+            id="birthDate"
+            type="date"
+            min="1900-01-01"
+        >
+
+
+        
+
+        <button
+            type="button"
+            onclick="calculateNakhat()"
+        >
+            ✨ မွေးသက္ကရာဇ်ရိုက်ထည့်ပြီး တွက်ချက်မည်
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     RESULT
+========================================================= -->
+
+<section id="result">
+
+    <div class="reference-page">
+
+
+        <h1
+            id="refTitle"
+            class="ref-title"
+        >
+            လူနက္ခတ် (အကြွင်း ၂)
+            - ဘဝင်စိတ်ဓာတ်နှင့် ရည်ရွယ်ချက်ဆိုင်ရာ
+        </h1>
+
+
+        <!-- =================================================
+             HERO
+        ================================================= -->
+
+        <div class="ref-hero">
+
+            <div class="calc-art">
+                🧮
+            </div>
+
+
+            <div class="hero-copy">
+
+                <h2>
+                    ကိုယ်ရေးအချက်အလက်နှင့်
+                    အခြေခံတွက်ချက်မှု
+                </h2>
+
+
+                <div class="big">
+                    မြန်မာသက္ကရာဇ်
+                    <span id="heroYear">-</span>
+                </div>
+
+
+                <p>
+                    <span id="heroDate">-</span>
+                    ရက်စွဲအတွက်
+                    အခြေခံတွက်ချက်ထားသော
+                    နက္ခတ်ရလဒ်ဖြစ်သည်။
+                </p>
+
+            </div>
+
+
+            <div class="hero-nakhat">
+
+                <h3>
+                    အကြွင်း:
+                    <span id="heroRemainder">-</span>
+                    -
+                    <span id="heroNakhat">-</span>
+                </h3>
+
+                <p id="heroDescription">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TWO COLUMNS
+        ================================================= -->
+
+        <div class="dashboard-columns">
+
+
+            <!-- LEFT -->
+
+            <div class="dashboard-column personality-column">
+
+                <h2 class="ref-section-title">
+                    စိတ်နေစိတ်ထားနှင့် ကိုယ်ရည်ကိုယ်သွေး
+                </h2>
+
+
+                <div class="traits-panel">
+
+
+                    <div class="trait">
+
+                        <div class="trait-icon">
+                            📖
+                        </div>
+
+                        <div class="trait-content">
+
+                            <h3>
+                                ပညာရေးဆိုင်ရာ
+                            </h3>
+
+                            <p id="traitEducation">
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="trait">
+
+                        <div class="trait-icon">
+                            🛡️
+                        </div>
+
+                        <div class="trait-content">
+
+                            <h3>
+                                စိတ်ဓာတ်ပြင်းပြခြင်း
+                            </h3>
+
+                            <p id="traitPersonality">
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="trait">
+
+                        <div class="trait-icon">
+                            🤝
+                        </div>
+
+                        <div class="trait-content">
+
+                            <h3>
+                                အကူအညီပေးလိုစိတ်
+                            </h3>
+
+                            <p id="traitFamily">
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT -->
+
+            <div class="dashboard-column fortune-column">
+
+                <h2 class="ref-fortune-title">
+                    ဘဝကဏ္ဍ အဆင့်နှုန်းများ
+                </h2>
+
+
+                <div class="ref-fortune-wrap">
+
+                    <div id="fortuneGrid"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             HIDDEN DATA
+        ================================================= -->
+
+        <div class="hidden-data">
+
+            <div id="dateText"></div>
+
+            <div id="myanmarYearText"></div>
+
+            <div id="remainderText"></div>
+
+            <div id="nakhatText"></div>
+
+            <div id="mainIcon"></div>
+
+            <div id="mainNakhat"></div>
+
+            <div id="mainSubtitle"></div>
+
+            <div id="calculationText"></div>
+
+            <div id="nakhatChart"></div>
+
+            <div id="personality"></div>
+
+            <div id="summary"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   TODAY DATE
+   Calendar ကို ယနေ့အထိသာ ခွင့်ပြုရန်
+========================================================= */
+
+function getTodayString(){
+
+    const today = new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+/* =========================================================
+   DATE INPUT LIMIT
+========================================================= */
+
+const birthDateInput =
+    document.getElementById(
+        "birthDate"
+    );
+
+
+function setDateLimit(){
+
+    if(!birthDateInput){
+        return;
+    }
+
+    /*
+       အရေးကြီးဆုံးအပိုင်း
+
+       max = ယနေ့
+
+       ဥပမာ ယနေ့ 2026-08-17 ဖြစ်ရင်
+       2026-08-18 ကို Calendar မှာ
+       ရွေးလို့မရတော့ပါ။
+    */
+
+    birthDateInput.max =
+        getTodayString();
+
+}
+
+
+setDateLimit();
+
+
+/* =========================================================
+   NAKHAT DATA
+========================================================= */
+
+const nakhatData = {
+
+    "နတ်နက္ခတ်": {
+
+        icon:"✨",
+
+        subtitle:"နတ်နက္ခတ်ဖွား",
+
+        description:
+            "လူအများနှင့် သင့်တင့်အောင်နေတတ်ပြီး ရိုးသားပြတ်သားသော စိတ်နေစိတ်ထားရှိတတ်သည်။",
+
+        personality:
+            "နတ်နက္ခတ်ဖွားများသည် လူအများနှင့် သင့်တင့်အောင်နေတတ်သူများ ဖြစ်တတ်သည်။ မိမိမှန်သည်ဟု ယုံကြည်သည့်အရာကို ပြတ်သားစွာပြောဆိုတတ်ပြီး ယှဉ်ပြိုင်မှုများတွင် စိတ်အားထက်သန်တတ်သည်။",
+
+        career:
+            "လူများနှင့် ဆက်ဆံရသောအလုပ်၊ စီမံခန့်ခွဲမှု၊ ဝန်ဆောင်မှုနှင့် ခေါင်းဆောင်မှုလိုအပ်သော အလုပ်များတွင် အလားအလာကောင်းသည်။",
+
+        finance:
+            "ကြိုးစားအားထုတ်မှုမှတစ်ဆင့် ဝင်ငွေတိုးလာနိုင်သည်။ ရရှိသမျှကို စနစ်တကျစီမံပါက ငွေကြေးပိုမိုတည်ငြိမ်လာမည်။",
+
+        love:
+            "အချစ်ရေးတွင် ပွင့်လင်းပြတ်သားတတ်သည်။ မိမိ၏ခံစားချက်ကို ရိုးသားစွာပြောနိုင်ခြင်းက ဆက်ဆံရေးကောင်းမွန်စေမည်။",
+
+        family:
+            "မိသားစုနှင့် ရင်းနှီးတတ်ပြီး မိသားစုအတွက် တာဝန်ယူလိုစိတ်ရှိသည်။",
+
+        education:
+            "စိတ်ဝင်စားသောအရာကို အာရုံစိုက်လေ့လာပါက အောင်မြင်နိုင်သည်။ လူမှုရေးနှင့် ဆက်သွယ်ရေးဆိုင်ရာ ပညာရပ်များတွင် အားသာနိုင်သည်။",
+
+        warning:
+            "စိတ်တိုခြင်း၊ စကားပြောရာတွင် ပြတ်သားလွန်းခြင်းနှင့် အငြင်းအခုံများကို သတိထားပါ။"
+
+    },
+
+
+    "လူနက္ခတ်": {
+
+        icon:"👤",
+
+        subtitle:"လူနက္ခတ်ဖွား",
+
+        description:
+            "စကားပြောရာတွင် ပြတ်သားပြီး စိတ်နှလုံးနူးညံ့တတ်သော သဘောသဘာဝရှိသည်။",
+
+        personality:
+            "လူနက္ခတ်ဖွားများသည် စကားပြောရာတွင် မကွေ့မဝိုက်ဘဲ တည့်တည့်ပြောတတ်သူများ ဖြစ်တတ်သည်။",
+
+        career:
+            "လက်တွေ့ကျသော အလုပ်များ၊ ဆက်သွယ်ရေး၊ စီမံခန့်ခွဲမှုနှင့် ကိုယ်ပိုင်ဆုံးဖြတ်ချက်လိုအပ်သော အလုပ်များတွင် တိုးတက်နိုင်သည်။",
+
+        finance:
+            "ငွေကြေးကို တဖြည်းဖြည်း စုဆောင်းတတ်ပါက ရေရှည်တည်ငြိမ်မှုရနိုင်သည်။ အမြန်အမြတ်ရလိုခြင်းကို ရှောင်သင့်သည်။",
+
+        love:
+            "ချစ်ခြင်းမေတ္တာကို လက်တွေ့လုပ်ဆောင်ချက်များဖြင့် ပြသတတ်သည်။ နားလည်မှုရှိသော အဖော်နှင့် ပိုမိုအဆင်ပြေနိုင်သည်။",
+
+        family:
+            "မိသားစုအတွက် အားကိုးရသူဖြစ်တတ်သည်။ မိသားစုဝင်များ၏ ခံစားချက်ကို နားလည်ပေးရန်လည်း အရေးကြီးသည်။",
+
+        education:
+            "စနစ်တကျလေ့လာတတ်ပြီး အတွေ့အကြုံမှ သင်ယူနိုင်စွမ်းကောင်းသည်။",
+
+        warning:
+            "စကားပြောရာတွင် တည့်လွန်းခြင်းနှင့် မိမိအမြင်ကို အလွန်အမင်းအတည်ပြုလိုခြင်းကို သတိထားပါ။"
+
+    },
+
+
+    "ဘီလူးနက္ခတ်": {
+
+        icon:"👹",
+
+        subtitle:"ဘီလူးနက္ခတ်ဖွား",
+
+        description:
+            "စိတ်ဓာတ်ပြင်းပြပြီး ရည်မှန်းချက်ကို မလွယ်ကူစွာ လက်လျှော့တတ်သော သဘောရှိသည်။",
+
+        personality:
+            "ဘီလူးနက္ခတ်ဖွားများသည် စိတ်ဓာတ်ပြင်းပြပြီး မိမိရည်မှန်းချက်အတွက် အားထုတ်တတ်သူများ ဖြစ်တတ်သည်။ ယှဉ်ပြိုင်ရသောအရာများတွင် အားတက်သန်ပြီး အခက်အခဲကြုံလျှင် လွယ်လွယ်နှင့် လက်မလျှော့တတ်သည်။",
+
+        career:
+            "စိန်ခေါ်မှုများသော အလုပ်များ၊ ကိုယ်ပိုင်လုပ်ငန်း၊ စီမံခန့်ခွဲမှုနှင့် ရလဒ်ကို တိုင်းတာနိုင်သော အလုပ်များတွင် အားသာနိုင်သည်။",
+
+        finance:
+            "ရည်မှန်းချက်ကြီးမားပြီး ငွေကြေးတိုးတက်ရန် ကြိုးစားတတ်သည်။ သို့သော် အန္တရာယ်များသော ရင်းနှီးမြှုပ်နှံမှုကို သတိထားသင့်သည်။",
+
+        love:
+            "ချစ်ခြင်းတွင် အလေးအနက်ထားတတ်ပြီး ကိုယ်ပိုင်အမြင်ပြင်းထန်နိုင်သည်။ အဖော်၏အမြင်ကိုလည်း နားထောင်ပေးရန်လိုသည်။",
+
+        family:
+            "မိသားစုကို ကာကွယ်ပေးလိုစိတ်ရှိတတ်သည်။ တစ်ခါတစ်ရံ မိမိအမြင်ကို အလွန်အမင်း ဦးစားပေးမိနိုင်သည်။",
+
+        education:
+            "စိန်ခေါ်မှုရှိသော ဘာသာရပ်များနှင့် လက်တွေ့အသုံးချနိုင်သော ပညာရပ်များကို အာရုံစိုက်နိုင်သည်။",
+
+        warning:
+            "ဒေါသ၊ ခေါင်းမာခြင်း၊ အနိုင်ယူလိုစိတ်နှင့် အလျင်စလိုဆုံးဖြတ်ခြင်းကို သတိထားပါ။"
+
+    }
+
+};
+
+
+/* =========================================================
+   CATEGORY DATA
+========================================================= */
+
+const categories = [
+
+    {
+        key:"family",
+        icon:"family",
+        title:"မိသားစု",
+
+        scores:{
+            "နတ်နက္ခတ်":90,
+            "လူနက္ခတ်":91,
+            "ဘီလူးနက္ခတ်":78
+        }
+    },
+
+
+    {
+        key:"education",
+        icon:"education",
+        title:"ပညာရေး",
+
+        scores:{
+            "နတ်နက္ခတ်":86,
+            "လူနက္ခတ်":90,
+            "ဘီလူးနက္ခတ်":85
+        }
+    },
+
+
+    {
+        key:"love",
+        icon:"love",
+        title:"အချစ်ရေး",
+
+        scores:{
+            "နတ်နက္ခတ်":86,
+            "လူနက္ခတ်":89,
+            "ဘီလူးနက္ခတ်":76
+        }
+    },
+
+
+    {
+        key:"career",
+        icon:"career",
+        title:"အလုပ်အကိုင်",
+
+        scores:{
+            "နတ်နက္ခတ်":88,
+            "လူနက္ခတ်":84,
+            "ဘီလူးနက္ခတ်":92
+        }
+    },
+
+
+    {
+        key:"finance",
+        icon:"finance",
+        title:"ငွေကြေး",
+
+        scores:{
+            "နတ်နက္ခတ်":82,
+            "လူနက္ခတ်":80,
+            "ဘီလူးနက္ခတ်":90
+        }
+    },
+
+
+    {
+        key:"warning",
+        icon:"warning",
+        title:"သတိပြုရန်",
+
+        scores:{
+            "နတ်နက္ခတ်":72,
+            "လူနက္ခတ်":70,
+            "ဘီလူးနက္ခတ်":88
+        }
+    }
+
+];
+
+
+/* =========================================================
+   SVG ICONS
+========================================================= */
+
+const iconMap = {
+
+    family:`
+
+        <svg viewBox="0 0 64 64">
+
+            <path d="M8 29 32 11l24 18"/>
+
+            <path d="M14 26v28h36V26"/>
+
+            <path d="M25 54V39h14v15"/>
+
+            <circle cx="25" cy="32" r="4"/>
+
+            <circle cx="40" cy="32" r="4"/>
+
+        </svg>
+
+    `,
+
+
+    education:`
+
+        <svg viewBox="0 0 64 64">
+
+            <path d="M7 23 32 12l25 11-25 11L7 23z"/>
+
+            <path d="M16 28v12c9 7 23 7 32 0V28"/>
+
+            <path d="M56 23v18"/>
+
+        </svg>
+
+    `,
+
+
+    love:`
+
+        <svg viewBox="0 0 64 64">
+
+            <path d="M32 53S9 39 9 23c0-8 5-13 12-13 5 0 9 3 11 8 2-5 6-8 11-8 7 0 12 5 12 13 0 16-23 30-23 30z"/>
+
+        </svg>
+
+    `,
+
+
+    career:`
+
+        <svg viewBox="0 0 64 64">
+
+            <rect x="9" y="20" width="46" height="34" rx="4"/>
+
+            <path d="M22 20v-6h20v6"/>
+
+            <path d="M9 33h46"/>
+
+            <path d="M26 33v6h12v-6"/>
+
+        </svg>
+
+    `,
+
+
+    finance:`
+
+        <svg viewBox="0 0 64 64">
+
+            <path d="M12 21h40v32H12z"/>
+
+            <path d="M21 21v-5h22v5"/>
+
+            <circle cx="32" cy="37" r="7"/>
+
+            <path d="M32 31v12"/>
+
+        </svg>
+
+    `,
+
+
+    warning:`
+
+        <svg viewBox="0 0 64 64">
+
+            <path d="M32 7l23 9v17c0 13-10 23-23 27C19 56 9 46 9 33V16l23-9z"/>
+
+            <path d="M32 20v16"/>
+
+            <path d="M32 43v2"/>
+
+        </svg>
+
+    `
+
+};
+
+
+/* =========================================================
+   GREGORIAN → MYANMAR YEAR
+========================================================= */
+
+function getMyanmarYear(date){
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        date.getMonth() + 1;
+
+    const day =
+        date.getDate();
+
+
+    if(
+        month < 4 ||
+        (
+            month === 4 &&
+            day <= 15
+        )
+    ){
+
+        return year - 639;
+
+    }
+
+
+    return year - 638;
+
+}
+
+
+/* =========================================================
+   GET NAKHAT
+========================================================= */
+
+function getNakhat(myanmarYear){
+
+    const remainder =
+        myanmarYear % 3;
+
+
+    if(remainder === 1){
+
+        return {
+
+            remainder:1,
+
+            name:"နတ်နက္ခတ်"
+
+        };
+
+    }
+
+
+    if(remainder === 2){
+
+        return {
+
+            remainder:2,
+
+            name:"လူနက္ခတ်"
+
+        };
+
+    }
+
+
+    return {
+
+        remainder:0,
+
+        name:"ဘီလူးနက္ခတ်"
+
+    };
+
+}
+
+
+/* =========================================================
+   CREATE FORTUNE
+========================================================= */
+
+function createFortune(nakhatName){
+
+    const grid =
+        document.getElementById(
+            "fortuneGrid"
+        );
+
+
+    grid.innerHTML = "";
+
+
+    const data =
+        nakhatData[nakhatName];
+
+
+    categories.forEach(
+        category => {
+
+            const score =
+                category.scores[nakhatName];
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "fortune-card";
+
+
+            card.dataset.key =
+                category.key;
+
+
+            card.innerHTML = `
+
+                <div class="fortune-icon">
+
+                    ${iconMap[category.icon]}
+
+                </div>
+
+
+                <h3>
+                    ${category.title}
+                </h3>
+
+
+                <p>
+                    ${data[category.key]}
+                </p>
+
+
+                <div class="score">
+
+                    <div class="score-label">
+
+                        <span>
+                            အခြေအနေ
+                        </span>
+
+                        <span>
+                            ${score}%
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NAV DATE
+========================================================= */
+
+function updateNavDate(input){
+
+    const navDate =
+        document.getElementById(
+            "navDate"
+        );
+
+
+    if(!navDate){
+        return;
+    }
+
+
+    if(!input){
+
+        navDate.textContent =
+            "📅 -";
+
+        return;
+
+    }
+
+
+    navDate.textContent =
+        "📅 " + input;
+
+}
+
+
+/* =========================================================
+   MAIN CALCULATION
+========================================================= */
+
+function calculateNakhat(){
+
+    const input =
+        document.getElementById(
+            "birthDate"
+        ).value;
+
+
+    if(!input){
+
+        alert(
+            "မွေးသက္ကရာဇ်ကို ရွေးပေးပါ။"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       TODAY LIMIT SAFETY
+    ===================================================== */
+
+    const today =
+        getTodayString();
+
+
+    /*
+       Date input မှာ max ထားထားပေမယ့်
+       JavaScript ဘက်ကလည်း ထပ်စစ်ပေးထားသည်။
+    */
+
+    if(input > today){
+
+        alert(
+            "အနာဂတ်ရက်စွဲကို ရွေးချယ်လို့မရပါ။ ယနေ့အထိသာ ရွေးချယ်နိုင်ပါသည်။"
+        );
+
+        return;
+
+    }
+
+
+    const date =
+        new Date(
+            input + "T12:00:00"
+        );
+
+
+    /* Myanmar Year */
+
+    const myanmarYear =
+        getMyanmarYear(date);
+
+
+    /* Nakhat */
+
+    const nakhat =
+        getNakhat(
+            myanmarYear
+        );
+
+
+    const data =
+        nakhatData[
+            nakhat.name
+        ];
+
+
+    /* Navigation Date */
+
+    updateNavDate(input);
+
+
+    /* Title */
+
+    document.getElementById(
+        "refTitle"
+    ).textContent =
+
+        `${nakhat.name} (အကြွင်း ${nakhat.remainder}) - ဘဝင်စိတ်ဓာတ်နှင့် ရည်ရွယ်ချက်ဆိုင်ရာ`;
+
+
+    /* Hero */
+
+    document.getElementById(
+        "heroYear"
+    ).textContent =
+        myanmarYear;
+
+
+    document.getElementById(
+        "heroDate"
+    ).textContent =
+        input;
+
+
+    document.getElementById(
+        "heroRemainder"
+    ).textContent =
+        nakhat.remainder;
+
+
+    document.getElementById(
+        "heroNakhat"
+    ).textContent =
+        nakhat.name;
+
+
+    document.getElementById(
+        "heroDescription"
+    ).textContent =
+        data.description;
+
+
+    /* Traits */
+
+    document.getElementById(
+        "traitEducation"
+    ).textContent =
+        data.education;
+
+
+    document.getElementById(
+        "traitPersonality"
+    ).textContent =
+        data.personality;
+
+
+    document.getElementById(
+        "traitFamily"
+    ).textContent =
+        data.family;
+
+
+    /* Fortune */
+
+    createFortune(
+        nakhat.name
+    );
+
+
+    /* Show Result */
+
+    document.getElementById(
+        "inputView"
+    ).style.display =
+        "none";
+
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    result.style.display =
+        "flex";
+
+
+    requestAnimationFrame(
+        () => {
+
+            requestAnimationFrame(
+                () => {
+
+                    fitReference();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   HOME / GO BACK
+========================================================= */
+
+function goHome(){
+
+    const inputView =
+        document.getElementById(
+            "inputView"
+        );
+
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    inputView.style.display =
+        "flex";
+
+
+    result.style.display =
+        "none";
+
+
+    updateNavDate("");
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetForm(){
+
+    const input =
+        document.getElementById(
+            "birthDate"
+        );
+
+
+    if(input){
+
+        input.value = "";
+
+        input.max =
+            getTodayString();
+
+    }
+
+
+    document.getElementById(
+        "fortuneGrid"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "heroYear"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "heroDate"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "heroRemainder"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "heroNakhat"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "heroDescription"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "traitEducation"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "traitPersonality"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "traitFamily"
+    ).textContent =
+        "-";
+
+
+    document.getElementById(
+        "refTitle"
+    ).textContent =
+        "လူနက္ခတ် (အကြွင်း ၂) - ဘဝင်စိတ်ဓာတ်နှင့် ရည်ရွယ်ချက်ဆိုင်ရာ";
+
+
+    updateNavDate("");
+
+
+    goHome();
+
+}
+
+
+/* =========================================================
+   AUTO SCALE
+========================================================= */
+
+function fitReference(){
+
+    const stage =
+        document.getElementById(
+            "result"
+        );
+
+
+    const page =
+        document.querySelector(
+            ".reference-page"
+        );
+
+
+    if(!stage || !page){
+        return;
+    }
+
+
+    /*
+       Mobile မှာ responsive CSS အသုံးပြုမည်
+    */
+
+    if(window.innerWidth <= 760){
+
+        page.style.transform =
+            "none";
+
+        return;
+
+    }
+
+
+    const viewportWidth =
+        window.innerWidth;
+
+
+    const viewportHeight =
+        window.innerHeight - 72;
+
+
+    const scaleX =
+        viewportWidth / 1600;
+
+
+    const scaleY =
+        viewportHeight / 900;
+
+
+    const scale =
+        Math.min(
+            scaleX,
+            scaleY
+        );
+
+
+    page.style.transform =
+        `scale(${Math.max(
+            0.1,
+            scale
+        )})`;
+
+}
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    fitReference
+);
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+if(birthDateInput){
+
+    birthDateInput.addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+
+                calculateNakhat();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DATE CHANGE
+========================================================= */
+
+if(birthDateInput){
+
+    birthDateInput.addEventListener(
+        "change",
+        function(){
+
+            const today =
+                getTodayString();
+
+
+            /*
+               တစ်ယောက်ယောက်က Browser DevTools
+               သုံးပြီး future date ထည့်လာရင်ပါ
+               ပြန်ဖျက်ပေးမည်။
+            */
+
+            if(
+                this.value &&
+                this.value > today
+            ){
+
+                this.value = "";
+
+                alert(
+                    "ယနေ့ထက်နောက်ပိုင်း ရက်စွဲကို ရွေးချယ်လို့မရပါ။"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setDateLimit();
+
+        updateNavDate("");
+
+    }
+);
+
+
+/* =========================================================
+   ERROR HANDLER
+========================================================= */
+
+window.addEventListener(
+    "error",
+    function(event){
+
+        console.error(
+            "Nakhat calculation error:",
+            event.error ||
+            event.message
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

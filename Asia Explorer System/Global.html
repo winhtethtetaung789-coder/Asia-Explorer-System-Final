@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ကမ္ဘာလုံးဆိုင်ရာ ခရီးသွားနှင့် လူနေမှုဘဝ အကြံပြုချက်စနစ်</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #dceefc;
+            --sidebar-bg: #0d2a58;
+            --primary-blue: #1b65d4;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --card-border-radius: 16px;
+            
+            /* Recommendation Card Themes */
+            --food-orange: #f58220;
+            --food-bg: #fff5eb;
+            --culture-green: #71b340;
+            --culture-bg: #f2f9ed;
+            --festival-purple: #7052a5;
+            --festival-bg: #f4f0f9;
+            --safety-blue: #1c85d8;
+            --safety-bg: #edf6fd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* App Container Layout */
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            min-height: calc(100vh - 40px);
+            background: #eaf4fd;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(13, 42, 88, 0.15);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-text h2 {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .brand-text span {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active a {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+        }
+
+        .nav-item i {
+            font-size: 15px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .history-nav a {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+        /* Main Content Container */
+        .main-content {
+            flex: 1;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: visible;
+        }
+
+        
+
+        .lang-selector {
+            background: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            cursor: pointer;
+        }
+
+        .user-profile {
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            position: relative;
+            background: linear-gradient(135deg, #e3f0fc 0%, #cbe3f9 100%);
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--sidebar-bg);
+            margin-bottom: 6px;
+        }
+
+        .hero-subtitle {
+            font-size: 12px;
+            color: black;
+            max-width: 550px;
+            line-height: 1.5;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .card {
+            border-radius: var(--card-border-radius);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 110px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-icon-badge {
+            position: absolute;
+            bottom: -14px;
+            left: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .card-content {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+        }
+
+        .card-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .card-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: auto;
+        }
+
+        .card-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Specific Card Themes */
+        .card-food { background-color: var(--food-bg); }
+        .card-food .card-icon-badge, .card-food .card-btn { background-color: var(--food-orange); }
+
+        .card-culture { background-color: var(--culture-bg); }
+        .card-culture .card-icon-badge, .card-culture .card-btn { background-color: var(--culture-green); }
+
+        .card-festival { background-color: var(--festival-bg); }
+        .card-festival .card-icon-badge, .card-festival .card-btn { background-color: var(--festival-purple); }
+
+        .card-safety { background-color: var(--safety-bg); }
+        .card-safety .card-icon-badge, .card-safety .card-btn { background-color: var(--safety-blue); }
+
+        
+
+        /* Destination Avatars */
+        .destinations-list {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .destination-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .destination-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .destination-item:hover .destination-img {
+            transform: scale(1.1);
+        }
+
+        .destination-name {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Features List */
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #eef5fc;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Quote Box */
+        .quote-widget {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .quote-icon {
+            font-size: 18px;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+            opacity: 0.6;
+        }
+
+        .quote-text {
+            font-size: 11px;
+            font-style: italic;
+            color: #334155;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .quote-author {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        /* Activity and export panel */
+        .activity-panel {
+            background: #ffffff;
+            border: 1px solid #dbe8f5;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .activity-heading {
+            color: var(--sidebar-bg);
+            font-size: 16px;
+        }
+
+        .activity-subtitle {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .export-btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            background: var(--primary-blue);
+            font: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .export-btn.secondary {
+            color: var(--primary-blue);
+            background: #edf5ff;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 14px;
+        }
+
+        .activity-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 8px;
+            background: #f7fbff;
+            border-radius: 10px;
+        }
+
+        .activity-item img {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .activity-item strong,
+        .activity-item span {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .activity-item strong {
+            color: var(--text-dark);
+            font-size: 11px;
+        }
+
+        .activity-item span {
+            color: var(--text-muted);
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .empty-activity {
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 10px 0;
+        }
+
+        .profile-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: none;
+            place-items: center;
+            padding: 20px;
+            background: rgba(13, 42, 88, 0.42);
+        }
+
+        .profile-modal.show {
+            display: grid;
+        }
+
+        .profile-form {
+            width: min(100%, 360px);
+            padding: 22px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 18px 45px rgba(13, 42, 88, 0.25);
+        }
+
+        .profile-form h2 {
+            color: var(--sidebar-bg);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .profile-form p {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 16px;
+        }
+
+        .profile-form label {
+            display: block;
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 600;
+            margin: 10px 0 5px;
+        }
+
+        .profile-form input {
+            width: 100%;
+            border: 1px solid #cbdbea;
+            border-radius: 8px;
+            padding: 10px;
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .profile-form input:focus {
+            outline: 2px solid rgba(27, 101, 212, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .history-dashboard {
+            display: grid;
+            gap: 16px;
+        }
+
+        .history-topbar,
+        .history-section-head,
+        .stat-card,
+        .history-card,
+        .export-preview {
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid #dce7f4;
+            box-shadow: 0 8px 22px rgba(32, 61, 100, 0.06);
+        }
+
+        .history-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 22px;
+            border-radius: 16px;
+        }
+
+        .history-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .history-title-icon,
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 50%;
+        }
+
+        .history-title-icon {
+            width: 42px;
+            height: 42px;
+            color: #6844e9;
+            background: #eeeaff;
+            font-size: 18px;
+        }
+
+        .history-title {
+            color: #17213f;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .history-subtitle {
+            color: #697591;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .history-export-btn {
+            width: auto;
+            padding: 11px 17px;
+            background: linear-gradient(135deg, #6b40ed, #7d4cf4);
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 92px;
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
+        }
+
+        .stat-icon.views { color: #7046e8; background: #e9e2ff; }
+        .stat-icon.top { color: #ed6544; background: #ffe5db; }
+        .stat-icon.photos { color: #367ce4; background: #e0ecff; }
+        .stat-icon.date { color: #7253db; background: #eee9ff; }
+
+        .stat-label {
+            color: #697591;
+            font-size: 10px;
+        }
+
+        .stat-value {
+            color: #17213f;
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .stat-note {
+            color: #77829c;
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .history-main-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr 0.7fr;
+            gap: 12px;
+        }
+
+        .history-card,
+        .export-preview {
+            min-width: 0;
+            padding: 16px;
+            border-radius: 14px;
+        }
+
+        .history-card h3,
+        .export-preview h3 {
+            color: #17213f;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 175px;
+            padding: 12px 4px 0;
+            border-bottom: 1px solid #e1e8f2;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: end;
+            gap: 5px;
+            height: 100%;
+            min-width: 28px;
+        }
+
+        .bar-value {
+            color: #26314f;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .bar {
+            width: 28px;
+            min-height: 8px;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, #6f45ed, #9b7cf4);
+        }
+
+        .bar-label {
+            color: #697591;
+            font-size: 9px;
+            margin-top: 6px;
+        }
+
+        .category-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .category-row {
+            display: grid;
+            grid-template-columns: 10px 1fr auto;
+            align-items: center;
+            gap: 7px;
+            color: #4c5875;
+            font-size: 10px;
+        }
+
+        .category-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #6b42ec;
+        }
+
+        .category-row:nth-child(2) .category-dot { background: #4385e8; }
+        .category-row:nth-child(3) .category-dot { background: #35beb7; }
+        .category-row:nth-child(4) .category-dot { background: #f1b627; }
+
+        .preview-list {
+            display: grid;
+            gap: 11px;
+            color: #53607b;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .preview-list i { color: #29b8ae; margin-right: 6px; }
+
+        .json-preview {
+            overflow: auto;
+            max-height: 165px;
+            padding: 11px;
+            color: #53607b;
+            background: #f6f8fd;
+            border-radius: 9px;
+            font: 10px/1.5 Consolas, monospace;
+            white-space: pre-wrap;
+        }
+
+        .age-chart-card {
+            min-height: 260px;
+        }
+
+        .age-chart {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            gap: 8px;
+            height: 190px;
+            padding: 12px 4px 0;
+            border-bottom: 1px solid #e1e8f2;
+        }
+
+        .age-bar-item {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            flex-direction: column;
+            justify-content: end;
+            gap: 5px;
+            height: 100%;
+            min-width: 26px;
+        }
+
+        .age-bar-value {
+            color: #26314f;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .age-bar {
+            width: 100%;
+            max-width: 34px;
+            min-height: 8px;
+            border-radius: 5px 5px 0 0;
+            background: linear-gradient(180deg, #35beb7, #75d8d1);
+        }
+
+        .age-bar-label {
+            color: #697591;
+            font-size: 9px;
+            white-space: nowrap;
+        }
+
+        .recent-card {
+            overflow: hidden;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #26314f;
+            font-size: 10px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e8edf5;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .history-table th {
+            color: #697591;
+            font-weight: 600;
+        }
+
+        .history-table img {
+            width: 40px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+            vertical-align: middle;
+            margin-right: 7px;
+        }
+
+        .category-pill {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 5px;
+            color: #6942df;
+            background: #eee9ff;
+        }
+
+        .history-table-empty {
+            padding: 20px 8px;
+            color: #697591;
+        }
+
+        .profile-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 640px) {
+            .activity-header,
+            .export-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-topbar,
+            .history-title-wrap {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .history-export-btn {
+                width: 100%;
+            }
+
+            .history-stats,
+            .history-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-table {
+                min-width: 600px;
+            }
+
+            .recent-card {
+                overflow-x: auto;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .widgets-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Improved layout stability */
+        .sidebar {
+            min-height: calc(100vh - 40px);
+        }
+
+        .nav-item a i {
+            flex: 0 0 18px;
+        }
+
+        .card-img-container img,
+        .destination-img {
+            display: block;
+        }
+
+        @media (max-width: 1180px) {
+            .app-container {
+                max-width: 1100px;
+            }
+
+            .main-content {
+                padding: 22px 24px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 820px) {
+            body {
+                align-items: flex-start;
+                padding: 12px;
+            }
+
+            .app-container {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                padding: 18px;
+            }
+
+            .brand {
+                margin-bottom: 18px;
+            }
+
+            .nav-menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .nav-item a {
+                min-height: 42px;
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .main-content {
+                padding: 18px;
+                overflow: visible;
+            }
+
+            .widgets-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .nav-menu,
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                justify-content: flex-end;
+            }
+
+            .hero-banner {
+                padding: 22px 16px;
+            }
+
+            .hero-title {
+                font-size: 22px;
+            }
+
+            .hero-banner h2 {
+                font-size: 18px !important;
+            }
+
+            .card-img-container {
+                height: 150px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>Asia Explorer System</h2>
+                   
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="Global.html"><i class="fa-solid fa-house"></i>ပင်မစာမျက်နှာ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="Culture_with _chatbot.html"><i class="fa-solid fa-utensils"></i> ယဉ်ကျေးမှုနှင့် လိုက်နာရန်ကျင့်ဝတ်များ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="Festival_tradition_with_chatbot.html"><i class="fa-solid fa-users"></i>ပွဲတော်များနှင့် ရိုးရာဓလေ့အခမ်းအနားများ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="FoodRecommendation_with_chatbot.html"><i class="fa-solid fa-masks-theater"></i>အစားအစာများ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="TravelSafety_with_chatbot.html"><i class="fa-solid fa-shield-halved"></i> အထင်ကရနေရာများ</a>
+                </li>
+                <li class="nav-item history-nav">
+                    <a href="#activity-heading" id="historyNavBtn"><i class="fa-solid fa-clock-rotate-left"></i> ကြည့်ရှုမှတ်တမ်း</a>
+                </li>
+            
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- Hero Section -->
+            <section class="hero-banner">
+                <h1 class="hero-title">Asia Explorer System</h1>
+                <h2 style="font-size: 20px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"></h2>
+                <p class="hero-subtitle">"ကမ္ဘာကြီးဆိုတာ စာအုပ်တစ်အုပ်ပါ။ ခရီးမသွားဖူးတဲ့သူတွေဟာ အဲ့ဒီစာအုပ်ရဲ့ စာမျက်နှာတစ်မျက်နှာတည်းကိုပဲ ဖတ်ဖူးကြတာဖြစ်ပါတယ်။"(စိန့် ဩဂတ်စတင်း)</p>
+                
+            </section>
+
+            <!-- Categories Cards Grid -->
+            <section class="cards-grid">
+                
+                <!-- Culture Card -->
+                <div class="card card-culture">
+                    <div>
+                        <div class="card-img-container">
+                            <img src="images/culture.jpg" alt="ယဉ်ကျေးမှုနှင့် လိုက်နာရန်ကျင့်ဝတ်">
+                            <div class="card-icon-badge">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">ယဉ်ကျေးမှုနှင့်လိုက်နာရန် ကျင့်ဝတ်များ</h3>
+                            <p class="card-desc">ဒေသခံတို့၏ ယဉ်ကျေးမှု၊ ဓလေ့ထုံးစံများ၊ စံတန်ဖိုးများနှင့် လေးစားစွာ ဆက်ဆံနိုင်ရန် လိုက်နာရမည့် ကျင့်ဝတ်များ</p>
+                        </div>
+                    </div>
+                    <a href="Culture_with _chatbot.html" class="card-btn track-view" data-category="ယဉ်ကျေးမှု" data-title="ယဉ်ကျေးမှုနှင့် လိုက်နာရန်ကျင့်ဝတ်များ" data-photo="images/culture.jpg">ကြည့်ရှုရန်</a>
+                </div>
+
+                <!-- Festival Card -->
+                <div class="card card-festival">
+                    <div>
+                        <div class="card-img-container">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80" alt="ပွဲတော်နှင့် ရိုးရာဓလေ့">
+                            <div class="card-icon-badge">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">ပွဲတော်များနှင့် ရိုးရာဓလေ့အခမ်းအနားများ</h3>
+                            <p class="card-desc">အာရှတစ်ဝှမ်းရှိ နိုင်ငံအလိုက်ကျင်းပသည့် ပွဲတော်များနှင့် ရိုးရာဓလေ့အခမ်းအနားများ၏ ကျင်းပပုံ နှင့် ကျင်းပရသည့် ရည်ရွယ်ချက်များ</p>
+                        </div>
+                    </div>
+                    <a href="Festival_tradition_with_chatbot.html" class="card-btn track-view" data-category="ပွဲတော်" data-title="ပွဲတော်များနှင့် ရိုးရာဓလေ့အခမ်းအနားများ" data-photo="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80">ကြည့်ရှုရန်</a>
+                </div>
+
+                <!-- Food Card -->
+                <div class="card card-food">
+                    <div>
+                        <div class="card-img-container">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="အစားအသောက် အကြံပြုချက်">
+                            <div class="card-icon-badge">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">အစားအစာများ</h3>
+                            <p class="card-desc">အာရှအငွေ့အသက်များစွာ ပြည့်နှက်နေသည့် လက်မလွတ်တမ်း မြည်းစမ်းသင့်သော ရိုးရာဟင်းလျာများနှင့် စားကောင်းသောက်ဖွယ်များ</p>
+                        </div>
+                    </div>
+                    <a href="FoodRecommendation_with_chatbot.html" class="card-btn track-view" data-category="အစားအစာ" data-title="အစားအစာများ" data-photo="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80">ကြည့်ရှုရန်</a>
+                </div>
+
+
+                <!-- Travel Safety Card -->
+                <div class="card card-safety">
+                    <div>
+                        <div class="card-img-container">
+                            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80" alt="ခရီးသွား ဘေးကင်းလုံခြုံရေး">
+                            <div class="card-icon-badge">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">အထင်ကရနေရာများ</h3>
+                            <p class="card-desc">နိုင်ငံတကာခရီးသွားများအတွက် လက်မလွတ်တမ်း သွား‌‌ေရာက်လည်ပတ်သင့်သည့် အာရှတိုက်ရှိ အထင်ကရနေရာများ နှင့် အကူညီလိုအပ်ပါက အရေးပေါ် ဆက်သွယ်ရန်ဖုန်းနံပါတ်များ</p>
+                        </div>
+                    </div>
+                    <a href="TravelSafety_with_chatbot.html" class="card-btn track-view" data-category="အထင်ကရနေရာ" data-title="အထင်ကရနေရာများ" data-photo="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80">ကြည့်ရှုရန်</a>
+                </div>
+            </section>
+
+            <section class="history-dashboard activity-panel" aria-labelledby="activity-heading">
+                <div class="history-topbar">
+                    <div class="history-title-wrap">
+                        <div class="history-title-icon"><i class="fa-solid fa-eye"></i></div>
+                        <div>
+                            <h2 id="activity-heading" class="history-title" tabindex="-1">My View History</h2>
+                            <p class="history-subtitle">သင့်ရဲ့ ကြည့်ရှုမှတ်တမ်း၊ အကြည့်များဆုံးအချက်အလက်နှင့် JSON export</p>
+                        </div>
+                    </div>
+                    <button class="export-btn history-export-btn" id="downloadJsonBtn" type="button"><i class="fa-solid fa-download"></i> Export as JSON</button>
+                </div>
+
+                <div class="history-stats">
+                    <div class="stat-card"><div class="stat-icon views"><i class="fa-solid fa-file-lines"></i></div><div><div class="stat-label">Total Views</div><div class="stat-value" id="totalViewsStat">0</div><div class="stat-note">Items viewed</div></div></div>
+                    <div class="stat-card"><div class="stat-icon top"><i class="fa-solid fa-fire"></i></div><div><div class="stat-label">Most Viewed</div><div class="stat-value" id="topViewedStat">-</div><div class="stat-note" id="topViewedNote">0 times</div></div></div>
+                    <div class="stat-card"><div class="stat-icon photos"><i class="fa-solid fa-image"></i></div><div><div class="stat-label">Photos Viewed</div><div class="stat-value" id="photosViewedStat">0</div><div class="stat-note">Photos</div></div></div>
+                    <div class="stat-card"><div class="stat-icon date"><i class="fa-solid fa-calendar-days"></i></div><div><div class="stat-label">Last Viewed</div><div class="stat-value" id="lastViewedStat">-</div><div class="stat-note">Activity date</div></div></div>
+                </div>
+
+                <div class="history-main-grid">
+                    <div class="history-card"><h3>Most Viewed Categories</h3><div id="barChart" class="bar-chart"></div></div>
+                    <div class="history-card"><h3>Views by Category</h3><div id="categoryList" class="category-list"></div></div>
+                    <div class="history-card age-chart-card"><h3>Saved User Ages</h3><p class="activity-subtitle">JSON သိမ်းထားတဲ့ user အသက်အုပ်စုများ</p><div id="ageChart" class="age-chart"></div></div>
+                </div>
+
+                <div class="history-card recent-card"><div class="history-section-head"><h3>Recent Viewed Items</h3></div><table class="history-table"><thead><tr><th>Item</th><th>Category</th><th>Viewed At</th><th>Views</th><th>Photo</th></tr></thead><tbody id="recentTableBody"></tbody></table></div>
+            </section>
+
+           
+        </main>
+    </div>
+
+    <div class="profile-modal" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+        <form class="profile-form" id="profileForm">
+            <h2 id="profileModalTitle">သင့်အချက်အလက် ဖြည့်ပါ</h2>
+            <p>Database မှတ်တမ်းနှင့် JSON ဖိုင်ထဲမှာ သိမ်းရန် အမည်နဲ့ အသက်ကို ဖြည့်ပါ။</p>
+            <label for="userName">အမည်</label>
+            <input id="userName" name="userName" type="text" required maxlength="80" autocomplete="name">
+            <label for="userAge">အသက်</label>
+            <input id="userAge" name="userAge" type="number" required min="1" max="120" inputmode="numeric">
+            <div class="profile-form-actions">
+                <button class="export-btn secondary" id="cancelProfileBtn" type="button">မလုပ်တော့ပါ</button>
+                <button class="export-btn" type="submit"><i class="fa-solid fa-download"></i> JSON သိမ်းရန်</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const viewStorageKey = 'asiaExplorerViewHistory';
+        const ageStorageKey = 'asiaExplorerSavedUserAges';
+        const runStorageKey = 'asiaExplorerViewHistoryInitialized';
+        if (!sessionStorage.getItem(runStorageKey)) {
+            localStorage.removeItem(viewStorageKey);
+            sessionStorage.setItem(runStorageKey, 'true');
+        }
+        const viewLinks = document.querySelectorAll('.track-view');
+
+        function getViewHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(viewStorageKey)) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveView(item) {
+            const history = getViewHistory();
+            const existing = history.find((entry) => entry.url === item.url);
+            if (existing) {
+                existing.count += 1;
+                existing.lastViewedAt = item.lastViewedAt;
+            } else {
+                history.push({ ...item, count: 1 });
+            }
+            localStorage.setItem(viewStorageKey, JSON.stringify(history));
+        }
+
+        function openUserDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('asiaExplorerDatabase', 1);
+                request.onupgradeneeded = () => request.result.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function saveUser(profile) {
+            try {
+                const database = await openUserDatabase();
+                await new Promise((resolve, reject) => {
+                    const transaction = database.transaction('users', 'readwrite');
+                    const request = transaction.objectStore('users').add({ ...profile, savedAt: new Date().toISOString() });
+                    request.onsuccess = resolve;
+                    transaction.onerror = () => reject(transaction.error);
+                });
+                database.close();
+            } catch (error) {
+                // The local copy below keeps age data available when IndexedDB is unavailable.
+            }
+            const savedProfiles = JSON.parse(localStorage.getItem(ageStorageKey) || '[]');
+            savedProfiles.push(profile);
+            localStorage.setItem(ageStorageKey, JSON.stringify(savedProfiles));
+        }
+
+        async function getAgeCounts() {
+            let users = JSON.parse(localStorage.getItem(ageStorageKey) || '[]');
+            try {
+                const database = await openUserDatabase();
+                const databaseUsers = await new Promise((resolve, reject) => {
+                    const request = database.transaction('users', 'readonly').objectStore('users').getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+                database.close();
+                if (databaseUsers.length) users = databaseUsers;
+            } catch (error) {
+                // Keep the localStorage copy available if IndexedDB is unavailable for this run.
+            }
+            const ageGroups = [{ label: '1-17', min: 1, max: 17 }, { label: '18-25', min: 18, max: 25 }, { label: '26-40', min: 26, max: 40 }, { label: '41-60', min: 41, max: 60 }, { label: '61+', min: 61, max: 120 }];
+            return ageGroups.map((group) => ({ ...group, count: users.filter((user) => user.age >= group.min && user.age <= group.max).length }));
+        }
+
+        function renderAgeChart(ageCounts) {
+            const maxAgeCount = Math.max(...ageCounts.map((group) => group.count), 1);
+            document.getElementById('ageChart').innerHTML = ageCounts.map((group) => `<div class="age-bar-item"><span class="age-bar-value">${group.count}</span><div class="age-bar" style="height:${Math.max(12, group.count / maxAgeCount * 125)}px"></div><span class="age-bar-label">${group.label}</span></div>`).join('');
+        }
+
+        async function renderActivity() {
+            const history = getViewHistory();
+            const recentViewed = [...history].sort((a, b) => new Date(b.lastViewedAt) - new Date(a.lastViewedAt)).slice(0, 3);
+            const categoryTotals = history.reduce((totals, item) => {
+                totals[item.category] = (totals[item.category] || 0) + item.count;
+                return totals;
+            }, {});
+            const categories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+            const topViewed = [...history].sort((a, b) => b.count - a.count)[0];
+            const lastViewed = recentViewed[0];
+            const totalViews = history.reduce((total, item) => total + item.count, 0);
+            document.getElementById('totalViewsStat').textContent = totalViews;
+            document.getElementById('topViewedStat').textContent = topViewed ? topViewed.title : '-';
+            document.getElementById('topViewedNote').textContent = topViewed ? `${topViewed.count} times` : '0 times';
+            document.getElementById('photosViewedStat').textContent = history.filter((item) => item.photo).length;
+            document.getElementById('lastViewedStat').textContent = lastViewed ? new Date(lastViewed.lastViewedAt).toLocaleDateString() : '-';
+
+            const maxCategoryViews = categories[0] ? categories[0][1] : 1;
+            document.getElementById('barChart').innerHTML = categories.length ? categories.slice(0, 6).map(([category, count]) => `<div class="bar-item"><span class="bar-value">${count}</span><div class="bar" style="height:${Math.max(12, count / maxCategoryViews * 125)}px"></div><span class="bar-label">${category}</span></div>`).join('') : '<p class="empty-activity">မှတ်တမ်းမရှိသေးပါ။</p>';
+            document.getElementById('categoryList').innerHTML = categories.length ? categories.map(([category, count]) => `<div class="category-row"><span class="category-dot"></span><span>${category}</span><strong>${Math.round(count / totalViews * 100)}%</strong></div>`).join('') : '<p class="empty-activity">မှတ်တမ်းမရှိသေးပါ။</p>';
+            document.getElementById('recentTableBody').innerHTML = recentViewed.length ? recentViewed.map((item) => `<tr><td><img src="${item.photo}" alt="">${item.title}</td><td><span class="category-pill">${item.category}</span></td><td>${new Date(item.lastViewedAt).toLocaleString()}</td><td>${item.count}</td><td><img src="${item.photo}" alt=""></td></tr>`).join('') : '<tr><td class="history-table-empty" colspan="5">မှတ်တမ်းမရှိသေးပါ။</td></tr>';
+            try {
+                const savedUsers = await getAgeCounts();
+                renderAgeChart(savedUsers);
+            } catch (error) {
+                document.getElementById('ageChart').innerHTML = '<p class="empty-activity">Database ချိတ်ဆက်၍ မရသေးပါ။</p>';
+            }
+        }
+
+        function buildExportData(profile) {
+            const history = getViewHistory();
+            return {
+                exportedAt: new Date().toISOString(),
+                source: 'Asia Explorer System',
+            user: profile,
+                totalViews: history.reduce((total, item) => total + item.count, 0),
+                mostViewed: [...history].sort((a, b) => b.count - a.count),
+                viewedHistory: history,
+                photos: history.map(({ title, category, photo, url }) => ({ title, category, photo, url }))
+            };
+        }
+
+        viewLinks.forEach((link) => {
+            link.addEventListener('click', () => saveView({
+                title: link.dataset.title,
+                category: link.dataset.category,
+                photo: link.dataset.photo,
+                url: link.href,
+                lastViewedAt: new Date().toISOString()
+            }));
+        });
+
+        const profileModal = document.getElementById('profileModal');
+        const profileForm = document.getElementById('profileForm');
+
+        document.getElementById('downloadJsonBtn').addEventListener('click', () => {
+            profileModal.classList.add('show');
+            document.getElementById('userName').focus();
+        });
+
+        document.getElementById('cancelProfileBtn').addEventListener('click', () => profileModal.classList.remove('show'));
+
+        profileForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('userName').value.trim();
+            const age = Number(document.getElementById('userAge').value);
+            if (!name || !Number.isInteger(age) || age < 1 || age > 120) return;
+
+            const saveButton = profileForm.querySelector('button[type="submit"]');
+            saveButton.disabled = true;
+            try {
+                await saveUser({ name, age });
+                await renderActivity();
+            } catch (error) {
+                alert('Database ထဲသို့ user သိမ်း၍ မရပါ။ Server ကို ဖွင့်ထားကြောင်း စစ်ဆေးပါ။');
+                saveButton.disabled = false;
+                return;
+            }
+            saveButton.disabled = false;
+            const blob = new Blob([JSON.stringify(buildExportData({ name, age }), null, 2)], { type: 'application/json' });
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `asia-explorer-history-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(downloadUrl);
+            profileModal.classList.remove('show');
+            profileForm.reset();
+        });
+
+        renderActivity();
+
+        document.getElementById('historyNavBtn').addEventListener('click', (event) => {
+            event.preventDefault();
+            const activityPanel = document.querySelector('.activity-panel');
+            activityPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('activity-heading').focus({ preventScroll: true });
+        });
+    </script>
+
+</body>
+</html>

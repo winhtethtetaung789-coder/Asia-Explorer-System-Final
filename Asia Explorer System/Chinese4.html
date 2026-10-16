@@ -1,0 +1,2288 @@
+
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>တရုတ်ရိုးရာ မွေးသက္ကရာဇ်ဗေဒင်</title>
+
+<style>
+
+/* =========================================
+   RESET
+========================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Noto Sans Myanmar","Myanmar Text",Arial,sans-serif;
+    min-height:100vh;
+    color:#fff8f0;
+    padding-bottom:30px;
+    position:relative;
+    overflow-x:hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 32%,
+            rgba(190,128,205,.45) 0,
+            rgba(120,72,160,.18) 24%,
+            transparent 48%
+        ),
+        radial-gradient(
+            circle at 18% 18%,
+            rgba(255,220,150,.10) 0 2px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 82% 20%,
+            rgba(255,220,150,.12) 0 2px,
+            transparent 3px
+        ),
+        linear-gradient(
+            180deg,
+            #10072f 0%,
+            #21104f 25%,
+            #55306d 55%,
+            #c39bc2 78%,
+            #f4d9ca 100%
+        );
+}
+
+
+/* =========================================
+   STAR FIELD
+========================================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    pointer-events:none;
+    opacity:.95;
+
+    background-image:
+        radial-gradient(circle at 8% 12%,#ffe7a3 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 22% 8%,#fff2bd 0 1px,transparent 2px),
+        radial-gradient(circle at 35% 18%,#ffd98d 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 48% 7%,#ffe9ae 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 62% 15%,#fff1b8 0 1px,transparent 2px),
+        radial-gradient(circle at 75% 9%,#ffd98d 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 91% 17%,#fff0b0 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 14% 34%,#ffe9ad 0 1px,transparent 2px),
+        radial-gradient(circle at 31% 28%,#fff2bd 0 1px,transparent 2px),
+        radial-gradient(circle at 69% 32%,#ffe5a0 0 1.5px,transparent 2.5px),
+        radial-gradient(circle at 86% 38%,#fff0b0 0 1px,transparent 2px);
+}
+
+
+/* =========================================
+   MOON
+========================================= */
+
+body::after{
+    content:"☾";
+    position:fixed;
+    right:4vw;
+    top:28vh;
+    z-index:-2;
+
+    color:#ffe9b0;
+    font-size:clamp(80px,10vw,150px);
+    line-height:1;
+
+    text-shadow:
+        0 0 18px rgba(255,224,153,.65),
+        0 0 50px rgba(255,214,125,.28);
+
+    pointer-events:none;
+}
+
+
+/* =========================================
+   DECORATION
+========================================= */
+
+.container::before{
+    content:"";
+    position:fixed;
+    left:-8vw;
+    right:-8vw;
+    bottom:-2vh;
+    height:31vh;
+    z-index:-1;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            145deg,
+            transparent 0 8%,
+            rgba(74,45,112,.92) 8% 22%,
+            transparent 22% 100%
+        ),
+        linear-gradient(
+            35deg,
+            transparent 0 18%,
+            rgba(88,53,125,.88) 18% 32%,
+            transparent 32% 100%
+        ),
+        linear-gradient(
+            150deg,
+            transparent 0 38%,
+            rgba(106,68,139,.82) 38% 50%,
+            transparent 50% 100%
+        ),
+        linear-gradient(
+            25deg,
+            transparent 0 45%,
+            rgba(120,78,145,.78) 45% 59%,
+            transparent 59% 100%
+        );
+
+    filter:blur(.2px);
+}
+
+.container::after{
+    content:"";
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:28vh;
+    z-index:-1;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 100%,
+            rgba(255,236,214,.85) 0 18%,
+            rgba(255,220,205,.45) 32%,
+            transparent 66%
+        );
+}
+
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.navbar{
+    background:rgba(18,7,52,.58);
+    border-bottom:1px solid rgba(245,206,142,.25);
+
+    box-shadow:
+        0 4px 24px rgba(15,4,42,.35);
+
+    backdrop-filter:blur(12px);
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.nav-container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:12px 20px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+
+/* LOGO */
+
+.nav-logo{
+    font-size:18px;
+    font-weight:bold;
+
+    color:#f6d18b;
+
+    text-decoration:none;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+
+/* =========================================
+   NAV BUTTON AREA
+========================================= */
+
+.nav-links{
+    display:flex;
+    list-style:none;
+
+    gap:8px;
+
+    align-items:center;
+}
+
+
+/* =========================================
+   HOME + RESET BUTTON
+========================================= */
+
+.nav-links a{
+    text-decoration:none;
+
+    color:#fff8e8;
+
+    font-size:14px;
+    font-weight:600;
+
+    padding:8px 16px;
+
+    border-radius:28px;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-height:38px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5b20c9,
+            #8c3ec0
+        );
+
+    box-shadow:
+        0 6px 18px rgba(73,26,150,.35);
+
+    border:1px solid rgba(255,255,255,.10);
+
+    transition:
+        background .3s ease,
+        transform .25s ease,
+        box-shadow .3s ease;
+}
+
+
+/* HOME */
+
+.home-btn{
+    background:
+        linear-gradient(
+            135deg,
+            #5b20c9,
+            #8c3ec0
+        );
+}
+
+
+/* RESET */
+
+.nav-btn{
+    background:
+        linear-gradient(
+            135deg,
+            #5b20c9,
+            #8c3ec0
+        );
+}
+
+
+/* Hover */
+
+.nav-links a:hover{
+    background:
+        linear-gradient(
+            135deg,
+            #702ad1,
+            #a44cc9
+        );
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(73,26,150,.48);
+}
+
+
+/* Click */
+
+.nav-links a:active{
+    transform:translateY(0);
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.container{
+    width:100%;
+    max-width:1400px;
+
+    margin:0 auto;
+
+    padding:20px 15px 0 15px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.main-header{
+    text-align:center;
+
+    margin:20px 0 30px 0;
+}
+
+.main-header h1{
+    font-size:26px;
+
+    color:#f6ce8a;
+
+    text-shadow:
+        0 3px 16px rgba(75,28,100,.45);
+
+    margin-bottom:6px;
+}
+
+.main-header p{
+    font-size:14px;
+    color:#f5e3d6;
+}
+
+
+/* =========================================
+   PANEL
+========================================= */
+
+.panel{
+    background:
+        rgba(255,248,239,.94);
+
+    border:
+        1px solid rgba(224,190,136,.75);
+
+    border-radius:18px;
+
+    padding:14px;
+
+    color:#392342;
+
+    box-shadow:
+        0 14px 35px rgba(39,12,64,.24),
+        inset 0 0 0 1px rgba(255,255,255,.45);
+
+    backdrop-filter:blur(7px);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+}
+
+.panel:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 8px 25px rgba(2,132,199,.2);
+
+    border-color:#c78a43;
+}
+
+
+/* =========================================
+   PANEL TITLE
+========================================= */
+
+.panel-title{
+    color:#542b68;
+
+    font-size:15px;
+    font-weight:bold;
+
+    text-align:center;
+
+    margin-bottom:12px;
+    padding-bottom:6px;
+
+    border-bottom:
+        1px solid rgba(56,189,248,.3);
+}
+
+
+/* =========================================
+   INITIAL INPUT
+========================================= */
+
+.initial-input-wrapper{
+    max-width:420px;
+
+    margin:20px auto 40px auto;
+
+    text-align:center;
+}
+
+.initial-input-wrapper h2{
+    font-size:20px;
+
+    color:#542b68;
+
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+
+    color:#5a4659;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+}
+
+.input-group input{
+    width:100%;
+
+    padding:10px;
+
+    background:
+        rgba(255,251,246,.92);
+
+    border:
+        1px solid #d8c2aa;
+
+    border-radius:10px;
+
+    color:#35213c;
+
+    font-size:14px;
+
+    outline:none;
+
+    margin-bottom:15px;
+}
+
+.input-group input:focus{
+    border-color:#c78a43;
+}
+
+
+/* =========================================
+   GENERATE BUTTON
+========================================= */
+
+.generate-btn{
+    width:100%;
+
+    padding:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #32118f 0%,
+            #6c249f 52%,
+            #b34d8d 100%
+        );
+
+    box-shadow:
+        0 8px 18px rgba(67,23,122,.28);
+
+    border:none;
+
+    border-radius:8px;
+
+    color:#fff;
+
+    font-size:14px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:all .3s ease;
+}
+
+.generate-btn:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 4px 15px rgba(2,132,199,.4);
+}
+
+
+/* =========================================
+   DASHBOARD
+========================================= */
+
+#dashboardView{
+    display:none;
+}
+
+.dashboard-4cols{
+    display:grid;
+
+    grid-template-columns:
+        240px 240px 2fr 240px;
+
+    gap:12px;
+
+    align-items:stretch;
+}
+
+
+/* =========================================
+   COLUMN 1
+========================================= */
+
+.compact-input{
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    height:100%;
+
+    padding:24px 14px;
+}
+
+.compact-input-content{
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    flex-grow:1;
+}
+
+.compact-input h3{
+    color:#0369a1;
+
+    font-size:16px;
+
+    margin-bottom:20px;
+
+    text-align:center;
+}
+
+
+/* =========================================
+   COLUMN 2
+========================================= */
+
+.zodiac-box{
+    text-align:center;
+
+    margin-bottom:10px;
+}
+
+.zodiac-icon{
+    font-size:40px;
+
+    margin-bottom:2px;
+}
+
+.zodiac-title{
+    font-size:16px;
+
+    font-weight:bold;
+
+    color:#0369a1;
+}
+
+.zodiac-desc{
+    font-size:11px;
+
+    color:#6c596b;
+
+    margin-top:4px;
+
+    line-height:1.3;
+}
+
+.elements-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    margin-top:10px;
+}
+
+.element-item{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    font-size:11px;
+}
+
+.element-info{
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    width:75px;
+
+    font-weight:bold;
+}
+
+.dots-container{
+    display:flex;
+
+    gap:3px;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#bae6fd;
+
+    border:
+        1px solid #7dd3fc;
+}
+
+.wood-text{
+    color:#16a34a;
+}
+
+.wood-dot.active{
+    background:#16a34a;
+    border:none;
+}
+
+.fire-text{
+    color:#dc2626;
+}
+
+.fire-dot.active{
+    background:#dc2626;
+    border:none;
+}
+
+.earth-text{
+    color:#d97706;
+}
+
+.earth-dot.active{
+    background:#d97706;
+    border:none;
+}
+
+.metal-text{
+    color:#6c596b;
+}
+
+.metal-dot.active{
+    background:#64748b;
+    border:none;
+}
+
+.water-text{
+    color:#0284c7;
+}
+
+.water-dot.active{
+    background:#0284c7;
+    border:none;
+}
+
+.element-count{
+    font-weight:bold;
+
+    font-size:13px;
+
+    width:10px;
+
+    text-align:right;
+}
+
+
+/* =========================================
+   HOROSCOPE CARDS
+========================================= */
+
+.combined-cards-grid{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:10px;
+}
+
+.card-item{
+    background:#f0f9ff;
+
+    border:
+        1px solid #e0f2fe;
+
+    border-radius:10px;
+
+    padding:10px;
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:flex-start;
+}
+
+.card-icon{
+    width:28px;
+    height:28px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:14px;
+
+    flex-shrink:0;
+}
+
+.icon-blue{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.icon-orange{
+    background:#ffedd5;
+    color:#c2410c;
+}
+
+.icon-red{
+    background:#ffe4e6;
+    color:#be123c;
+}
+
+.icon-pink{
+    background:#fce7f3;
+    color:#be185d;
+}
+
+.icon-yellow{
+    background:#fef9c3;
+    color:#a16207;
+}
+
+.icon-green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.icon-purple{
+    background:#f3e8ff;
+    color:#6b21a8;
+}
+
+.icon-gold{
+    background:#fef3c7;
+    color:#8f6b00;
+}
+
+.card-content h3{
+    font-size:12px;
+
+    color:#392342;
+
+    margin-bottom:2px;
+}
+
+.card-content p{
+    font-size:11px;
+
+    color:#5a4659;
+
+    line-height:1.3;
+}
+
+
+/* =========================================
+   SCORE PANEL
+========================================= */
+
+.scores-panel{
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+}
+
+.scores-body{
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-around;
+
+    flex-grow:1;
+}
+
+.score-group{
+    margin-bottom:12px;
+}
+
+.score-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:6px;
+}
+
+.progress-bg{
+    height:10px;
+
+    background:#e0f2fe;
+
+    border-radius:15px;
+
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+
+    border-radius:15px;
+
+    width:0%;
+
+    transition:
+        width 1s ease-in-out;
+}
+
+.fill-career{
+    background:
+        linear-gradient(
+            90deg,
+            #0284c7,
+            #38bdf8
+        );
+}
+
+.fill-love{
+    background:
+        linear-gradient(
+            90deg,
+            #be123c,
+            #fb7185
+        );
+}
+
+.fill-wealth{
+    background:
+        linear-gradient(
+            90deg,
+            #d97706,
+            #facc15
+        );
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:1200px){
+
+    .dashboard-4cols{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+
+@media(max-width:768px){
+
+    .nav-container{
+        padding:10px 12px;
+    }
+
+    .nav-logo{
+        font-size:15px;
+    }
+
+    .nav-links{
+        gap:6px;
+    }
+
+    .nav-links a{
+        padding:7px 11px;
+        font-size:12px;
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .nav-logo{
+        font-size:14px;
+    }
+
+    .nav-links a{
+        padding:7px 9px;
+        font-size:11px;
+    }
+
+    .dashboard-4cols{
+        grid-template-columns:
+            1fr;
+    }
+
+    .combined-cards-grid{
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+
+/* =========================================
+   VERY SMALL SCREEN
+========================================= */
+
+@media(max-width:420px){
+
+    .nav-container{
+        gap:8px;
+    }
+
+    .nav-logo{
+        font-size:12px;
+    }
+
+    .nav-links{
+        gap:4px;
+    }
+
+    .nav-links a{
+        padding:6px 8px;
+        min-height:34px;
+        font-size:10px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     NAVIGATION BAR
+========================================= -->
+
+<nav class="navbar">
+
+    <div class="nav-container">
+
+        <!-- LOGO -->
+        <a href="#" class="nav-logo">
+            🔮 တရုတ်ရိုးရာဗေဒင်
+        </a>
+
+
+        <!-- HOME + RESET -->
+        <ul class="nav-links">
+
+            <!-- HOME -->
+            <li>
+                <a
+                    href="ChineseHome4.html"
+                    class="home-btn"
+                >
+                    🏠 Fortune
+                </a>
+            </li>
+
+
+            <!-- RESET -->
+            <li>
+                <a
+                    href="#"
+                    class="nav-btn"
+                    onclick="resetCalculator(); return false;"
+                >
+                    🔄 ပြန်တွက်မည်
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</nav>
+
+
+
+<div class="container">
+
+
+<!-- =========================================
+     MAIN HEADER
+========================================= -->
+
+<header class="main-header">
+
+    <div
+        style="
+            font-size:64px;
+            line-height:1;
+            margin-bottom:8px;
+            filter:drop-shadow(
+                0 0 16px rgba(255,214,126,.55)
+            );
+        "
+    >
+        🔮
+    </div>
+
+    <h1>
+        တရုတ်ရိုးရာ မွေးသက္ကရာဇ်ဗေဒင်
+    </h1>
+
+    <p>
+        သင်၏ မွေးသက္ကရာဇ်ကို ထည့်သွင်း၍
+        ရာသီဖွား၊ ဓာတ်ကြီး (၅) ပါးနှင့်
+        ကံဇာတာ အဟောများကို တွက်ချက်ကြည့်ပါ
+    </p>
+
+</header>
+
+
+
+<!-- =========================================
+     INITIAL INPUT
+========================================= -->
+
+<div
+    id="initialView"
+    class="panel initial-input-wrapper"
+>
+
+    <h2>
+        မွေးသက္ကရာဇ် ဖြည့်သွင်းပါ
+    </h2>
+
+    <div class="input-group">
+
+        <label for="birthDateInit">
+            မွေးသက္ကရာဇ် ရွေးပါ
+        </label>
+
+        <input
+            type="date"
+            id="birthDateInit"
+            max="2026-08-18"
+        >
+
+    </div>
+
+
+    <button
+        class="generate-btn"
+        onclick="startCalculator()"
+    >
+        🔮 Birth Chart ထုတ်မည်
+    </button>
+
+</div>
+
+
+
+<!-- =========================================
+     DASHBOARD
+========================================= -->
+
+<div id="dashboardView">
+
+<div class="dashboard-4cols">
+
+
+<!-- =====================================
+     COLUMN 1
+====================================== -->
+
+<div class="panel compact-input">
+
+    <div class="compact-input-content">
+
+        <h3>
+            📅 မွေးသက္ကရာဇ် ထည့်ပါ
+        </h3>
+
+        <div class="input-group">
+
+            <input
+                type="date"
+                id="birthDateDash"
+                max="2026-08-18"
+            >
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="generate-btn"
+        onclick="generateChart()"
+    >
+        🔮 ပြန်တွက်မည်
+    </button>
+
+</div>
+
+
+
+<!-- =====================================
+     COLUMN 2
+====================================== -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        🐾 ရာသီဖွားနှင့် မွေးနှစ်ဓာတ်ကြီး (၅) ပါး
+    </div>
+
+
+    <div class="zodiac-box">
+
+        <div
+            class="zodiac-icon"
+            id="zodiacIcon"
+        >
+            🐓
+        </div>
+
+        <div
+            class="zodiac-title"
+            id="zodiacTitle"
+        >
+            ကြက် (Rooster)
+        </div>
+
+        <div
+            class="zodiac-desc"
+            id="zodiacDesc"
+        >
+            မီးဓာတ်သည် စွမ်းအင်၊
+            စိတ်အားထက်သန်မှုနှင့်
+            တက်ကြွမှုကို ကိုယ်စားပြုပါတယ်။
+        </div>
+
+    </div>
+
+
+    <div class="elements-list">
+
+
+        <div class="element-item">
+
+            <div class="element-info wood-text">
+                🌳 သစ် (Wood)
+            </div>
+
+            <div
+                class="dots-container"
+                id="woodDots"
+            ></div>
+
+            <div
+                class="element-count wood-text"
+                id="woodCount"
+            >
+                2
+            </div>
+
+        </div>
+
+
+        <div class="element-item">
+
+            <div class="element-info fire-text">
+                🔥 မီး (Fire)
+            </div>
+
+            <div
+                class="dots-container"
+                id="fireDots"
+            ></div>
+
+            <div
+                class="element-count fire-text"
+                id="fireCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="element-item">
+
+            <div class="element-info earth-text">
+                🌍 မြေ (Earth)
+            </div>
+
+            <div
+                class="dots-container"
+                id="earthDots"
+            ></div>
+
+            <div
+                class="element-count earth-text"
+                id="earthCount"
+            >
+                1
+            </div>
+
+        </div>
+
+
+        <div class="element-item">
+
+            <div class="element-info metal-text">
+                ⚙️ သတ္တု (Metal)
+            </div>
+
+            <div
+                class="dots-container"
+                id="metalDots"
+            ></div>
+
+            <div
+                class="element-count metal-text"
+                id="metalCount"
+            >
+                1
+            </div>
+
+        </div>
+
+
+        <div class="element-item">
+
+            <div class="element-info water-text">
+                💧 ရေ (Water)
+            </div>
+
+            <div
+                class="dots-container"
+                id="waterDots"
+            ></div>
+
+            <div
+                class="element-count water-text"
+                id="waterCount"
+            >
+                1
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================
+     COLUMN 3
+====================================== -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        📖 ဗေဒင်ဟောကိန်း အသေးစိတ်
+    </div>
+
+
+    <div class="combined-cards-grid">
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-blue">
+                🧠
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    ကိုယ်ရည်ကိုယ်သွေး
+                </h3>
+
+                <p id="personalityText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-orange">
+                💪
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    အားသာချက်
+                </h3>
+
+                <p id="strengthText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-red">
+                ⚠️
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    အားနည်းချက်
+                </h3>
+
+                <p id="weaknessText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-pink">
+                ❤️
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    အချစ်ရေး
+                </h3>
+
+                <p id="loveText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-yellow">
+                💼
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    အလုပ်အကိုင်
+                </h3>
+
+                <p id="careerText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-green">
+                💰
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    ငွေကြေး
+                </h3>
+
+                <p id="wealthText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-purple">
+                👥
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    လူမှုဆက်ဆံရေး
+                </h3>
+
+                <p id="socialText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon icon-gold">
+                💡
+            </div>
+
+            <div class="card-content">
+
+                <h3>
+                    အထွေထွေအကြံပြုချက်
+                </h3>
+
+                <p id="adviceText">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================
+     COLUMN 4
+====================================== -->
+
+<div class="panel scores-panel">
+
+    <div class="panel-title">
+        📊 ကံဇာတာ ရာခိုင်နှုန်းများ
+    </div>
+
+
+    <div class="scores-body">
+
+
+        <div class="score-group">
+
+            <div class="score-header">
+
+                <span>
+                    အလုပ်အကိုင်
+                </span>
+
+                <span
+                    id="careerScoreText"
+                    class="water-text"
+                >
+                    77%
+                </span>
+
+            </div>
+
+            <div class="progress-bg">
+
+                <div
+                    class="progress-fill fill-career"
+                    id="careerBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="score-group">
+
+            <div class="score-header">
+
+                <span>
+                    အချစ်ရေး
+                </span>
+
+                <span
+                    id="loveScoreText"
+                    class="fire-text"
+                >
+                    63%
+                </span>
+
+            </div>
+
+            <div class="progress-bg">
+
+                <div
+                    class="progress-fill fill-love"
+                    id="loveBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="score-group">
+
+            <div class="score-header">
+
+                <span>
+                    ငွေကြေး
+                </span>
+
+                <span
+                    id="wealthScoreText"
+                    class="earth-text"
+                >
+                    84%
+                </span>
+
+            </div>
+
+            <div class="progress-bg">
+
+                <div
+                    class="progress-fill fill-wealth"
+                    id="wealthBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================
+   AUTO DATE LIMIT
+========================================= */
+
+(function(){
+
+    const today =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+    document
+        .getElementById("birthDateInit")
+        .setAttribute("max",today);
+
+    document
+        .getElementById("birthDateDash")
+        .setAttribute("max",today);
+
+})();
+
+
+
+/* =========================================
+   ZODIAC DATA
+========================================= */
+
+const zodiacData = [
+
+    {
+        name:"ကြွက် (Rat)",
+        icon:"🐀"
+    },
+
+    {
+        name:"နွား (Ox)",
+        icon:"🐂"
+    },
+
+    {
+        name:"ကျား (Tiger)",
+        icon:"🐅"
+    },
+
+    {
+        name:"ယုန် (Rabbit)",
+        icon:"🐇"
+    },
+
+    {
+        name:"နဂါး (Dragon)",
+        icon:"🐉"
+    },
+
+    {
+        name:"မြွေ (Snake)",
+        icon:"🐍"
+    },
+
+    {
+        name:"မြင်း (Horse)",
+        icon:"🐎"
+    },
+
+    {
+        name:"ဆိတ် (Goat)",
+        icon:"🐐"
+    },
+
+    {
+        name:"မျောက် (Monkey)",
+        icon:"🐒"
+    },
+
+    {
+        name:"ကြက် (Rooster)",
+        icon:"🐓"
+    },
+
+    {
+        name:"ခွေး (Dog)",
+        icon:"🐕"
+    },
+
+    {
+        name:"ဝက် (Pig)",
+        icon:"🐖"
+    }
+
+];
+
+
+
+/* =========================================
+   FIVE ELEMENTS
+========================================= */
+
+const yearElementData = {
+
+    0:{
+        key:"metal",
+        name:"သတ္တု (Metal)",
+        icon:"⚙️",
+        colorClass:"metal-text",
+        dotClass:"metal-dot"
+    },
+
+    1:{
+        key:"metal",
+        name:"သတ္တု (Metal)",
+        icon:"⚙️",
+        colorClass:"metal-text",
+        dotClass:"metal-dot"
+    },
+
+    2:{
+        key:"water",
+        name:"ရေ (Water)",
+        icon:"💧",
+        colorClass:"water-text",
+        dotClass:"water-dot"
+    },
+
+    3:{
+        key:"water",
+        name:"ရေ (Water)",
+        icon:"💧",
+        colorClass:"water-text",
+        dotClass:"water-dot"
+    },
+
+    4:{
+        key:"wood",
+        name:"သစ် (Wood)",
+        icon:"🌳",
+        colorClass:"wood-text",
+        dotClass:"wood-dot"
+    },
+
+    5:{
+        key:"wood",
+        name:"သစ် (Wood)",
+        icon:"🌳",
+        colorClass:"wood-text",
+        dotClass:"wood-dot"
+    },
+
+    6:{
+        key:"fire",
+        name:"မီး (Fire)",
+        icon:"🔥",
+        colorClass:"fire-text",
+        dotClass:"fire-dot"
+    },
+
+    7:{
+        key:"fire",
+        name:"မီး (Fire)",
+        icon:"🔥",
+        colorClass:"fire-text",
+        dotClass:"fire-dot"
+    },
+
+    8:{
+        key:"earth",
+        name:"မြေ (Earth)",
+        icon:"🌍",
+        colorClass:"earth-text",
+        dotClass:"earth-dot"
+    },
+
+    9:{
+        key:"earth",
+        name:"မြေ (Earth)",
+        icon:"🌍",
+        colorClass:"earth-text",
+        dotClass:"earth-dot"
+    }
+
+};
+
+
+
+/* =========================================
+   HOROSCOPE DATA
+========================================= */
+
+const personalities = [
+
+    "ဉာဏ်ထက်မြက်ပြီး အခြေအနေတစ်ခုကို လျှင်မြန်စွာ နားလည်တတ်သည်။",
+
+    "သတ္တိရှိပြီး ကိုယ့်ဆုံးဖြတ်ချက်ကို ကိုယ်ယုံကြည်တတ်သည်။",
+
+    "တည်ငြိမ်ပြီး အလုပ်တစ်ခုကို စိတ်ရှည်ရှည်နဲ့ ပြီးမြောက်အောင်လုပ်တတ်သည်။"
+
+];
+
+
+const strengths = [
+
+    "ရက်ရောပြီး လူမှုဆက်ဆံရေးကောင်းခြင်း။",
+
+    "စိတ်ရှည်ပြီး တာဝန်ယူတတ်ခြင်း။",
+
+    "အခြေအနေအသစ်တွေနဲ့ မြန်မြန်လိုက်လျောညီထွေဖြစ်နိုင်ခြင်း။"
+
+];
+
+
+const weaknesses = [
+
+    "လွတ်လပ်ချင်စိတ်ကြောင့် တာဝန်များကို ပျင်းလာနိုင်သည်။",
+
+    "အတွေးများပြီး စိုးရိမ်လွန်တတ်သည်။",
+
+    "တစ်ခါတစ်ရံ အာရုံစူးစိုက်မှု ပြန့်ကျဲနိုင်သည်။"
+
+];
+
+
+const loves = [
+
+    "ဟာသနဲ့ ပျော်ရွှင်စရာတွေရှိတဲ့ Relationship ကို နှစ်သက်တတ်သည်။",
+
+    "ရေရှည်တည်တံ့တဲ့ Relationship ကို လိုချင်တတ်သည်။",
+
+    "အချစ်ရေးမှာ လွတ်လပ်မှုနဲ့ နားလည်မှုကို အရေးထားတတ်သည်။"
+
+];
+
+
+const careers = [
+
+    "ဘဏ္ဍာရေး၊ စီမံခန့်ခွဲမှု၊ အုပ်ချုပ်ရေးနှင့် တာဝန်ယူရသော အလုပ်များ။",
+
+    "Leadership၊ Management နှင့် စီးပွားရေးလုပ်ငန်းများ။",
+
+    "IT၊ Marketing၊ စီးပွားရေး၊ Media နှင့် ဖန်တီးမှုဆိုင်ရာ အလုပ်များ။"
+
+];
+
+
+const wealths = [
+
+    "အကြံဉာဏ်ကောင်းနဲ့ စီးပွားရေးအခွင့်အလမ်းတွေကို ရှာဖွေနိုင်သည်။",
+
+    "ငွေကြေးကို စနစ်တကျ စီမံနိုင်ရင် ရေရှည်တည်ငြိမ်မှုရနိုင်သည်။",
+
+    "ဝင်ငွေရှာဖို့ အခွင့်အရေးကောင်းတွေကို မြန်မြန်ဖမ်းနိုင်သည်။"
+
+];
+
+
+const socials = [
+
+    "လူအများကြားမှာ ထင်ရှားလာနိုင်ပြီး ဦးဆောင်သူအဖြစ် မြင်ခံရနိုင်သည်။",
+
+    "မိတ်ဆွေတွေကို သစ္စာရှိပြီး အခက်အခဲမှာ ကူညီတတ်သည်။",
+
+    "လူသစ်များနဲ့ လွယ်လွယ်ကူကူ ရင်းနှီးနိုင်ပြီး Network တည်ဆောက်ရာမှာ အားသာနိုင်သည်။"
+
+];
+
+
+const advices = [
+
+    "သက်တောင့်သက်သာနေရုံနဲ့ မပြီးဘဲ ကိုယ့်ရည်မှန်းချက်အတွက် တစ်ဆင့်ချင်း လှုပ်ရှားပါ။",
+
+    "ဆုံးဖြတ်ချက်မချခင် အခြားသူတွေရဲ့အမြင်ကိုလည်း နားထောင်ပါ။",
+
+    "အခွင့်အရေးကို စောင့်နေရုံမဟုတ်ဘဲ ကိုယ်တိုင်စတင်လုပ်ဆောင်ပါ။"
+
+];
+
+
+
+/* =========================================
+   RENDER DOTS
+========================================= */
+
+function renderDots(containerId,count,dotClass){
+
+    const container =
+        document.getElementById(containerId);
+
+    container.innerHTML = "";
+
+    for(let i=0;i<5;i++){
+
+        const dot =
+            document.createElement("div");
+
+        dot.className =
+            `dot ${
+                i<count
+                ? dotClass+" active"
+                : ""
+            }`;
+
+        container.appendChild(dot);
+
+    }
+
+}
+
+
+
+/* =========================================
+   START CALCULATOR
+========================================= */
+
+function startCalculator(){
+
+    const inputVal =
+        document.getElementById(
+            "birthDateInit"
+        ).value;
+
+    if(!inputVal){
+
+        alert(
+            "ကျေးဇူးပြု၍ မွေးသက္ကရာဇ် ရွေးချယ်ပေးပါ။"
+        );
+
+        return;
+    }
+
+
+    document.getElementById(
+        "birthDateDash"
+    ).value = inputVal;
+
+
+    document.getElementById(
+        "initialView"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "dashboardView"
+    ).style.display = "block";
+
+
+    generateChart();
+
+}
+
+
+
+/* =========================================
+   GENERATE CHART
+========================================= */
+
+function generateChart(){
+
+    const input =
+        document.getElementById(
+            "birthDateDash"
+        ).value;
+
+    if(!input){
+
+        alert(
+            "ကျေးဇူးပြု၍ မွေးသက္ကရာဇ် ရွေးချယ်ပေးပါ။"
+        );
+
+        return;
+    }
+
+
+    const date =
+        new Date(input);
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        date.getMonth()+1;
+
+    const day =
+        date.getDate();
+
+
+    /* Zodiac */
+
+    let zodiacIndex =
+        (year-4)%12;
+
+    if(zodiacIndex<0){
+
+        zodiacIndex += 12;
+
+    }
+
+    const zodiac =
+        zodiacData[zodiacIndex];
+
+
+    /* Scores */
+
+    const seed =
+        year+month+day;
+
+    const cScore =
+        55+(seed%35);
+
+    const lScore =
+        60+((seed*3)%36);
+
+    const wScore =
+        50+((seed*7)%45);
+
+
+    /* Element */
+
+    const lastDigit =
+        year%10;
+
+    const yearElement =
+        yearElementData[lastDigit];
+
+
+    const woodCount =
+        yearElement.key==="wood" ? 1 : 0;
+
+    const fireCount =
+        yearElement.key==="fire" ? 1 : 0;
+
+    const earthCount =
+        yearElement.key==="earth" ? 1 : 0;
+
+    const metalCount =
+        yearElement.key==="metal" ? 1 : 0;
+
+    const waterCount =
+        yearElement.key==="water" ? 1 : 0;
+
+
+    /* Zodiac */
+
+    document.getElementById(
+        "zodiacIcon"
+    ).textContent =
+        zodiac.icon;
+
+    document.getElementById(
+        "zodiacTitle"
+    ).textContent =
+        zodiac.name;
+
+    document.getElementById(
+        "zodiacDesc"
+    ).textContent =
+        `${year} ခုနှစ်၏ ဓာတ်မှာ ${yearElement.icon} ${yearElement.name} ဖြစ်ပါတယ်။`;
+
+
+    /* Elements */
+
+    document.getElementById(
+        "woodCount"
+    ).textContent =
+        woodCount;
+
+    document.getElementById(
+        "fireCount"
+    ).textContent =
+        fireCount;
+
+    document.getElementById(
+        "earthCount"
+    ).textContent =
+        earthCount;
+
+    document.getElementById(
+        "metalCount"
+    ).textContent =
+        metalCount;
+
+    document.getElementById(
+        "waterCount"
+    ).textContent =
+        waterCount;
+
+
+    renderDots(
+        "woodDots",
+        woodCount,
+        "wood-dot"
+    );
+
+    renderDots(
+        "fireDots",
+        fireCount,
+        "fire-dot"
+    );
+
+    renderDots(
+        "earthDots",
+        earthCount,
+        "earth-dot"
+    );
+
+    renderDots(
+        "metalDots",
+        metalCount,
+        "metal-dot"
+    );
+
+    renderDots(
+        "waterDots",
+        waterCount,
+        "water-dot"
+    );
+
+
+    /* Horoscope */
+
+    document.getElementById(
+        "personalityText"
+    ).textContent =
+        personalities[
+            seed%personalities.length
+        ];
+
+    document.getElementById(
+        "strengthText"
+    ).textContent =
+        strengths[
+            seed%strengths.length
+        ];
+
+    document.getElementById(
+        "weaknessText"
+    ).textContent =
+        weaknesses[
+            seed%weaknesses.length
+        ];
+
+    document.getElementById(
+        "loveText"
+    ).textContent =
+        loves[
+            seed%loves.length
+        ];
+
+    document.getElementById(
+        "careerText"
+    ).textContent =
+        careers[
+            seed%careers.length
+        ];
+
+    document.getElementById(
+        "wealthText"
+    ).textContent =
+        wealths[
+            seed%wealths.length
+        ];
+
+    document.getElementById(
+        "socialText"
+    ).textContent =
+        socials[
+            seed%socials.length
+        ];
+
+    document.getElementById(
+        "adviceText"
+    ).textContent =
+        advices[
+            seed%advices.length
+        ];
+
+
+    /* Scores */
+
+    document.getElementById(
+        "careerScoreText"
+    ).textContent =
+        cScore+"%";
+
+    document.getElementById(
+        "careerBar"
+    ).style.width =
+        cScore+"%";
+
+
+    document.getElementById(
+        "loveScoreText"
+    ).textContent =
+        lScore+"%";
+
+    document.getElementById(
+        "loveBar"
+    ).style.width =
+        lScore+"%";
+
+
+    document.getElementById(
+        "wealthScoreText"
+    ).textContent =
+        wScore+"%";
+
+    document.getElementById(
+        "wealthBar"
+    ).style.width =
+        wScore+"%";
+
+}
+
+
+
+/* =========================================
+   NAVBAR — RESET
+========================================= */
+
+function resetCalculator(){
+
+    /* Dashboard ဖျောက် */
+
+    document.getElementById(
+        "dashboardView"
+    ).style.display = "none";
+
+
+    /* Initial View ပြန်ပြ */
+
+    document.getElementById(
+        "initialView"
+    ).style.display = "block";
+
+
+    /* Date ပြန်ရှင်း */
+
+    document.getElementById(
+        "birthDateInit"
+    ).value = "";
+
+
+    document.getElementById(
+        "birthDateDash"
+    ).value = "";
+
+
+    /* အပေါ်ဆုံးပြန်တက် */
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+
+    /* Input focus */
+
+    setTimeout(function(){
+
+        document.getElementById(
+            "birthDateInit"
+        ).focus();
+
+    },500);
+
+}
+
+</script>
+
+</body>
+</html>
+

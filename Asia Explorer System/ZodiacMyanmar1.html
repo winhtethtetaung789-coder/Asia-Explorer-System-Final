@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Birth Chart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:"Padauk","Myanmar Text",sans-serif;
+    color:#2d2450;
+
+    background:
+        radial-gradient(circle at 10% 10%,rgba(218,190,255,.85),transparent 30%),
+        radial-gradient(circle at 90% 15%,rgba(175,225,255,.75),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(255,202,232,.75),transparent 35%),
+        linear-gradient(135deg,#f9f6ff,#f2f8ff,#fff6fb);
+
+    background-attachment:fixed;
+}
+
+/* Decorative background */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+        linear-gradient(rgba(117,78,180,.08) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(117,78,180,.08) 1px,transparent 1px);
+
+    background-size:55px 55px;
+
+    mask-image:
+        linear-gradient(to bottom,black,transparent);
+
+    opacity:.55;
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.navbar{
+    position:relative;
+    z-index:5;
+
+    width:100%;
+    min-height:58px;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    padding:8px clamp(14px,3vw,50px);
+    gap:10px;
+
+    background:
+        linear-gradient(
+            100deg,
+            #8c6fd1,
+            #9d7be0,
+            #7da9df,
+            #b27cc9
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.45);
+
+    box-shadow:
+        0 7px 22px rgba(92,75,140,.18);
+}
+
+.navbar::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.10),
+            rgba(255,255,255,.28),
+            rgba(255,255,255,.08)
+        );
+}
+
+.navbar a,
+.navbar button{
+    position:relative;
+    z-index:1;
+
+    height:38px;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+
+    text-decoration:none;
+    cursor:pointer;
+
+    border-radius:10px;
+
+    padding:0 16px;
+
+    transition:
+        transform .2s,
+        background .2s,
+        box-shadow .2s;
+}
+
+/* Zodiac button */
+
+.navbar a{
+    color:#4e3978;
+
+    background:
+        rgba(255,255,255,.82);
+
+    border:
+        1px solid rgba(255,255,255,.75);
+
+    box-shadow:
+        0 3px 10px rgba(66,47,110,.12);
+}
+
+/* Recalculate button */
+
+.navbar button{
+    color:#fff;
+
+    border:
+        1px solid rgba(255,255,255,.30);
+
+    background:
+        linear-gradient(
+            135deg,
+            #674ca8,
+            #7961bf
+        );
+
+    box-shadow:
+        0 4px 12px rgba(60,42,110,.22);
+}
+
+.navbar a:hover{
+    transform:translateY(-1px);
+
+    background:#fff;
+
+    box-shadow:
+        0 5px 14px rgba(66,47,110,.18);
+}
+
+.navbar button:hover{
+    transform:translateY(-1px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #5b4298,
+            #7056b4
+        );
+
+    box-shadow:
+        0 6px 16px rgba(60,42,110,.28);
+}
+
+/* HEADER */
+
+.header{
+    position:relative;
+    text-align:center;
+    padding:35px 15px 25px;
+    z-index:1;
+}
+
+.logo{
+    width:78px;
+    height:78px;
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    font-size:38px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(145deg,#9d7bea,#6f9eea);
+
+    box-shadow:
+        0 12px 30px rgba(110,100,190,.28);
+}
+
+.header h1{
+    margin:14px 0 5px;
+
+    font-family:Poppins,"Padauk",sans-serif;
+
+    font-size:clamp(28px,6vw,45px);
+
+    background:
+        linear-gradient(90deg,#6244b7,#a05fc5,#4f8fd1);
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.header p{
+    margin:0;
+    color:#71688d;
+    font-size:14px;
+}
+
+.container{
+    position:relative;
+    z-index:1;
+
+    width:min(1120px,94%);
+
+    margin:auto;
+
+    padding-bottom:70px;
+}
+
+.card,
+.profile,
+.chart-card,
+.planet-card,
+.reading-card,
+.full-reading{
+    background:
+        rgba(255,255,255,.88);
+
+    border:
+        1px solid rgba(125,96,180,.16);
+
+    border-radius:24px;
+
+    box-shadow:
+        0 15px 45px rgba(92,75,140,.12);
+}
+
+/* INPUT */
+
+.input-card{
+    padding:25px;
+}
+
+.section-title{
+    font-size:22px;
+    font-weight:700;
+    color:#49356f;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.field label{
+    font-size:14px;
+    color:#65577d;
+}
+
+.field input{
+    width:100%;
+    height:52px;
+
+    padding:0 15px;
+
+    border-radius:14px;
+
+    border:
+        1px solid #d7cbea;
+
+    background:#ffffff;
+
+    color:#382b52;
+
+    outline:none;
+
+    font-family:inherit;
+    font-size:15px;
+}
+
+.field input:focus{
+    border-color:#8c6cd6;
+
+    box-shadow:
+        0 0 0 3px rgba(140,108,214,.12);
+}
+
+.time-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.checkline{
+    min-height:52px;
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    padding:0 14px;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    border:
+        1px solid #d7cbea;
+
+    color:#584a70;
+
+    cursor:pointer;
+}
+
+.checkline input{
+    width:auto;
+    height:auto;
+
+    accent-color:#8c6cd6;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+
+    margin-top:22px;
+}
+
+.btn{
+    height:53px;
+
+    border:0;
+
+    border-radius:15px;
+
+    padding:0 25px;
+
+    font-family:inherit;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.btn-primary{
+    flex:1;
+
+    color:#fff;
+
+    background:
+        linear-gradient(135deg,#8a6be0,#b777d7,#6d9fe0);
+
+    box-shadow:
+        0 8px 25px rgba(132,105,210,.28);
+}
+
+/* RESULT */
+
+#result{
+    display:none;
+    margin-top:25px;
+}
+
+.profile{
+    display:grid;
+
+    grid-template-columns:180px 1fr;
+
+    gap:20px;
+
+    padding:20px;
+}
+
+.zodiac-big{
+    min-height:180px;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:20px;
+
+    background:
+        radial-gradient(circle,#e4d5ff 0%,#d9eaff 55%,#f5efff 100%);
+
+    border:
+        1px solid #c9b8e6;
+}
+
+.zodiac-symbol{
+    font-size:72px;
+    color:#674da0;
+}
+
+.zodiac-name{
+    font-size:25px;
+    font-weight:bold;
+    color:#46336a;
+}
+
+.zodiac-mm{
+    color:#76658f;
+}
+
+.profile-info{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:10px;
+
+    align-content:center;
+}
+
+.info{
+    padding:14px;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(145deg,#ffffff,#faf7ff);
+
+    border:
+        1px solid #e1d8ef;
+}
+
+.info small{
+    display:block;
+
+    color:#887b9d;
+
+    margin-bottom:4px;
+}
+
+.info strong{
+    font-size:14px;
+    color:#463858;
+    word-break:break-word;
+}
+
+/* CHART */
+
+.chart-layout{
+    display:grid;
+
+    grid-template-columns:minmax(400px,620px) 1fr;
+
+    gap:20px;
+
+    margin-top:20px;
+}
+
+.chart-card,
+.planet-card{
+    padding:18px;
+}
+
+.chart-title{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:10px;
+}
+
+.chart-title h2{
+    margin:0;
+
+    font-size:20px;
+
+    color:#4b386e;
+}
+
+.chart-note{
+    color:#837493;
+
+    font-size:12px;
+
+    text-align:right;
+}
+
+#chart{
+    display:block;
+
+    width:100%;
+
+    max-width:600px;
+
+    margin:auto;
+}
+
+.planet-list{
+    display:grid;
+    gap:8px;
+}
+
+.planet-row{
+    display:grid;
+
+    grid-template-columns:38px 1fr auto;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 12px;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(145deg,#ffffff,#f7f3ff);
+
+    border:
+        1px solid #dfd5ee;
+}
+
+.planet-symbol{
+    font-size:22px;
+
+    text-align:center;
+
+    color:#7657af;
+}
+
+.planet-name{
+    font-weight:bold;
+    color:#473761;
+}
+
+.planet-sign{
+    font-size:13px;
+    color:#7f7292;
+}
+
+.planet-degree{
+    color:#7552b4;
+    font-size:13px;
+    white-space:nowrap;
+}
+
+/* EASY READING */
+
+.readings{
+    margin-top:28px;
+}
+
+.reading-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+}
+
+.reading-card{
+    padding:20px;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.reading-card::after{
+    content:"";
+
+    position:absolute;
+
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    right:-55px;
+    top:-55px;
+
+    background:
+        radial-gradient(circle,rgba(185,154,235,.25),rgba(185,154,235,0));
+}
+
+.reading-top{
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:12px;
+
+    position:relative;
+    z-index:1;
+}
+
+.reading-icon{
+    width:50px;
+    height:50px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex-shrink:0;
+
+    border-radius:15px;
+
+    font-size:28px;
+
+    color:#684ca0;
+
+    background:
+        linear-gradient(145deg,#eee5ff,#dcecff);
+
+    border:
+        1px solid #cdbde8;
+}
+
+.reading-heading{
+    min-width:0;
+}
+
+.reading-heading h3{
+    margin:0;
+
+    font-size:18px;
+
+    color:#4a3868;
+
+    font-family:Poppins,"Padauk",sans-serif;
+}
+
+.reading-meaning{
+    display:inline-flex;
+
+    align-items:center;
+
+    margin-top:4px;
+
+    padding:3px 9px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    color:#7253a3;
+
+    background:#f0e9ff;
+
+    border:
+        1px solid #d8c9f2;
+}
+
+.reading-sign{
+    margin:0 0 10px;
+
+    color:#8462b9;
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+.reading-card p{
+    margin:0;
+
+    color:#54486a;
+
+    line-height:1.9;
+
+    font-size:14px;
+
+    position:relative;
+    z-index:1;
+}
+
+/* FULL READING */
+
+.full-reading{
+    margin-top:20px;
+    padding:22px;
+}
+
+.full-reading h2{
+    margin-top:0;
+    color:#4a3868;
+}
+
+.detail-box{
+    margin-top:12px;
+
+    padding:17px;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(145deg,#ffffff,#faf7ff);
+
+    border-left:
+        4px solid #9b78d0;
+
+    box-shadow:
+        0 5px 15px rgba(100,80,150,.05);
+}
+
+.detail-box h3{
+    margin:0 0 7px;
+    color:#57416f;
+}
+
+.detail-box p{
+    margin:0;
+
+    color:#574d68;
+
+    line-height:1.9;
+
+    font-size:14px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .form-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .profile{
+        grid-template-columns:1fr;
+    }
+
+    .profile-info{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .chart-layout{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        min-height:52px;
+        padding:7px 12px;
+        gap:7px;
+    }
+
+    .navbar a,
+    .navbar button{
+        height:36px;
+        padding:0 12px;
+        font-size:13px;
+    }
+
+    .form-grid,
+    .reading-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profile-info{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .buttons{
+        flex-direction:column;
+    }
+
+    .chart-title{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .chart-note{
+        text-align:left;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+     <a href="MyanmarHome1.html">
+         Fortune
+    </a>
+    <a href="ZodiacCoupleM1.html">Couple</a>
+
+    <button type="button" id="navRecalculate">
+        ပြန်တွက်မည်
+    </button>
+</nav>
+
+
+<header class="header">
+
+    <div class="logo">✦</div>
+
+    <h1>Birth Chart</h1>
+
+</header>
+
+
+<main class="container">
+
+<section class="input-card card" id="birthForm">
+
+    <div class="section-title">
+        ✦ သင့်မွေးဖွားမှုအချက်အလက်
+    </div>
+
+    <div class="form-grid">
+
+        <div class="field">
+            <label>📅 မွေးနေ့ *</label>
+            <input type="date" id="birthDate">
+        </div>
+
+        <div class="field">
+
+            <label>⏰ မွေးချိန် (သိလျှင်ထည့်ပါ)</label>
+
+            <div class="time-row">
+                <input type="number" id="birthHour" min="0" max="23" placeholder="နာရီ">
+
+                <input type="number" id="birthMinute" min="0" max="59" placeholder="မိနစ်">
+            </div>
+
+        </div>
+
+        <div class="field">
+
+            <label>မွေးချိန်အခြေအနေ</label>
+
+            <label class="checkline">
+                <input type="checkbox" id="unknownTime" checked>
+                မွေးချိန်မသိပါ
+            </label>
+
+        </div>
+
+        <div class="field">
+
+            <label>📍 မွေးဖွားရာမြို့</label>
+
+            <input
+                type="text"
+                id="city"
+                placeholder="ဥပမာ - Yangon"
+            >
+
+        </div>
+
+    </div>
+
+    <div class="buttons">
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="generateBtn"
+        >
+            ✦ Birth Chart ကြည့်မည်
+        </button>
+    </div>
+
+</section>
+
+
+<section id="result">
+
+    <div class="profile">
+
+        <div class="zodiac-big">
+
+            <div class="zodiac-symbol" id="zodiacSymbol">♈</div>
+
+            <div class="zodiac-name" id="zodiacName">-</div>
+
+            <div class="zodiac-mm" id="zodiacMM">-</div>
+
+        </div>
+
+        <div class="profile-info">
+
+            <div class="info">
+                <small>မွေးနေ့</small>
+                <strong id="rDate">-</strong>
+            </div>
+
+            <div class="info">
+                <small>မွေးနံ</small>
+                <strong id="rWeekday">-</strong>
+            </div>
+
+            <div class="info">
+                <small>မွေးချိန်</small>
+                <strong id="rTime">-</strong>
+            </div>
+
+            <div class="info">
+                <small>မွေးရာမြို့</small>
+                <strong id="rCity">-</strong>
+            </div>
+
+            <div class="info">
+                <small>Sun Sign</small>
+                <strong id="rSun">-</strong>
+            </div>
+
+            <div class="info">
+                <small>Moon Sign</small>
+                <strong id="rMoon">-</strong>
+            </div>
+
+            <div class="info">
+                <small>Ascendant</small>
+                <strong id="rAsc">မွေးချိန်မသိပါ</strong>
+            </div>
+
+            <div class="info">
+                <small>Chart အမျိုးအစား</small>
+                <strong id="rMode">-</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="chart-layout">
+
+        <div class="chart-card">
+
+            <div class="chart-title">
+
+                <h2>⭕ သင့် Birth Chart</h2>
+
+                <span class="chart-note" id="chartNote">
+                    မွေးနေ့အရ ဂြိုလ်များ၏နေရာ
+                </span>
+
+            </div>
+
+            <svg id="chart" viewBox="0 0 600 600"></svg>
+
+        </div>
+
+
+        <div class="planet-card">
+
+            <div class="chart-title">
+                <h2>ဂြိုလ်များ၏နေရာ</h2>
+            </div>
+
+            <div class="planet-list" id="planetList"></div>
+
+        </div>
+
+    </div>
+
+
+    <section class="readings">
+
+        <div class="section-title">
+            ✦ သင့်အကြောင်းကို လွယ်လွယ်ကူကူကြည့်ပါ
+        </div>
+
+        <div class="reading-grid">
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">☉</div>
+
+                    <div class="reading-heading">
+                        <h3>Sun</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ ကိုယ်ရည်ကိုယ်သွေး
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="sunSignTitle">-</div>
+                <p id="sunReading"></p>
+            </div>
+
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">☽</div>
+
+                    <div class="reading-heading">
+                        <h3>Moon</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ စိတ်ခံစားမှု
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="moonSignTitle">-</div>
+                <p id="moonReading"></p>
+            </div>
+
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">☿</div>
+
+                    <div class="reading-heading">
+                        <h3>Mercury</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ စဉ်းစားပုံ
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="mercurySignTitle">-</div>
+                <p id="mercuryReading"></p>
+            </div>
+
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">♀</div>
+
+                    <div class="reading-heading">
+                        <h3>Venus</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ အချစ်ရေးပုံစံ
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="venusSignTitle">-</div>
+                <p id="venusReading"></p>
+            </div>
+
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">♂</div>
+
+                    <div class="reading-heading">
+                        <h3>Mars</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ လုပ်ဆောင်ပုံ
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="marsSignTitle">-</div>
+                <p id="marsReading"></p>
+            </div>
+
+
+            <div class="reading-card">
+                <div class="reading-top">
+                    <div class="reading-icon">♃</div>
+
+                    <div class="reading-heading">
+                        <h3>Jupiter</h3>
+                        <div class="reading-meaning">
+                            သင့်ရဲ့ တိုးတက်နိုင်တဲ့နေရာ
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reading-sign" id="jupiterSignTitle">-</div>
+                <p id="jupiterReading"></p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="full-reading">
+
+        <h2>🔮 သင့် Chart အကျဉ်းချုပ်</h2>
+
+        <div class="detail-box">
+            <h3>👤 သင့်အကျင့်စရိုက်</h3>
+            <p id="personality"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>💪 သင့်အားသာချက်</h3>
+            <p id="strength"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>⚠️ သတိထားရမည့်အချက်</h3>
+            <p id="weakness"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>❤️ အချစ်ရေး</h3>
+            <p id="love"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>💼 အလုပ်အကိုင်</h3>
+            <p id="career"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>🧠 စိတ်ခံစားမှု</h3>
+            <p id="emotion"></p>
+        </div>
+
+        <div class="detail-box">
+            <h3>🌟 အကြံပြုချက်</h3>
+            <p id="purpose"></p>
+        </div>
+
+    </section>
+
+</section>
+
+</main>
+
+
+<script>
+
+/* =========================================
+   ZODIAC DATA
+========================================= */
+
+const zodiac = [
+    ["Aries","မိဿရာသီ","♈"],
+    ["Taurus","ပြိဿရာသီ","♉"],
+    ["Gemini","မေထုန်ရာသီ","♊"],
+    ["Cancer","ကရကဋ်ရာသီ","♋"],
+    ["Leo","သိဟ်ရာသီ","♌"],
+    ["Virgo","ကန်ရာသီ","♍"],
+    ["Libra","တူရာသီ","♎"],
+    ["Scorpio","ဗြိစ္ဆာရာသီ","♏"],
+    ["Sagittarius","ဓနုရာသီ","♐"],
+    ["Capricorn","မကာရရာသီ","♑"],
+    ["Aquarius","ကုမ်ရာသီ","♒"],
+    ["Pisces","မိန်ရာသီ","♓"]
+];
+
+
+const planetDefs = [
+    ["Sun","☉","နေ"],
+    ["Moon","☽","လ"],
+    ["Mercury","☿","ဗုဒ္ဓဟူး"],
+    ["Venus","♀","သောကြာ"],
+    ["Mars","♂","အင်္ဂါ"],
+    ["Jupiter","♃","ကြာသပတေး"],
+    ["Saturn","♄","စနေ"],
+    ["Uranus","♅","ယူရေးနပ်စ်"],
+    ["Neptune","♆","နက်ပ်ကျွန်း"],
+    ["Pluto","♇","ပလူတို"]
+];
+
+
+const weekdays = [
+    "တနင်္ဂနွေ",
+    "တနင်္လာ",
+    "အင်္ဂါ",
+    "ဗုဒ္ဓဟူး",
+    "ကြာသပတေး",
+    "သောကြာ",
+    "စနေ"
+];
+
+
+/* =========================================
+   SIGN READINGS
+========================================= */
+
+const signReadings = {
+
+Aries:{
+    personality:"သင်က ဆုံးဖြတ်ချက်မြန်ပြီး စတင်လုပ်ဆောင်ရတာကို မကြောက်တတ်သူပါ။ ကိုယ်လိုချင်တာကို တိုက်ရိုက်သွားတတ်ပါတယ်။",
+    emotion:"စိတ်ခံစားချက်လာရင် ချက်ချင်းတုံ့ပြန်တတ်ပါတယ်။ စိတ်ဆိုးလွယ်ပေမယ့် အချိန်ကြာကြာ စိတ်ထဲမထားတတ်ပါဘူး။",
+    thinking:"မြန်မြန်စဉ်းစားပြီး တိုက်ရိုက်ပြောတတ်ပါတယ်။",
+    love:"အချစ်ရေးမှာ ရှင်းရှင်းလင်းလင်းနဲ့ စိတ်လှုပ်ရှားစရာရှိတဲ့ ဆက်ဆံရေးကို ကြိုက်တတ်ပါတယ်။",
+    action:"ပြိုင်ဆိုင်မှုရှိရင် ပိုစိတ်အားတက်တတ်ပါတယ်။",
+    growth:"ရဲရင့်စွာ စတင်လုပ်ဆောင်နိုင်တဲ့နေရာတွေမှာ အခွင့်အရေးရနိုင်ပါတယ်။",
+    strength:"ရဲရင့်ခြင်း၊ လျင်မြန်စွာဆုံးဖြတ်နိုင်ခြင်း၊ စတင်လုပ်ဆောင်နိုင်ခြင်းက သင့်အားသာချက်ပါ။",
+    weakness:"အလျင်လိုပြီး စိတ်မြန်မှုကြောင့် မစဉ်းစားဘဲ ဆုံးဖြတ်မိနိုင်ပါတယ်။",
+    career:"ဦးဆောင်ရတဲ့အလုပ်၊ ပြိုင်ဆိုင်မှုရှိတဲ့အလုပ်နဲ့ ကိုယ်တိုင်ဆုံးဖြတ်နိုင်တဲ့နေရာတွေမှာ အဆင်ပြေနိုင်ပါတယ်။"
+},
+
+Taurus:{
+    personality:"သင်က တည်ငြိမ်မှုကို ကြိုက်ပြီး အရာတစ်ခုကို ဖြည်းဖြည်းနဲ့ သေချာလုပ်တတ်သူပါ။",
+    emotion:"စိတ်ခံစားချက်ကို အလွယ်တကူ မပြတတ်ပေမယ့် တစ်ခုခုကို စိတ်ထဲထားမိရင် အချိန်ကြာနိုင်ပါတယ်။",
+    thinking:"လက်တွေ့ကျကျ စဉ်းစားတတ်ပြီး သေချာမှ ဆုံးဖြတ်တတ်ပါတယ်။",
+    love:"ယုံကြည်ရပြီး တည်ငြိမ်တဲ့ ဆက်ဆံရေးကို ပိုလိုချင်တတ်ပါတယ်။",
+    action:"စပြီးသားအရာကို အဆုံးထိ ဆက်လုပ်နိုင်တာမှာ အားကောင်းပါတယ်။",
+    growth:"စိတ်ရှည်ပြီး ရေရှည်တည်ဆောက်နိုင်တဲ့နေရာတွေမှာ တိုးတက်နိုင်ပါတယ်။",
+    strength:"စိတ်ရှည်ခြင်း၊ တည်ငြိမ်ခြင်း၊ အဆုံးထိကြိုးစားနိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"အပြောင်းအလဲကို လက်ခံဖို့ အချိန်ယူတတ်ပြီး ခေါင်းမာမိနိုင်ပါတယ်။",
+    career:"ငွေကြေး၊ ဒီဇိုင်းနဲ့ ရေရှည်စီမံခန့်ခွဲမှုဆိုင်ရာအလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Gemini:{
+    personality:"သင်က အသစ်အဆန်းတွေကို စိတ်ဝင်စားပြီး သင်ယူရတာ၊ စကားပြောရတာကို နှစ်သက်တတ်သူပါ။",
+    emotion:"စိတ်ခံစားချက်ပြောင်းလဲမြန်တတ်ပြီး စိတ်ဝင်စားစရာအသစ်တွေလိုအပ်တတ်ပါတယ်။",
+    thinking:"အတွေးမြန်ပြီး အချက်အလက်တွေကို မြန်မြန်ဆက်စပ်နိုင်ပါတယ်။",
+    love:"စကားပြောလို့ကောင်းပြီး အတူပျော်နိုင်တဲ့ ဆက်ဆံရေးကို ကြိုက်တတ်ပါတယ်။",
+    action:"အရာများစွာကို တစ်ပြိုင်နက် လုပ်ချင်တတ်ပါတယ်။",
+    growth:"သင်ယူခြင်း၊ ဆက်သွယ်ခြင်းနဲ့ အချက်အလက်မျှဝေခြင်းကနေ တိုးတက်နိုင်ပါတယ်။",
+    strength:"သင်ယူမြန်ခြင်း၊ ပြောဆိုဆက်ဆံတတ်ခြင်းက အားသာချက်ပါ။",
+    weakness:"တစ်ခုတည်းကို အဆုံးထိ အာရုံစိုက်ဖို့ ခက်နိုင်ပါတယ်။",
+    career:"ဆက်သွယ်ရေး၊ ရောင်းချရေး၊ စာရေးခြင်းနဲ့ မီဒီယာဆိုင်ရာအလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Cancer:{
+    personality:"သင်က စိတ်နူးညံ့ပြီး ကိုယ်ချစ်တဲ့သူတွေကို ဂရုစိုက်တတ်သူပါ။",
+    emotion:"အခြားသူရဲ့စကားနဲ့ အပြုအမူတွေကို စိတ်ထဲမှာ နက်နက်ရှိုင်းရှိုင်း ခံစားတတ်ပါတယ်။",
+    thinking:"ဆုံးဖြတ်တဲ့အခါ စိတ်ခံစားချက်ကိုလည်း ထည့်စဉ်းစားတတ်ပါတယ်။",
+    love:"နွေးထွေးမှု၊ ယုံကြည်မှုနဲ့ စိတ်လုံခြုံမှုရှိတဲ့ ဆက်ဆံရေးကို လိုချင်တတ်ပါတယ်။",
+    action:"ကိုယ်ချစ်တဲ့သူတွေကို ကာကွယ်ပေးဖို့ လိုအပ်ရင် အားကောင်းစွာ လုပ်ဆောင်တတ်ပါတယ်။",
+    growth:"လူတွေကို ဂရုစိုက်ပေးနိုင်တဲ့စွမ်းရည်ကို ကောင်းစွာအသုံးချရင် တိုးတက်နိုင်ပါတယ်။",
+    strength:"နားလည်ပေးနိုင်ခြင်း၊ ဂရုစိုက်တတ်ခြင်း၊ သစ္စာရှိခြင်းက အားသာချက်ပါ။",
+    weakness:"အရာသေးသေးလေးတွေကို စိတ်ထဲမှာ အကြာကြီးထားမိနိုင်ပါတယ်။",
+    career:"လူတွေကိုဂရုစိုက်ရတဲ့အလုပ်နဲ့ ဝန်ဆောင်မှုလုပ်ငန်းတွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Leo:{
+    personality:"သင်က ကိုယ့်ကိုယ်ကို ယုံကြည်မှုရှိပြီး ကိုယ်လုပ်တဲ့အရာကို ကောင်းကောင်းပြသချင်တတ်သူပါ။",
+    emotion:"ချစ်ခင်မှုနဲ့ အသိအမှတ်ပြုမှုရရင် စိတ်အားတက်တတ်ပါတယ်။",
+    thinking:"ကြီးကြီးမားမားမြင်ကွင်းကို စဉ်းစားပြီး ကိုယ်တိုင်ဦးဆောင်ချင်တတ်ပါတယ်။",
+    love:"ချစ်တဲ့သူကို ပွင့်ပွင့်လင်းလင်း ချစ်တတ်ပါတယ်။",
+    action:"တာဝန်ယူပြီး ဦးဆောင်ရတဲ့အခါ စွမ်းအားကောင်းတတ်ပါတယ်။",
+    growth:"ကိုယ့်အရည်အချင်းကို ပြသနိုင်တဲ့နေရာတွေမှာ အခွင့်အရေးရနိုင်ပါတယ်။",
+    strength:"ယုံကြည်မှု၊ ဖန်တီးနိုင်စွမ်းနဲ့ ဦးဆောင်နိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"အသိအမှတ်ပြုမှုမရရင် စိတ်ထိခိုက်မိနိုင်ပါတယ်။",
+    career:"ခေါင်းဆောင်မှု၊ ဖန်တီးမှုနဲ့ လူရှေ့ထွက်ရတဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Virgo:{
+    personality:"သင်က အသေးစိတ်ကို ဂရုစိုက်ပြီး အရာတစ်ခုကို စနစ်တကျလုပ်ချင်တတ်သူပါ။",
+    emotion:"စိတ်ဖိစီးလာရင် အရာတွေကို အရမ်းစဉ်းစားမိနိုင်ပါတယ်။",
+    thinking:"အသေးစိတ်ခွဲခြမ်းစိတ်ဖြာပြီး အမှားကို ရှာဖွေတတ်ပါတယ်။",
+    love:"စကားအများကြီးထက် လက်တွေ့ဂရုစိုက်ပေးတဲ့ ဆက်ဆံရေးကို တန်ဖိုးထားတတ်ပါတယ်။",
+    action:"အစီအစဉ်ဆွဲပြီး တစ်ဆင့်ချင်းလုပ်တဲ့အခါ ပိုအားကောင်းပါတယ်။",
+    growth:"ကျွမ်းကျင်မှုတိုးတက်အောင် လေ့ကျင့်ခြင်းကနေ အခွင့်အရေးရနိုင်ပါတယ်။",
+    strength:"စနစ်တကျလုပ်နိုင်ခြင်းနဲ့ အသေးစိတ်ဂရုစိုက်ခြင်းက အားသာချက်ပါ။",
+    weakness:"ပြီးပြည့်စုံချင်လွန်းတာကြောင့် ကိုယ့်ကိုယ်ကို ဖိအားပေးမိနိုင်ပါတယ်။",
+    career:"နည်းပညာ၊ စာရင်းနဲ့ စနစ်တကျလုပ်ရတဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Libra:{
+    personality:"သင်က မျှတမှုကို အရေးထားပြီး လူတွေနဲ့ အဆင်ပြေပြေ နေချင်တတ်သူပါ။",
+    emotion:"ပဋိပက္ခရှိရင် စိတ်မသက်မသာဖြစ်တတ်ပါတယ်။",
+    thinking:"ဘက်ပေါင်းစုံကို စဉ်းစားတတ်တာကြောင့် ဆုံးဖြတ်ချက်ချဖို့ အချိန်ယူနိုင်ပါတယ်။",
+    love:"နားလည်မှုရှိပြီး မျှတတဲ့ ဆက်ဆံရေးကို ကြိုက်တတ်ပါတယ်။",
+    action:"အခြားသူနဲ့ ပူးပေါင်းလုပ်တဲ့အခါ စွမ်းအားကောင်းတတ်ပါတယ်။",
+    growth:"လူတွေနဲ့ ပူးပေါင်းခြင်း၊ ညှိနှိုင်းခြင်းကနေ တိုးတက်နိုင်ပါတယ်။",
+    strength:"ညှိနှိုင်းတတ်ခြင်းနဲ့ လူတွေရဲ့အမြင်ကို နားလည်နိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"လူတိုင်းကို အဆင်ပြေစေချင်တာကြောင့် ကိုယ့်ဆန္ဒကို နောက်ထားမိနိုင်ပါတယ်။",
+    career:"ဒီဇိုင်း၊ ဥပဒေ၊ ညှိနှိုင်းရေးနဲ့ ဖောက်သည်ဆက်ဆံရေးအလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Scorpio:{
+    personality:"သင်က အရာတွေကို နက်နက်ရှိုင်းရှိုင်း စဉ်းစားတတ်ပြီး ကိုယ်ယုံကြည်တဲ့အရာကို အပြည့်အဝလုပ်တတ်သူပါ။",
+    emotion:"ခံစားချက်ပြင်းထန်တတ်ပေမယ့် လူတိုင်းကို အလွယ်တကူ မဖွင့်ပြတတ်ပါဘူး။",
+    thinking:"မျက်နှာပြင်ပေါ်ကအရာထက် အတွင်းကအကြောင်းရင်းကို ရှာဖွေစဉ်းစားတတ်ပါတယ်။",
+    love:"ယုံကြည်မှုနဲ့ သစ္စာရှိတဲ့ နက်ရှိုင်းသောဆက်ဆံရေးကို လိုချင်တတ်ပါတယ်။",
+    action:"ဆုံးဖြတ်ပြီးရင် အဆုံးထိ လုပ်နိုင်တဲ့ စိတ်ဓာတ်ရှိတတ်ပါတယ်။",
+    growth:"အခက်အခဲတွေကို ဖြတ်ကျော်ပြီး ကိုယ့်ကိုယ်ကို တိုးတက်စေနိုင်ပါတယ်။",
+    strength:"စိတ်ဓာတ်ခိုင်မာခြင်း၊ သစ္စာရှိခြင်းနဲ့ အာရုံစိုက်နိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"သံသယများလွန်းတာ သို့မဟုတ် စိတ်ထဲမှာ အရာတွေကို စွဲထားမိနိုင်ပါတယ်။",
+    career:"သုတေသန၊ စုံစမ်းစစ်ဆေးမှုနဲ့ နက်နက်ရှိုင်းရှိုင်း လုပ်ရတဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Sagittarius:{
+    personality:"သင်က လွတ်လပ်မှုကို နှစ်သက်ပြီး အသစ်အဆန်းတွေကို စူးစမ်းချင်တတ်သူပါ။",
+    emotion:"နေရာအသစ်နဲ့ အတွေ့အကြုံအသစ်တွေက သင့်ကို လန်းဆန်းစေနိုင်ပါတယ်။",
+    thinking:"ကြီးမားတဲ့အမြင်နဲ့ စဉ်းစားတတ်ပါတယ်။",
+    love:"အချစ်ရေးရှိပေမယ့် ကိုယ်ပိုင်လွတ်လပ်မှုလည်း လိုအပ်တတ်ပါတယ်။",
+    action:"အခွင့်အရေးအသစ်တွေကို တွေ့ရင် စမ်းသပ်ဖို့ မကြောက်တတ်ပါတယ်။",
+    growth:"ခရီးသွားခြင်း၊ ပညာသင်ယူခြင်းနဲ့ အမြင်အသစ်တွေကနေ တိုးတက်နိုင်ပါတယ်။",
+    strength:"အကောင်းမြင်စိတ်နဲ့ စူးစမ်းလိုစိတ်က အားသာချက်ပါ။",
+    weakness:"အသေးစိတ်အချက်တွေကို လျစ်လျူရှုမိနိုင်ပါတယ်။",
+    career:"ပညာရေး၊ ခရီးသွားနဲ့ လွတ်လပ်စွာလုပ်နိုင်တဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Capricorn:{
+    personality:"သင်က ရည်မှန်းချက်ရှိပြီး လုပ်ရမယ့်အရာကို တာဝန်ယူတတ်သူပါ။",
+    emotion:"ခံစားချက်ကို အလွယ်တကူ မပြတတ်ဘဲ ကိုယ်တိုင်ထိန်းချုပ်ဖို့ ကြိုးစားတတ်ပါတယ်။",
+    thinking:"ရေရှည်အကျိုးရှိမယ့်အရာကို စဉ်းစားပြီး လက်တွေ့ကျကျ ဆုံးဖြတ်တတ်ပါတယ်။",
+    love:"ရေရှည်တည်တံ့နိုင်ပြီး ယုံကြည်လို့ရတဲ့ ဆက်ဆံရေးကို တန်ဖိုးထားတတ်ပါတယ်။",
+    action:"စည်းကမ်းရှိပြီး ရည်မှန်းချက်အတွက် ဖြည်းဖြည်းချင်း ဆက်လုပ်နိုင်ပါတယ်။",
+    growth:"တာဝန်ယူခြင်းနဲ့ ရေရှည်စီမံကိန်းတွေကနေ တိုးတက်နိုင်ပါတယ်။",
+    strength:"စိတ်ရှည်ခြင်း၊ တာဝန်ယူခြင်းနဲ့ ရေရှည်ကြိုးစားနိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"ကိုယ့်ကိုယ်ကို ဖိအားများပေးပြီး အနားယူဖို့ မေ့သွားနိုင်ပါတယ်။",
+    career:"စီမံခန့်ခွဲမှု၊ စီးပွားရေးနဲ့ အုပ်ချုပ်ရေးအလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Aquarius:{
+    personality:"သင်က ကိုယ်ပိုင်အမြင်ရှိပြီး လူအများနဲ့ မတူတဲ့နည်းလမ်းတွေကို စိတ်ဝင်စားတတ်သူပါ။",
+    emotion:"ခံစားချက်ထက် အကြောင်းပြချက်နဲ့ စဉ်းစားဖို့ ကြိုးစားတတ်ပါတယ်။",
+    thinking:"အသစ်အဆန်းတွေကို စဉ်းစားတတ်ပြီး ပြဿနာကို မတူတဲ့နည်းလမ်းနဲ့ ဖြေရှင်းချင်တတ်ပါတယ်။",
+    love:"ချစ်သူဖြစ်တာအပြင် မိတ်ဆွေကောင်းတစ်ယောက်လို နားလည်ပေးနိုင်တဲ့ ဆက်ဆံရေးကို ကြိုက်တတ်ပါတယ်။",
+    action:"ကိုယ်ယုံကြည်တဲ့အကြောင်းအရာအတွက် အခြားသူတွေနဲ့ ပူးပေါင်းလုပ်ဆောင်တတ်ပါတယ်။",
+    growth:"နည်းပညာနဲ့ အတွေးအသစ်တွေကနေ အခွင့်အရေးရနိုင်ပါတယ်။",
+    strength:"အတွေးအသစ်ထုတ်နိုင်ခြင်းနဲ့ ကိုယ်ပိုင်အမြင်ရှိခြင်းက အားသာချက်ပါ။",
+    weakness:"ခံစားချက်ကို မပြတတ်တာကြောင့် အခြားသူတွေက အေးစက်တယ်လို့ ထင်နိုင်ပါတယ်။",
+    career:"နည်းပညာ၊ သိပ္ပံနဲ့ အတွေးအသစ်လိုအပ်တဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+},
+
+Pisces:{
+    personality:"သင်က စိတ်ကူးယဉ်တတ်ပြီး အခြားသူရဲ့ခံစားချက်ကို နားလည်ပေးနိုင်တတ်သူပါ။",
+    emotion:"ပတ်ဝန်းကျင်က စိတ်ခံစားချက်တွေကို လွယ်လွယ်ကူကူ လက်ခံမိနိုင်ပါတယ်။",
+    thinking:"စိတ်ကူးနဲ့ ခံစားချက်ကို အသုံးပြုပြီး စဉ်းစားတတ်ပါတယ်။",
+    love:"နူးညံ့ပြီး စိတ်ချင်းနီးစပ်မှုရှိတဲ့ ဆက်ဆံရေးကို လိုချင်တတ်ပါတယ်။",
+    action:"စိတ်အားတက်တဲ့အခါ ဖန်တီးနိုင်စွမ်းကို အပြည့်အဝ အသုံးချတတ်ပါတယ်။",
+    growth:"အနုပညာနဲ့ ဖန်တီးမှုကနေ တိုးတက်နိုင်ပါတယ်။",
+    strength:"ဖန်တီးနိုင်စွမ်း၊ စိတ်နူးညံ့ခြင်းနဲ့ စာနာနားလည်နိုင်ခြင်းက အားသာချက်ပါ။",
+    weakness:"အခြားသူရဲ့ပြဿနာတွေကို ကိုယ့်ပြဿနာလို ခံစားမိနိုင်ပါတယ်။",
+    career:"အနုပညာ၊ ဖန်တီးမှုနဲ့ လူတွေကိုကူညီရတဲ့အလုပ်တွေမှာ ကောင်းနိုင်ပါတယ်။"
+}
+
+};
+
+
+/* =========================================
+   HELPER FUNCTIONS
+========================================= */
+
+function normalize(deg){
+
+    deg = deg % 360;
+
+    return deg < 0 ? deg + 360 : deg;
+}
+
+function signOf(degree){
+
+    return zodiac[
+        Math.floor(normalize(degree) / 30)
+    ];
+}
+
+function degreeInSign(degree){
+    return normalize(degree) % 30;
+}
+
+function formatDegree(deg){
+
+    let d = Math.floor(deg);
+
+    let min = Math.round(
+        (deg - d) * 60
+    );
+
+    if(min === 60){
+        d++;
+        min = 0;
+    }
+
+    return `${d}° ${String(min).padStart(2,"0")}'`;
+}
+
+function setText(id,text){
+    document.getElementById(id).textContent = text;
+}
+
+
+/* =========================================
+   PLANET CALCULATION
+========================================= */
+
+function getJulianDay(date){
+    return date.getTime() / 86400000 + 2440587.5;
+}
+
+function daysSinceJ2000(date){
+    return getJulianDay(date) - 2451545.0;
+}
+
+function sunLongitude(d){
+
+    const L = normalize(
+        280.46646 + 0.98564736 * d
+    );
+
+    const g = normalize(
+        357.52911 + 0.98560028 * d
+    );
+
+    return normalize(
+
+        L +
+
+        1.914602 *
+        Math.sin(g * Math.PI / 180) +
+
+        0.019993 *
+        Math.sin(2 * g * Math.PI / 180) +
+
+        0.000289 *
+        Math.sin(3 * g * Math.PI / 180)
+
+    );
+}
+
+function moonLongitude(d){
+
+    const L0 = normalize(
+        218.316 + 13.176396 * d
+    );
+
+    const Mm = normalize(
+        134.963 + 13.064993 * d
+    );
+
+    const D = normalize(
+        297.850 + 12.190749 * d
+    );
+
+    return normalize(
+
+        L0 +
+
+        6.289 *
+        Math.sin(Mm * Math.PI / 180) +
+
+        1.274 *
+        Math.sin(
+            (2 * D - Mm) *
+            Math.PI / 180
+        ) +
+
+        0.658 *
+        Math.sin(
+            2 * D *
+            Math.PI / 180
+        )
+
+    );
+}
+
+function approximatePlanetLongitude(name,d){
+
+    const data = {
+
+        Mercury:{period:87.969,base:252.25084},
+        Venus:{period:224.701,base:181.97973},
+        Mars:{period:686.980,base:355.433},
+        Jupiter:{period:4332.589,base:34.351},
+        Saturn:{period:10759.22,base:50.077},
+        Uranus:{period:30688.5,base:314.055},
+        Neptune:{period:60182,base:304.348},
+        Pluto:{period:90560,base:238.929}
+
+    };
+
+    const p = data[name];
+
+    return normalize(
+        p.base +
+        (360 / p.period) * d
+    );
+}
+
+function calculatePlanets(date){
+
+    const d = daysSinceJ2000(date);
+
+    const result = {};
+
+    planetDefs.forEach(([key,symbol,mm])=>{
+
+        let lon;
+
+        if(key === "Sun"){
+            lon = sunLongitude(d);
+        }
+
+        else if(key === "Moon"){
+            lon = moonLongitude(d);
+        }
+
+        else{
+            lon = approximatePlanetLongitude(key,d);
+        }
+
+        const sign = signOf(lon);
+
+        result[key] = {
+            key,
+            symbol,
+            mm,
+            lon,
+            sign:sign[0],
+            signMM:sign[1],
+            zsymbol:sign[2],
+            degree:degreeInSign(lon)
+        };
+
+    });
+
+    return result;
+}
+
+
+/* =========================================
+   DRAW BIRTH CHART
+========================================= */
+
+function polar(cx,cy,r,deg){
+
+    const rad =
+        (deg - 90) * Math.PI / 180;
+
+    return {
+        x:cx + r * Math.cos(rad),
+        y:cy + r * Math.sin(rad)
+    };
+}
+
+
+function drawChart(planets){
+
+    const svg =
+        document.getElementById("chart");
+
+    const NS =
+        "http://www.w3.org/2000/svg";
+
+    svg.innerHTML = "";
+
+    const cx = 300;
+    const cy = 300;
+    const R = 260;
+
+
+    function create(tag,attrs={}){
+
+        const el =
+            document.createElementNS(NS,tag);
+
+        Object.keys(attrs).forEach(key=>{
+            el.setAttribute(key,attrs[key]);
+        });
+
+        svg.appendChild(el);
+
+        return el;
+    }
+
+
+    create("circle",{
+        cx,
+        cy,
+        r:R,
+        fill:"#f9f7ff",
+        stroke:"#6f58a0",
+        "stroke-width":"3"
+    });
+
+
+    create("circle",{
+        cx,
+        cy,
+        r:R-30,
+        fill:"none",
+        stroke:"#8b78b5",
+        "stroke-width":"2"
+    });
+
+
+    create("circle",{
+        cx,
+        cy,
+        r:R-75,
+        fill:"#f2effa",
+        stroke:"#9b89bc",
+        "stroke-width":"2"
+    });
+
+
+    zodiac.forEach((z,i)=>{
+
+        const start = i * 30;
+
+        const p1 =
+            polar(cx,cy,R-30,start);
+
+        const p2 =
+            polar(cx,cy,R-75,start);
+
+
+        create("line",{
+            x1:p1.x,
+            y1:p1.y,
+            x2:p2.x,
+            y2:p2.y,
+            stroke:"#76639e",
+            "stroke-width":"2"
+        });
+
+
+        const mid =
+            polar(cx,cy,R-53,start+15);
+
+
+        const text =
+            create("text",{
+                x:mid.x,
+                y:mid.y,
+                fill:"#594477",
+                "font-size":"24",
+                "font-weight":"bold",
+                "text-anchor":"middle",
+                "dominant-baseline":"middle"
+            });
+
+        text.textContent = z[2];
+
+    });
+
+
+    Object.values(planets).forEach((p,i)=>{
+
+        let radius = R - 100;
+
+        if(i % 3 === 1){
+            radius -= 30;
+        }
+
+        if(i % 3 === 2){
+            radius -= 55;
+        }
+
+
+        const pos =
+            polar(cx,cy,radius,p.lon);
+
+
+        create("line",{
+            x1:cx,
+            y1:cy,
+            x2:pos.x,
+            y2:pos.y,
+            stroke:"#b4a4cf",
+            "stroke-width":"1.5"
+        });
+
+
+        create("circle",{
+            cx:pos.x,
+            cy:pos.y,
+            r:"19",
+            fill:"#ffffff",
+            stroke:"#755bb0",
+            "stroke-width":"2"
+        });
+
+
+        const symbol =
+            create("text",{
+                x:pos.x,
+                y:pos.y+1,
+                fill:"#62479b",
+                "font-size":"19",
+                "font-weight":"bold",
+                "text-anchor":"middle",
+                "dominant-baseline":"middle"
+            });
+
+        symbol.textContent = p.symbol;
+
+    });
+
+
+    create("circle",{
+        cx,
+        cy,
+        r:"45",
+        fill:"#e8dcff",
+        stroke:"#755bb0",
+        "stroke-width":"2.5"
+    });
+
+
+    const center =
+        create("text",{
+            x:cx,
+            y:cy-4,
+            fill:"#513779",
+            "font-size":"16",
+            "font-weight":"bold",
+            "text-anchor":"middle"
+        });
+
+    center.textContent = "BIRTH";
+
+
+    const sub =
+        create("text",{
+            x:cx,
+            y:cy+17,
+            fill:"#7b6b98",
+            "font-size":"11",
+            "text-anchor":"middle"
+        });
+
+    sub.textContent = "CHART";
+
+}
+
+
+/* =========================================
+   GENERATE READINGS
+========================================= */
+
+function generateReadings(P){
+
+    const sun = signReadings[P.Sun.sign];
+    const moon = signReadings[P.Moon.sign];
+    const mercury = signReadings[P.Mercury.sign];
+    const venus = signReadings[P.Venus.sign];
+    const mars = signReadings[P.Mars.sign];
+    const jupiter = signReadings[P.Jupiter.sign];
+
+
+    setText(
+        "sunSignTitle",
+        `${P.Sun.symbol} ${P.Sun.sign} • ${P.Sun.signMM}`
+    );
+
+    setText(
+        "moonSignTitle",
+        `${P.Moon.symbol} ${P.Moon.sign} • ${P.Moon.signMM}`
+    );
+
+    setText(
+        "mercurySignTitle",
+        `${P.Mercury.symbol} ${P.Mercury.sign} • ${P.Mercury.signMM}`
+    );
+
+    setText(
+        "venusSignTitle",
+        `${P.Venus.symbol} ${P.Venus.sign} • ${P.Venus.signMM}`
+    );
+
+    setText(
+        "marsSignTitle",
+        `${P.Mars.symbol} ${P.Mars.sign} • ${P.Mars.signMM}`
+    );
+
+    setText(
+        "jupiterSignTitle",
+        `${P.Jupiter.symbol} ${P.Jupiter.sign} • ${P.Jupiter.signMM}`
+    );
+
+
+    setText("sunReading",sun.personality);
+    setText("moonReading",moon.emotion);
+    setText("mercuryReading",mercury.thinking);
+    setText("venusReading",venus.love);
+    setText("marsReading",mars.action);
+    setText("jupiterReading",jupiter.growth);
+
+
+    setText(
+        "personality",
+        sun.personality +
+        " စိတ်အတွင်းပိုင်းမှာတော့ " +
+        moon.emotion
+    );
+
+
+    setText(
+        "strength",
+        sun.strength +
+        " " +
+        mars.strength
+    );
+
+
+    setText(
+        "weakness",
+        sun.weakness +
+        " စိတ်ခံစားမှုဘက်မှာတော့ " +
+        moon.weakness
+    );
+
+
+    setText("love",venus.love);
+
+
+    setText(
+        "career",
+        sun.career +
+        " သင်စဉ်းစားဆုံးဖြတ်ပုံမှာတော့ " +
+        mercury.thinking
+    );
+
+
+    setText("emotion",moon.emotion);
+
+
+    setText(
+        "purpose",
+        jupiter.growth +
+        " သင့်အားသာချက်ကို မှန်ကန်တဲ့နေရာမှာ အသုံးချနိုင်ရင် ပိုကောင်းတဲ့တိုးတက်မှုကို ရနိုင်ပါတယ်။"
+    );
+
+}
+
+
+/* =========================================
+   GENERATE CHART
+========================================= */
+
+function generateChart(){
+
+    const dateStr =
+        document
+        .getElementById("birthDate")
+        .value;
+
+
+    if(!dateStr){
+
+        alert("မွေးနေ့ကို အရင်ရွေးပေးပါ။");
+
+        document
+        .getElementById("birthDate")
+        .focus();
+
+        return;
+    }
+
+
+    const unknown =
+        document
+        .getElementById("unknownTime")
+        .checked;
+
+
+    let hour = 12;
+    let minute = 0;
+
+
+    if(!unknown){
+
+        const hourValue =
+            document
+            .getElementById("birthHour")
+            .value;
+
+        const minuteValue =
+            document
+            .getElementById("birthMinute")
+            .value;
+
+
+        if(
+            hourValue === "" ||
+            minuteValue === ""
+        ){
+
+            alert(
+                "မွေးချိန်ကို နာရီနှင့် မိနစ် နှစ်ခုလုံးထည့်ပါ။"
+            );
+
+            return;
+        }
+
+
+        hour = Number(hourValue);
+        minute = Number(minuteValue);
+
+
+        if(
+            hour < 0 ||
+            hour > 23 ||
+            minute < 0 ||
+            minute > 59
+        ){
+
+            alert(
+                "မွေးချိန်ကို မှန်ကန်စွာ ထည့်ပေးပါ။"
+            );
+
+            return;
+        }
+
+    }
+
+
+    const [year,month,day] =
+        dateStr
+        .split("-")
+        .map(Number);
+
+
+    const date =
+        new Date(
+            Date.UTC(
+                year,
+                month-1,
+                day,
+                hour,
+                minute
+            )
+        );
+
+
+    const P =
+        calculatePlanets(date);
+
+
+    const city =
+        document
+        .getElementById("city")
+        .value
+        .trim();
+
+
+    setText("zodiacSymbol",P.Sun.zsymbol);
+    setText("zodiacName",P.Sun.sign);
+    setText("zodiacMM",P.Sun.signMM);
+
+
+    const localDate =
+        new Date(
+            year,
+            month-1,
+            day
+        );
+
+
+    setText("rDate",dateStr);
+
+    setText(
+        "rWeekday",
+        weekdays[localDate.getDay()]
+    );
+
+
+    setText(
+        "rTime",
+        unknown
+        ? "မသိပါ"
+        : `${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`
+    );
+
+
+    setText(
+        "rCity",
+        city || "မထည့်ထားပါ"
+    );
+
+
+    setText(
+        "rSun",
+        `${P.Sun.zsymbol} ${P.Sun.sign}`
+    );
+
+
+    setText(
+        "rMoon",
+        `${P.Moon.zsymbol} ${P.Moon.sign}`
+    );
+
+
+    setText(
+        "rAsc",
+        unknown
+        ? "မွေးချိန်မသိပါ"
+        : "မွေးချိန်ထည့်ထားသည်"
+    );
+
+
+    setText(
+        "rMode",
+        unknown
+        ? "မွေးနေ့အခြေခံ"
+        : "မွေးနေ့ + မွေးချိန်"
+    );
+
+
+    setText(
+        "chartNote",
+        unknown
+        ? "မွေးနေ့အရ ဂြိုလ်များ၏နေရာ"
+        : "မွေးနေ့နှင့် မွေးချိန်အရ"
+    );
+
+
+    drawChart(P);
+
+
+    document
+    .getElementById("planetList")
+    .innerHTML =
+
+        Object.values(P)
+        .map(p => `
+
+            <div class="planet-row">
+
+                <div class="planet-symbol">
+                    ${p.symbol}
+                </div>
+
+                <div>
+
+                    <div class="planet-name">
+                        ${p.mm}
+                    </div>
+
+                    <div class="planet-sign">
+
+                        ${p.zsymbol}
+
+                        ${p.sign}
+
+                        (${p.signMM})
+
+                    </div>
+
+                </div>
+
+                <div class="planet-degree">
+
+                    ${formatDegree(p.degree)}
+
+                </div>
+
+            </div>
+
+        `)
+        .join("");
+
+
+    generateReadings(P);
+
+
+    const result =
+        document
+        .getElementById("result");
+
+
+    result.style.display = "block";
+
+
+    setTimeout(()=>{
+
+        result.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    },100);
+
+}
+
+
+/* =========================================
+   RESET FORM
+========================================= */
+
+function resetForm(){
+
+    document
+    .getElementById("birthDate")
+    .value = "";
+
+
+    document
+    .getElementById("birthHour")
+    .value = "";
+
+
+    document
+    .getElementById("birthMinute")
+    .value = "";
+
+
+    document
+    .getElementById("city")
+    .value = "";
+
+
+    document
+    .getElementById("unknownTime")
+    .checked = true;
+
+
+    toggleTimeInputs();
+
+
+    document
+    .getElementById("result")
+    .style.display = "none";
+
+
+    document
+    .getElementById("birthForm")
+    .scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+    });
+
+
+    setTimeout(()=>{
+
+        document
+        .getElementById("birthDate")
+        .focus();
+
+    },500);
+
+}
+
+
+/* =========================================
+   TIME TOGGLE
+========================================= */
+
+function toggleTimeInputs(){
+
+    const unknown =
+        document
+        .getElementById("unknownTime")
+        .checked;
+
+
+    const hour =
+        document
+        .getElementById("birthHour");
+
+
+    const minute =
+        document
+        .getElementById("birthMinute");
+
+
+    hour.disabled = unknown;
+    minute.disabled = unknown;
+
+
+    hour.style.opacity =
+        unknown ? ".45" : "1";
+
+
+    minute.style.opacity =
+        unknown ? ".45" : "1";
+
+}
+
+
+/* =========================================
+   EVENTS
+========================================= */
+
+document
+.getElementById("generateBtn")
+.addEventListener(
+    "click",
+    generateChart
+);
+
+
+document
+.getElementById("unknownTime")
+.addEventListener(
+    "change",
+    toggleTimeInputs
+);
+
+
+document
+.getElementById("navRecalculate")
+.addEventListener(
+    "click",
+    resetForm
+);
+
+
+toggleTimeInputs();
+
+</script>
+
+</body>
+</html>
